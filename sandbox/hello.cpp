@@ -1,9 +1,9 @@
-#include<argo.hpp> // Get access to argo function calls.
+#include<argo.hpp> // Get access to Argo function calls.
 #include<iostream> // Used for output prints.
 #include<vector> // Used for threads vector to store them.
 
 struct data{
-  int array[4]; // Array with 4 ints
+  int array[4]; // Array with four ints
 };
   
 
@@ -49,11 +49,11 @@ void solve(int tID, int nID, int* mem){
 
   // Node index 0's first thread 0 print *mem value after barrier.
   if(nID ==0 && tID == 0)
-    std::cout << "mem vaule for t0 after barrier: " << *mem << "\n";
+    std::cout << "mem value for t0 after barrier: " << *mem << "\n";
 
   // Node index 0's first thread 2 print *mem value after barrier
   if(nID ==0 && tID == 2)
-    std::cout << "mem vaule for t2 after barrier: " << *mem << "\n";
+    std::cout << "mem value for t2 after barrier: " << *mem << "\n";
 
   // Node with id 1 (index 1) each threads will print their corresponding value from the data
   if(nID == 1){
@@ -80,7 +80,7 @@ void solve(int tID, int nID, int* mem){
 int main(int argc, char *argv[]){
 
   /* Init the total space that is shared between all nodes.
-    Also set up the argo enviroment, caches and global memory. */
+    Also set up the argo environment, caches and global memory. */
   argo::init(128 * 1024 * 1024);
 
 
@@ -106,7 +106,7 @@ int main(int argc, char *argv[]){
     dataX->array[i] = 5;
   }
 
-  // synchronization of all argoDSM Nodes to reach this barrier and make writebacks and update everything.
+  // synchronization of all argoDSM Nodes to reach this barrier and make write backs and update everything.
   argo::barrier(); 
 
 

@@ -1,5 +1,5 @@
 # Make sure to set the ARGODSM environment variable:
-# e.g. export ARGODSM=/home/jonas/argodsm/
+# e.g. export ARGODSM=/home/jonas/argodsm
 
 # Compilers and flags
 CXX := mpic++
@@ -23,5 +23,5 @@ clean:
 # Check if the environment variable is defined
 check-env:
 ifndef ARGODSM
-	$(error Environment variable ARGODSM is undefined)
+	$(error Environment variable ARGODSM is undefined. Set it using: export ARGODSM=/path/to/argodsm/)
 endif
