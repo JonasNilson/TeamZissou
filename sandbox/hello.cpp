@@ -3,7 +3,7 @@
 #include<vector> // Used for threads vector to store them.
 
 struct data{
-  int array[4];
+  int array[4]; // Array with 4 ints
 };
   
 
