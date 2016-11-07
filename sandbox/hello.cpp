@@ -85,7 +85,7 @@ int main(int argc, char *argv[]){
 
 
   int id = argo::node_id(); // get this node uniqe index number 
-  int nodes = argo::number_of_nodes(); // return the number of nodes in the argo system.
+  //  int nodes = argo::number_of_nodes(); // return the number of nodes in the argo system.
   int threads = 4; // Number of threads that we want to run.
 
   /*int* array[4];
