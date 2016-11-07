@@ -2,6 +2,7 @@
 #include<vector>
 #inlcude<argo.hpp>
 #include<graphiciando.hpp>
+#include<array>
 
 VertexProperty VTempProperty[];
 VertexProperty VProperty[];
@@ -33,18 +34,25 @@ int main(int argc, char *argv[]){
 
   Edges = graph.EdgeList;
 
+  for(int i =0; i< graph.VertexList.size()){
+    VProperty[i] = graph.VertexList[i].VertexProperty;
+  }
+  
   int edgeIndex=0;
   
-  for(int i= 0; i< graph->Vertex.lenght; ++i){
+  for(int i= 0; i< graph->VertexList.size(); ++i){
     EdgeIDTable[i] = Edges[edgeIndex];
     int j = 0;
-    while(graph->Vertex[i].srcid == graph->Vertex[j].srcid){
+    while(graph->Vertex[i].id == graph->Edges[j].srcid){
       j++;
       edgeIndex++;
     }
   }
-  
 
+  ActiveVertex[0] = Vertex[0];
+
+  
+  
   while(1){
 
     // Processing Phase
