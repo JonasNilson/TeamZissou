@@ -51,6 +51,7 @@ VertexProperty reduce(VertexProperty temp, VertexProperty result) {
 	//TODO: Add user defined computation
 
 	/* BFS Implementation */
+	//Result is currently null since we do not return anything from process edge phase. Should send IterCount to result if result is null in main loop?
 	return std::min(temp,result); // Not correct but something to see and understand is this same as: min(Vtemp, IterCount)
 	/* END OF BFS Implementation */
 }
