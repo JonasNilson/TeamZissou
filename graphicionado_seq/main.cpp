@@ -26,9 +26,7 @@ Information about graphicionado
 * VTempProperty - same as VProperty but updated from the function reduce.
 * Edges - array of all edges. Is indexed (sorted) by edge ID E.g of an edge: (srcID, dstID, weight) (NOT SURE VISULISE TOMORROW)
 */
-is constructed and stored in memory. This array stores the eid
-of the first edge of each vertex to allow streaming accesses of
-the edges starting at a particular vertex
+
 
 
 /* User defined prop is void pointers that gets casted*/
@@ -41,20 +39,29 @@ the edges starting at a particular vertex
 * return: VertexProperty an 
 */
 VertexProperty processEdge(double weight, int* srcProp, int* dstProp) {
- //TODO: User defined computation
- //return ...
+	//TODO: Add user defined computation
+
+	/* BFS Implementation */
+	return; // BFS process edge implementation
+	/* END OF BFS Implementation */
 }
 
 // User defined computation
 VertexProperty reduce(VertexProperty temp, VertexProperty result) {
- //TODO: User defined computation
- //return ...
+	//TODO: Add user defined computation
+
+	/* BFS Implementation */
+	return std::min(temp,result); // Not correct but something to see and understand is this same as: min(Vtemp, IterCount)
+	/* END OF BFS Implementation */
 }
 
 // User defined computation
 VertexProperty apply(VertexProperty vprop, VertexProperty temp, VertexProperty vconst) {
- //TODO: User defined computation
- //return ...
+	//TODO: Add user defined computation
+
+	// BFS Implementation
+	return temp;
+	// END OF BFS Implementation
 }
 
 
