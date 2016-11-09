@@ -6,9 +6,10 @@
 #include<iostream> // Used for output prints.
 #include<graphicionado.hpp> // Data structures for graph problems
 #include<array>
-#include<vector>
+
 
 // Global variable declaration
+template <typename VertexProperty>;
 int THREADS = 4; // Set number of threads
 VertexProperty VTempProperty[];
 VertexProperty VProperty[];
