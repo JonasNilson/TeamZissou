@@ -2,23 +2,121 @@
 * Sequential implementation of graphicionado
 */
 
-#include<argo.hpp> // Get access to Argo function calls.
-#include<iostream> // Used for output prints.
-#include<graphicionado.hpp> // Data structures for graph problems
-#include<array>
+#include <argo.hpp> // Get access to Argo function calls.
+#include <iostream> // Used for output prints.
+#include <fstream> // Used for file reading
+#include <graphicionado.hpp> // Data structures for graph problems
+#include <array>
 
 
 // Global variable declaration
-template <typename VertexProperty>;
 int THREADS = 4; // Set number of threads
-VertexProperty VTempProperty[];
-VertexProperty VProperty[];
-VertexProperty VConst[];
-Edge Edges[];
-Edge EdgeIDTable[];
-Vertex ActiveVerterx[];
 
-Graph graph;
+//Graph graph; // Not being used at this moment.
+
+Vertex* verticies; // All verticies in the graph
+Vertex* ActiveVerterx; 
+
+Edge* edges; // All edges in the graph
+Edge* EdgeIDTable;
+
+VertexProperty* VProperty;
+VertexProperty* VTempProperty;
+VertexProperty* VConst;
+
+
+
+
+
+/*
+* Collective allocations for the argoDSM system.
+* numVerticies: total number of verticies in graph
+* numEdges: total number of edges in graph
+*/
+void setupDSM(unsigned int numVerticies, unsigned int numEdges){
+	verticies = argo::conew<Vertex * numVerticies>(); // TODO: Check if this allocation with data times numVerticies actually allocate that size. 
+	ActiveVerterx = argo::conew<Vertex * numVerticies>(); // TODO: Check if this allocation actually allocate that wanted size.
+	
+	edges = argo::conew<Edge * numEdges>(); // TODO: Check if this allocation actually allocate that wanted size. 
+	EdgeIDTable = argo::conew<Edge * numEdges>(); // TODO: Check if this allocation actually allocate that wanted size.
+
+	VProperty = argo::conew<VertexProperty * numVerticies>();// TODO: Check if this allocation actually allocate that wanted size.
+	VTempProperty = argo::conew<VertexProperty * numVerticies>();// TODO: Check if this allocation actually allocate that wanted size.
+	VConst = argo::conew<VertexProperty * numVerticies>();// TODO: Check if this allocation actually allocate that wanted size.
+}
+
+/*
+* Organize already collective allocated space in the argoDSM system 
+* with data like graphicionado's model.
+* numVerticies: total number of verticies in graph
+* numEdges: total number of edges in graph
+*/
+void initializeDSM(unsigned int numVerticies, unsigned int numEdges){
+	
+  	// TODO: Init ActiveVerticies
+
+  
+
+  	// Init EdgeIDTable
+  	// FIXME SHOULD BE SHORTED BY SRC FIRST AND THEN DEST SECOND
+	unsigned int edgeIndex=0;
+	for(unsigned int i= 0; i < numEdges; ++i){
+    	EdgeIDTable[i] = Edges[edgeIndex];
+    	unsigned int j = 0;
+    	while(verticies[i].id == Edges[j].srcid){
+      		j++;
+      		edgeIndex++;
+    	}
+  	}
+
+
+  	// Init VProperty
+	for(unsigned int i =0; i < numVerticies); ++i {
+    	VProperty[i] = VertexList[i].prop;
+  	}
+
+  	// TODO: Init VTempProperty
+  	
+  	// TODO: Init VConst
+
+
+}
+
+/*
+* Read graph input data from a text file.
+*/
+void readTextFile(char * filename){
+	// Local variable declaration
+	ifstream file;
+	std::string line;
+	unsigned int numVerticies;
+	unsigned int numEdges;
+
+	file.open(filename); // Open file with filename.
+
+	getline(file,line); // get first line in file.
+	numVerticies = line;
+
+	getline(file,line); // get second line in file.
+	numEdges = line;
+
+	setupDSM(numVerticies,numEdges); // Make system ready to store data.
+
+	for(unsigned int i = 0; i < numVerticies; ++i){
+		getline(file,line); // Saves the line in line.
+		verticies[i] = line;
+	}
+
+	for(unsigned int i = 0; i < numEdges; ++i){
+		getline(file,line); // Saves the line in line.
+		Edges[i] = line;
+	}
+
+	file.close(); // Closes file 
+	initializeDSM(numVerticies, numEdges); // Organize data in argo.
+}
+
+
 
 /**
 Information about graphicionado
@@ -79,29 +177,6 @@ int main(int argc, char *argv[]){
 	// Local variable declaration
 	int id = argo::node_id(); // get this node unique index number starting from 0
 	int nodes = argo::number_of_nodes(); // return the total number of nodes in the Argo system.
-
-
-	/*LINUS*/
-	Edges = graph.EdgeList;
-
-	for(int i =0; i< graph.VertexList.size()){
-    	VProperty[i] = graph.VertexList[i].VertexProperty;
-  	}
-  
-	int edgeIndex=0;
-  
-	for(int i= 0; i< graph->VertexList.size(); ++i){
-    	EdgeIDTable[i] = Edges[edgeIndex];
-    	int j = 0;
-    	while(graph->Vertex[i].id == graph->Edges[j].srcid){
-      		j++;
-      		edgeIndex++;
-    	}
-  	}
-	ActiveVertex[0] = Vertex[0];
-
-	/*END OF LINUS*/
-
 
 
 	/* TODO: Implement section */

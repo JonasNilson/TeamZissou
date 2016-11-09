@@ -16,13 +16,18 @@ struct Graph {
 
 // A struct representing a vertex in the graph
 struct Vertex {
-	int id;
-	void* prop;
+	unsigned int id;
+	VertexProperty prop;
 };
 
 // A struct representing an edge in the graph
 struct Edge {
-	int srcId;
-	int dstId;
-	int weight;
+	unsigned int srcId;
+	unsigned int dstId;
+	unsigned int weight;
+};
+
+// A struct representing vertex property
+struct VertexProperty {
+	double property;
 };
