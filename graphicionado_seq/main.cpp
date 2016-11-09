@@ -5,7 +5,7 @@
 #include <argo.hpp> // Get access to Argo function calls.
 #include <iostream> // Used for output prints.
 #include <fstream> // Used for file reading
-#include <graphicionado.hpp> // Data structures for graph problems
+#include "graphicionado.hpp" // Data structures for graph problems
 #include <array>
 
 
@@ -15,18 +15,14 @@ int THREADS = 4; // Set number of threads
 //Graph graph; // Not being used at this moment.
 
 Vertex* verticies; // All verticies in the graph
-Vertex* ActiveVerterx; 
+Vertex* activeVertex; 
 
 Edge* edges; // All edges in the graph
-Edge* EdgeIDTable;
+Edge* edgeIDTable;
 
-VertexProperty* VProperty;
-VertexProperty* VTempProperty;
-VertexProperty* VConst;
-
-
-
-
+VertexProperty* vProperty;
+VertexProperty* vTempProperty;
+VertexProperty* vConst;
 
 /*
 * Collective allocations for the argoDSM system.
@@ -34,15 +30,15 @@ VertexProperty* VConst;
 * numEdges: total number of edges in graph
 */
 void setupDSM(unsigned int numVerticies, unsigned int numEdges){
-	verticies = argo::conew<Vertex * numVerticies>(); // TODO: Check if this allocation with data times numVerticies actually allocate that size. 
-	ActiveVerterx = argo::conew<Vertex * numVerticies>(); // TODO: Check if this allocation actually allocate that wanted size.
+	verticies = argo::conew_<Vertex>(numVerticies); // TODO: Check if this allocation with data times numVerticies actually allocate that size. 
+	activeVertex = argo::conew_<Vertex>(numVerticies); // TODO: Check if this allocation actually allocate that wanted size.
 	
-	edges = argo::conew<Edge * numEdges>(); // TODO: Check if this allocation actually allocate that wanted size. 
-	EdgeIDTable = argo::conew<Edge * numEdges>(); // TODO: Check if this allocation actually allocate that wanted size.
+	edges = argo::conew_<Edge>(numEdges); // TODO: Check if this allocation actually allocate that wanted size. 
+	edgeIDTable = argo::conew_<Edge>(numEdges); // TODO: Check if this allocation actually allocate that wanted size.
 
-	VProperty = argo::conew<VertexProperty * numVerticies>();// TODO: Check if this allocation actually allocate that wanted size.
-	VTempProperty = argo::conew<VertexProperty * numVerticies>();// TODO: Check if this allocation actually allocate that wanted size.
-	VConst = argo::conew<VertexProperty * numVerticies>();// TODO: Check if this allocation actually allocate that wanted size.
+	vProperty = argo::conew_<VertexProperty>(numVerticies);// TODO: Check if this allocation actually allocate that wanted size.
+	vTempProperty = argo::conew_<VertexProperty>(numVerticies);// TODO: Check if this allocation actually allocate that wanted size.
+	vConst = argo::conew_<VertexProperty>(numVerticies);// TODO: Check if this allocation actually allocate that wanted size.
 }
 
 /*
@@ -55,31 +51,26 @@ void initializeDSM(unsigned int numVerticies, unsigned int numEdges){
 	
   	// TODO: Init ActiveVerticies
 
-  
-
   	// Init EdgeIDTable
   	// FIXME SHOULD BE SHORTED BY SRC FIRST AND THEN DEST SECOND
 	unsigned int edgeIndex=0;
 	for(unsigned int i= 0; i < numEdges; ++i){
-    	EdgeIDTable[i] = Edges[edgeIndex];
+    	edgeIDTable[i] = edges[edgeIndex];
     	unsigned int j = 0;
-    	while(verticies[i].id == Edges[j].srcid){
+    	while(verticies[i].ID == edges[j].srcID){
       		j++;
       		edgeIndex++;
     	}
   	}
 
-
   	// Init VProperty
-	for(unsigned int i =0; i < numVerticies); ++i {
-    	VProperty[i] = VertexList[i].prop;
+	for(unsigned int i =0; i < numVerticies; ++i) {
+    	vProperty[i] = verticies[i].prop;
   	}
 
   	// TODO: Init VTempProperty
   	
   	// TODO: Init VConst
-
-
 }
 
 /*
@@ -87,7 +78,7 @@ void initializeDSM(unsigned int numVerticies, unsigned int numEdges){
 */
 void readTextFile(char * filename){
 	// Local variable declaration
-	ifstream file;
+	std::ifstream file;
 	std::string line;
 	unsigned int numVerticies;
 	unsigned int numEdges;
@@ -95,21 +86,26 @@ void readTextFile(char * filename){
 	file.open(filename); // Open file with filename.
 
 	getline(file,line); // get first line in file.
-	numVerticies = line;
-
+	numVerticies = std::stoll(line);
 	getline(file,line); // get second line in file.
-	numEdges = line;
+	numEdges = std::stoll(line);
 
 	setupDSM(numVerticies,numEdges); // Make system ready to store data.
 
 	for(unsigned int i = 0; i < numVerticies; ++i){
 		getline(file,line); // Saves the line in line.
-		verticies[i] = line;
+		verticies[i].ID = std::stoll(line);
+		getline(file,line);
+		verticies[i].prop.property = std::stold(line);
 	}
 
 	for(unsigned int i = 0; i < numEdges; ++i){
 		getline(file,line); // Saves the line in line.
-		Edges[i] = line;
+		edges[i].srcID = std::stoll(line);
+		getline(file,line);
+		edges[i].dstID = std::stoll(line);
+		getline(file,line);
+		edges[i].weight = std::stold(line);
 	}
 
 	file.close(); // Closes file 
@@ -141,7 +137,9 @@ VertexProperty processEdge(double weight, int* srcProp, int* dstProp) {
 	//TODO: Add user defined computation
 
 	/* BFS Implementation */
-	return; // BFS process edge implementation
+	VertexProperty v;
+	v.property = 0;
+	return v; // BFS process edge implementation
 	/* END OF BFS Implementation */
 }
 
@@ -178,43 +176,43 @@ int main(int argc, char *argv[]){
 	int id = argo::node_id(); // get this node unique index number starting from 0
 	int nodes = argo::number_of_nodes(); // return the total number of nodes in the Argo system.
 
-
 	/* TODO: Implement section */
+
+	/*
 	// START SUDO CODE from graphicionado
-	for (int i=0; i<ActiveVertexCount; i++) {
-		Vertex src = ActiveVertex[i]; // Sequential Vertex Read
-		int eid = EdgeIDTable[src.id]; // Edge ID Read
-		Edge e = Edges[eid]; // Edge Read
+	for (int i=0; i<activeVertexCount; i++) {
+		Vertex src = activeVertex[i]; // Sequential Vertex Read
+		int eid = edgeIDTable[src.ID]; // Edge ID Read
+		Edge e = edges[eID]; // Edge Read
 		
-		while (e.srcid == src.id) {
-			dst.prop = VProperty[e.dstid]; // [OPT IONAL] Random Vertex Read
+		while (e.srcID == src.ID) {
+			dst.prop = vProperty[e.dstID]; // [OPT IONAL] Random Vertex Read
 			VertexProperty res = processEdge(e.weight, src.prop, dst.prop);
-			VertexProperty temp = VTempProperty[e.dstid]; // Random Vertex Read
+			VertexProperty temp = vTempProperty[e.dstID]; // Random Vertex Read
 			temp = reduce(temp, res);
-	 		VTempProperty[e.dstid] = temp; // Random Vertex Write
-	 		e = Edges[++eid] // Edge Read
+	 		vTempProperty[e.dstID] = temp; // Random Vertex Write
+	 		e = edges[++eID] // Edge Read
 	 	}
 	}
 	// Reset ActiveVertex and ActiveVertexCount
 	
 	//B Apply Phase
-	for (int i=0; i<TotalVertexCount; i++) {
-		VertexProperty vprop = VProperty[i]; // Sequential Vertex Read
-		VertexProperty temp = VTempProperty[i]; // Sequential Vertex Read
-		VertexProperty vconst = VConst[i];
+	for (int i=0; i<totalVertexCount; i++) {
+		VertexProperty vprop = vProperty[i]; // Sequential Vertex Read
+		VertexProperty temp = vTempProperty[i]; // Sequential Vertex Read
+		VertexProperty vconst = vConst[i];
 		temp = apply(vprop, temp, vconst);
-		VProperty[i] = temp; // Sequential Vertex Write
+		vProperty[i] = temp; // Sequential Vertex Write
 		if(temp != vprop) {
 			Vertex v;
-			v.id = i;
+			v.ID = i;
 			v.prop = temp;
-			ActiveVertex[ActiveVertexCount++] = v; // Sequential Vertex Write
+			activeVertex[activeVertexCount++] = v; // Sequential Vertex Write
 		}
 	}
 
+	*/
 	//END OF SUDO CODE
-
-
 
 	argo::finalize(); // Cleanup for this node when program has finished.
 
