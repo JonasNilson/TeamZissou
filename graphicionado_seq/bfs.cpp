@@ -13,7 +13,7 @@
 * dstProp - pointer to destination property
 * return: VertexProperty an 
 */
-VertexProperty processEdge(double weight, int* srcProp, int* dstProp) {
+VertexProperty processEdge(double weight, VertexProperty srcProp, VertexProperty dstProp) {
 	//TODO: Add user defined computation
 
 	/* BFS Implementation */

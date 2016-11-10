@@ -6,7 +6,7 @@
 #include <iostream> // Used for output prints.
 #include "graphicionado.hpp" // Data structures for graph problems
 #include "algorithms.hpp"
-#include "read_graph.hpp"
+#include "preprocess.hpp"
 #include <array>
 #include <algorithm>
 // Global variable declaration

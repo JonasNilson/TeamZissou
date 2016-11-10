@@ -3,7 +3,7 @@
 
 #include "graphicionado.hpp"
 
-VertexProperty processEdge(double weight, int* srcProp, int* dstProp);
+VertexProperty processEdge(double weight, VertexProperty srcProp, VertexProperty dstProp);
 
 VertexProperty reduce(VertexProperty temp, VertexProperty result);
 
