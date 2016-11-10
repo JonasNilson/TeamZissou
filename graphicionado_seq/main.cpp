@@ -30,15 +30,15 @@ VertexProperty* vConst;
 * numEdges: total number of edges in graph
 */
 void setupDSM(unsigned int numVerticies, unsigned int numEdges){
-	verticies = argo::conew_<Vertex>(numVerticies); // TODO: Check if this allocation with data times numVerticies actually allocate that size. 
-	activeVertex = argo::conew_<Vertex>(numVerticies); // TODO: Check if this allocation actually allocate that wanted size.
+	verticies = argo::conew_array<Vertex>(numVerticies); // TODO: Check if this allocation with data times numVerticies actually allocate that size. 
+	activeVertex = argo::conew_array<Vertex>(numVerticies); // TODO: Check if this allocation actually allocate that wanted size.
 	
-	edges = argo::conew_<Edge>(numEdges); // TODO: Check if this allocation actually allocate that wanted size. 
-	edgeIDTable = argo::conew_<Edge>(numEdges); // TODO: Check if this allocation actually allocate that wanted size.
+	edges = argo::conew_array<Edge>(numEdges); // TODO: Check if this allocation actually allocate that wanted size. 
+	edgeIDTable = argo::conew_array<Edge>(numEdges); // TODO: Check if this allocation actually allocate that wanted size.
 
-	vProperty = argo::conew_<VertexProperty>(numVerticies);// TODO: Check if this allocation actually allocate that wanted size.
-	vTempProperty = argo::conew_<VertexProperty>(numVerticies);// TODO: Check if this allocation actually allocate that wanted size.
-	vConst = argo::conew_<VertexProperty>(numVerticies);// TODO: Check if this allocation actually allocate that wanted size.
+	vProperty = argo::conew_array<VertexProperty>(numVerticies);// TODO: Check if this allocation actually allocate that wanted size.
+	vTempProperty = argo::conew_array<VertexProperty>(numVerticies);// TODO: Check if this allocation actually allocate that wanted size.
+	vConst = argo::conew_array<VertexProperty>(numVerticies);// TODO: Check if this allocation actually allocate that wanted size.
 }
 
 /*
