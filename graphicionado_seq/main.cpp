@@ -4,9 +4,9 @@
 
 #include <argo.hpp> // Get access to Argo function calls.
 #include <iostream> // Used for output prints.
-#include <fstream> // Used for file reading
 #include "graphicionado.hpp" // Data structures for graph problems
 #include "algorithms.hpp"
+#include "read_graph.hpp"
 #include <array>
 
 // Global variable declaration
@@ -72,47 +72,6 @@ void initializeDSM(unsigned int numVerticies, unsigned int numEdges){
   	
   	// TODO: Init VConst
 }
-
-/*
-* Read graph input data from a text file.
-*/
-void readTextFile(char * filename){
-	// Local variable declaration
-	std::ifstream file;
-	std::string line;
-	unsigned int numVerticies;
-	unsigned int numEdges;
-
-	file.open(filename); // Open file with filename.
-
-	getline(file,line); // get first line in file.
-	numVerticies = std::stoll(line);
-	getline(file,line); // get second line in file.
-	numEdges = std::stoll(line);
-
-	setupDSM(numVerticies,numEdges); // Make system ready to store data.
-
-	for(unsigned int i = 0; i < numVerticies; ++i){
-		getline(file,line); // Saves the line in line.
-		verticies[i].ID = std::stoll(line);
-		getline(file,line);
-		verticies[i].prop.property = std::stold(line);
-	}
-
-	for(unsigned int i = 0; i < numEdges; ++i){
-		getline(file,line); // Saves the line in line.
-		edges[i].srcID = std::stoll(line);
-		getline(file,line);
-		edges[i].dstID = std::stoll(line);
-		getline(file,line);
-		edges[i].weight = std::stold(line);
-	}
-
-	file.close(); // Closes file 
-	initializeDSM(numVerticies, numEdges); // Organize data in argo.
-}
-
-
 
 /**
 Information about graphicionado

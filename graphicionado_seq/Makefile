@@ -15,9 +15,9 @@ EXECUTABLES := main bfs
 
 all: check-env $(EXECUTABLES)
 
-main: main.cpp
+main: main.cpp read_graph.cpp
 
-bfs: main.cpp bfs.cpp
+bfs: main.cpp bfs.cpp read_graph.cpp
 
 clean:
 	rm $(EXECUTABLES)
