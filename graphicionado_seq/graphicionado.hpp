@@ -1,4 +1,6 @@
 // Graphicionado data types etc.
+#ifndef graphicionado_hpp
+#define graphicionado_hpp graphicionado_hpp
 
 /* -----------------------------------------------
 --- Graphicionado functions ----------------------
@@ -31,3 +33,5 @@ struct Edge {
 	unsigned int dstID;
 	double weight;
 };
+
+#endif

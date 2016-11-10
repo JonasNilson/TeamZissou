@@ -9,13 +9,15 @@ CFLAGS := -O3 -g -Wall -pthread -I$(ARGODSM)/src
 CPPFLAGS := $(CFLAGS) -std=c++11
 
 # A list of the executable files
-EXECUTABLES := main
+EXECUTABLES := main bfs
 
 .PHONY: check-env all
 
 all: check-env $(EXECUTABLES)
 
 main: main.cpp
+
+bfs: main.cpp bfs.cpp
 
 clean:
 	rm $(EXECUTABLES)
