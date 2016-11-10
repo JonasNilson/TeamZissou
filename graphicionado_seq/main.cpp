@@ -146,11 +146,12 @@ VertexProperty processEdge(double weight, int* srcProp, int* dstProp) {
 // User defined computation
 VertexProperty reduce(VertexProperty temp, VertexProperty result) {
 	//TODO: Add user defined computation
-
+  VertexProperty v;
 	/* BFS Implementation */
 	//Result is currently null since we do not return anything from process edge phase. Should send IterCount to result if result is null in main loop?
-	return std::min(temp,result); // Not correct but something to see and understand is this same as: min(Vtemp, IterCount)
-	/* END OF BFS Implementation */
+	 v.property = std::min(temp.property,result.property); // Not correct but something to see and understand is this same as: min(Vtemp, IterCount)
+	 return v;
+	 /* END OF BFS Implementation */
 }
 
 // User defined computation
@@ -173,8 +174,8 @@ int main(int argc, char *argv[]){
 	argo::init(128 * 1024 * 1024); 
 
 	// Local variable declaration
-	int id = argo::node_id(); // get this node unique index number starting from 0
-	int nodes = argo::number_of_nodes(); // return the total number of nodes in the Argo system.
+	//	int id = argo::node_id(); // get this node unique index number starting from 0
+	//int nodes = argo::number_of_nodes(); // return the total number of nodes in the Argo system.
 
 	/* TODO: Implement section */
 
