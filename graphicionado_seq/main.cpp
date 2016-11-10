@@ -30,16 +30,39 @@ VertexProperty* vConst;
 * numEdges: total number of edges in graph
 */
 void setupDSM(unsigned int numVerticies, unsigned int numEdges){
-	verticies = argo::conew_array<Vertex>(numVerticies); // TODO: Check if this allocation with data times numVerticies actually allocate that size. 
-	activeVertex = argo::conew_array<Vertex>(numVerticies); // TODO: Check if this allocation actually allocate that wanted size.
+	verticies = argo::conew_array<Vertex>(numVerticies); 
+	activeVertex = argo::conew_array<Vertex>(numVerticies); 
 	
-	edges = argo::conew_array<Edge>(numEdges); // TODO: Check if this allocation actually allocate that wanted size. 
-	edgeIDTable = argo::conew_array<Edge>(numEdges); // TODO: Check if this allocation actually allocate that wanted size.
+	edges = argo::conew_array<Edge>(numEdges); 
+	edgeIDTable = argo::conew_array<unsigned int>(numVerticies); // make it of size number of verticies
 
-	vProperty = argo::conew_array<VertexProperty>(numVerticies);// TODO: Check if this allocation actually allocate that wanted size.
-	vTempProperty = argo::conew_array<VertexProperty>(numVerticies);// TODO: Check if this allocation actually allocate that wanted size.
-	vConst = argo::conew_array<VertexProperty>(numVerticies);// TODO: Check if this allocation actually allocate that wanted size.
+	vProperty = argo::conew_array<VertexProperty>(numVerticies);
+	vTempProperty = argo::conew_array<VertexProperty>(numVerticies);
+	vConst = argo::conew_array<VertexProperty>(numVerticies);
 }
+
+
+/*
+* Compare edges with srcID then dstID
+*/
+bool edgeCompare(edge e1, edge e2){
+	// Sort by srcID
+	if(e1.srcID < e2.srcID || (e1.srcID == e2.srcID && e1.dstID < e2.dstID)){
+		return true;
+	}
+	return false;
+}
+
+/*
+* Compare vertex with ID
+*/
+bool vertexCompare(vertex v1, vertex v2){
+	if(v1.ID < v2.ID){
+		return true;
+	}
+	return false;
+}
+
 
 /*
 * Organize already collective allocated space in the argoDSM system 
@@ -49,19 +72,23 @@ void setupDSM(unsigned int numVerticies, unsigned int numEdges){
 */
 void initializeDSM(unsigned int numVerticies, unsigned int numEdges){
 	
+	// Sort edges after srcID and then dstID with function edgeCompare
+	std::sort(edges,edges[numEdges],edgeCompare); // if this one does not work use std::sort(edges,edges+numEdges,edgeCompare);
+
+	// Sort verticies after ID to make sure the edge ID table correspond to correct node.
+	std::sort(verticies,verticies[numVerticies],vertexCompare);
+
   	// TODO: Init ActiveVerticies
+	// root node? where we start with. Maybe an argument what we take in
 
   	// Init EdgeIDTable
-  	// FIXME SHOULD BE SHORTED BY SRC FIRST AND THEN DEST SECOND
-	unsigned int edgeIndex=0;
-	for(unsigned int i= 0; i < numEdges; ++i){
-    	edgeIDTable[i] = edges[edgeIndex];
-    	unsigned int j = 0;
-    	while(verticies[i].ID == edges[j].srcID){
-      		j++;
-      		edgeIndex++;
-    	}
-  	}
+  	unsigned int vertex_ID = 0;
+	for(unsigned int i = 0; i < numEdges; ++i){
+		if(edges[i].srcID == vertex_ID){
+			edgeIDTable[vertex_ID] = i;
+			vertex_ID++;
+		}
+	}
 
   	// Init VProperty
 	for(unsigned int i =0; i < numVerticies; ++i) {
@@ -69,10 +96,15 @@ void initializeDSM(unsigned int numVerticies, unsigned int numEdges){
   	}
 
   	// TODO: Init VTempProperty
-  	
-  	// TODO: Init VConst
-}
+  	//WARNING might not be needed to initialized 
+  	for(unsigned int i =0; i < numVerticies; ++i) {
+      	vProperty[i] = verticies[i].prop;
+   	}
 
+  	// TODO: Init VConst
+   	// Get more info what this is? Do we get this from the data?
+
+}
 /**
 Information about graphicionado
 * EdgeIDTable - is constructed and stored in memory. It is an array that store edge id of the first edge of each vertex. Sorted by srcID and then dstID.
