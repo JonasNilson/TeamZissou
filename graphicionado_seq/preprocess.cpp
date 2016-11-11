@@ -6,18 +6,27 @@
 #include "preprocess.hpp"
 #include <algorithm>
 
+Vertex* vertices; // All verticies in the graph
+Vertex* activeVertex; 
+
+Edge* edges; // All edges in the graph
+unsigned int* edgeIDTable;
+
+VertexProperty* vProperty;
+VertexProperty* vTempProperty;
+VertexProperty* vConst;
+
 /*
  * Collective allocations for the argoDSM system.
  * numVertices: total number of vertices in graph
  * numEdges: total number of edges in graph
  */
-
 void setupDSM(unsigned int numVertices, unsigned int numEdges){
 	vertices = argo::conew_array<Vertex>(numVertices); 
 	activeVertex = argo::conew_array<Vertex>(numVertices); 
 	
 	edges = argo::conew_array<Edge>(numEdges); 
-	edgeIDTable = argo::conew_array<unsigned int>(numVertices); // make it of size number of vertices
+    edgeIDTable = argo::conew_array<unsigned int>(numVertices); // make it of size number of vertices
 
 	vProperty = argo::conew_array<VertexProperty>(numVertices);
 	vTempProperty = argo::conew_array<VertexProperty>(numVertices);
@@ -28,7 +37,6 @@ void setupDSM(unsigned int numVertices, unsigned int numEdges){
 /*
  * Compare edges with srcID then dstID
  */
-
 bool edgeIDCompare(Edge e1, Edge e2){
 	// Sort by srcID
 	if(e1.srcID < e2.srcID || (e1.srcID == e2.srcID && e1.dstID < e2.dstID)){

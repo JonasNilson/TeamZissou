@@ -1,7 +1,6 @@
 /**
  * Sequential implementation of graphicionado
  */
-
 #include <argo.hpp> // Get access to Argo function calls.
 #include <iostream> // Used for output prints.
 #include "graphicionado.hpp" // Data structures for graph problems
@@ -9,11 +8,11 @@
 #include "preprocess.hpp"
 #include <array>
 //#include <algorithm>
+
 // Global variable declaration
 //int THREADS = 4; // Set number of threads
 
 //Graph graph; // Not being used at this moment.
-
 
 /**
    Information about graphicionado
@@ -22,7 +21,6 @@
    * VTempProperty - same as VProperty but updated from the function reduce.
    * Edges - array of all edges. Is indexed (sorted) by edge ID E.g of an edge: (srcID, dstID, weight) (NOT SURE VISULISE TOMORROW)
    */
-
 int main(int argc, char *argv[]){
   /* 
      Set up the argo environment, caches and global memory. 
@@ -40,7 +38,7 @@ int main(int argc, char *argv[]){
   int activeVertexCount = 2;
   int totalVertexCount = 3;
   Vertex dst;
-	
+  	
   // START SUDO CODE from graphicionado
   for (int i=0; i<activeVertexCount; i++) {
     Vertex src = activeVertex[i]; // Sequential Vertex Read
@@ -72,7 +70,6 @@ int main(int argc, char *argv[]){
       activeVertex[activeVertexCount++] = v; // Sequential Vertex Write
     }
   }
-
 	
   //END OF SUDO CODE
 
@@ -80,4 +77,3 @@ int main(int argc, char *argv[]){
 
   return 0;
 }
-

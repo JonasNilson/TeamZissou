@@ -41,15 +41,14 @@ struct Edge {
 --- Graphicionado global variables ---------------
 ----------------------------------------------- */
 
-Vertex* vertices; // All verticies in the graph
-Vertex* activeVertex; 
+extern Vertex* vertices; // All verticies in the graph
+extern Vertex* activeVertex; 
 
-Edge* edges; // All edges in the graph
-unsigned int* edgeIDTable;
+extern Edge* edges; // All edges in the graph
+extern unsigned int* edgeIDTable;
 
-VertexProperty* vProperty;
-VertexProperty* vTempProperty;
-VertexProperty* vConst;
-
+extern VertexProperty* vProperty;
+extern VertexProperty* vTempProperty;
+extern VertexProperty* vConst;
 
 #endif
