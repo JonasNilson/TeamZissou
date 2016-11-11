@@ -8,9 +8,9 @@
 #include "algorithms.hpp"
 #include "preprocess.hpp"
 #include <array>
-#include <algorithm>
+//#include <algorithm>
 // Global variable declaration
-int THREADS = 4; // Set number of threads
+//int THREADS = 4; // Set number of threads
 
 //Graph graph; // Not being used at this moment.
 

@@ -4,6 +4,7 @@
 #include <array>
 #include "graphicionado.hpp" // Data structures for graph problems
 #include "preprocess.hpp"
+#include <algorithm>
 
 /*
  * Collective allocations for the argoDSM system.
@@ -26,7 +27,7 @@ void setupDSM(unsigned int numVerticies, unsigned int numEdges){
 /*
  * Compare edges with srcID then dstID
  */
-bool edgeCompare(edge e1, edge e2){
+bool edgeCompare(Edge e1, Edge e2){
 	// Sort by srcID
 	if(e1.srcID < e2.srcID || (e1.srcID == e2.srcID && e1.dstID < e2.dstID)){
 		return true;
@@ -37,7 +38,7 @@ bool edgeCompare(edge e1, edge e2){
 /*
  * Compare vertex with ID
  */
-bool vertexCompare(vertex v1, vertex v2){
+bool vertexCompare(Vertex v1, Vertex v2){
 	if(v1.ID < v2.ID){
 		return true;
 	}
@@ -53,10 +54,10 @@ bool vertexCompare(vertex v1, vertex v2){
 void initializeDSM(unsigned int numVerticies, unsigned int numEdges){
 	
 	// Sort edges after srcID and then dstID with function edgeCompare
-	std::sort(edges,edges[numEdges],edgeCompare); // if this one does not work use std::sort(edges,edges+numEdges,edgeCompare);
+	std::sort(edges,&edges[numEdges],edgeCompare); // if this one does not work use std::sort(edges,edges+numEdges,edgeCompare);
 
 	// Sort verticies after ID to make sure the edge ID table correspond to correct node.
-	std::sort(verticies,verticies[numVerticies],vertexCompare);
+	std::sort(verticies,&verticies[numVerticies],vertexCompare);
 
   	// TODO: Init ActiveVerticies
 	// root node? where we start with. Maybe an argument what we take in
