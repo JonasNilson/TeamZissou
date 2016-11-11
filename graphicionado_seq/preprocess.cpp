@@ -62,7 +62,6 @@ bool vertexIDCompare(Vertex v1, Vertex v2){
  * numEdges: total number of edges in graph
  */
 void initializeDSM(unsigned int numVertices, unsigned int numEdges){
-	
 	// Sort edges after srcID and then dstID with function edgeCompare
 	std::sort(edges,&edges[numEdges],edgeIDCompare); // if this one does not work use std::sort(edges,edges+numEdges,edgeCompare);
 
@@ -73,14 +72,15 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 	// root node? where we start with. Maybe an argument what we take in
 
   	// Init EdgeIDTable
-  	unsigned int vertex_ID = 0;
+	unsigned int vertex_index = 0;
+  	unsigned int vertex_ID = vertices[vertex_index].ID;
 	for(unsigned int i = 0; i < numEdges; ++i){
 		if(edges[i].srcID == vertex_ID){
 			edgeIDTable[vertex_ID] = i;
-			vertex_ID++;
+			vertex_index++;
+			vertex_ID = vertices[vertex_index].ID;
 		}
 	}
-
   	// Init VProperty
 	for(unsigned int i =0; i < numVertices; ++i) {
     	vProperty[i] = vertices[i].prop;
@@ -108,7 +108,6 @@ void readTextFile(char * filename){
 	unsigned int numEdges;
 
 	file.open(filename); // Open file with filename.
-
 	getline(file,line); // get first line in file.
 	numVertices = std::stoll(line);
 	getline(file,line); // get second line in file.
