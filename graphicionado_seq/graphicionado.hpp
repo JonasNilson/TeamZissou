@@ -6,6 +6,8 @@
 --- Graphicionado functions ----------------------
 ----------------------------------------------- */
 
+
+
 /* -----------------------------------------------
 --- Graphicionado structs ------------------------
 ----------------------------------------------- */
@@ -33,5 +35,21 @@ struct Edge {
 	unsigned int dstID;
 	double weight;
 };
+
+
+/* -----------------------------------------------
+--- Graphicionado global variables ---------------
+----------------------------------------------- */
+
+Vertex* vertices; // All verticies in the graph
+Vertex* activeVertex; 
+
+Edge* edges; // All edges in the graph
+unsigned int* edgeIDTable;
+
+VertexProperty* vProperty;
+VertexProperty* vTempProperty;
+VertexProperty* vConst;
+
 
 #endif

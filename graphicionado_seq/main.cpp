@@ -14,16 +14,6 @@
 
 //Graph graph; // Not being used at this moment.
 
-Vertex* verticies; // All verticies in the graph
-Vertex* activeVertex; 
-
-Edge* edges; // All edges in the graph
-unsigned int* edgeIDTable;
-
-VertexProperty* vProperty;
-VertexProperty* vTempProperty;
-VertexProperty* vConst;
-
 
 /**
    Information about graphicionado
@@ -44,6 +34,8 @@ int main(int argc, char *argv[]){
   //	int id = argo::node_id(); // get this node unique index number starting from 0
   //int nodes = argo::number_of_nodes(); // return the total number of nodes in the Argo system.
 
+  readTextFile("filename.txt");
+  
   /* TODO: Implement section */
   int activeVertexCount = 2;
   int totalVertexCount = 3;
@@ -73,7 +65,7 @@ int main(int argc, char *argv[]){
     VertexProperty vconst = vConst[i];
     temp = apply(vprop, temp, vconst);
     vProperty[i] = temp; // Sequential Vertex Write
-    if(temp != vprop) {
+    if(temp.property != vprop.property) {
       Vertex v;
       v.ID = i;
       v.prop = temp;
