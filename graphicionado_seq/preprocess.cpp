@@ -5,6 +5,8 @@
 #include "graphicionado.hpp" // Data structures for graph problems
 #include "preprocess.hpp"
 #include <algorithm>
+#include <sstream>
+#include "test_functions.hpp"
 
 Vertex* vertices; // All verticies in the graph
 Vertex* activeVertex; 
@@ -74,17 +76,20 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 	// root node? where we start with. Maybe an argument what we take in
 
   	// Init EdgeIDTable
-	unsigned int j = 0;
-	for(unsigned int i = 0; i < numVertices; ++i){
-		unsigned int vertex_ID = vertices[vertex_index].ID;	
-		for(j; j < numEdges; ++j){
-			if(vertex_ID <= edges[j].srcID){
-				break;
-			}
-		}
-		edgeIDTable[i] = j; 
+	unsigned int edgeIndex = 0;
+	for(unsigned int vertexIndex = 0; vertexIndex < numVertices; vertexIndex++){
+	  unsigned int vertex_ID = vertices[vertexIndex].ID;	
+	  for(; edgeIndex < numEdges; edgeIndex++){
+	    unsigned int edgeSource = edges[edgeIndex].srcID;
+	    if(vertex_ID <= edgeSource){
+	      break;
+	    }
+	  }
+	  edgeIDTable[vertex_ID] = edgeIndex; 
 	}
-
+	
+	printVertices(numVertices, vertices);
+	printEdges(numEdges, edges);
 
   	// Init VProperty
 	for(unsigned int i =0; i < numVertices; ++i) {
@@ -142,3 +147,58 @@ void readTextFile(char * filename){
 	initializeDSM(numVertices, numEdges); // Organize data in argo.
 }
 
+void readTextFileWithLineParsing(const char* filename) {
+	std::cout << "___readTextFileWithParsing___" << std::endl;
+
+	// Local variable declaration
+	std::ifstream file;
+	std::string line;
+	std::string item;
+	char delimiter = ',';
+	unsigned int numVertices;
+	unsigned int numEdges;
+
+	file.open(filename);
+
+	// Read the number of vertices 
+	getline(file, line);
+	numVertices = std::stoll(line);
+	std::cout << "numVertices: \t" << numVertices << std::endl;
+
+	// Read the number of edges
+	getline(file, line);
+	numEdges = std::stoll(line);
+	std::cout << "numEdges: \t" << numEdges << std::endl;
+
+	setupDSM(numVertices,numEdges); // Make system ready to store data.
+
+	// Read all the vertices
+	for(unsigned int i = 0; i < numVertices; ++i){
+		getline(file,line); // Saves the line in line.
+		std::stringstream ss; // Create a new string stream
+		ss.str(line); // Stream the current line
+		std::getline(ss, item, delimiter); // Read the vertex ID
+	    vertices[i].ID = std::stoll(item);
+		std::getline(ss, item, delimiter); // Read the vertex property
+	    vertices[i].prop.property = std::stold(item);
+	}
+
+	// Read all the edges
+	for(unsigned int i = 0; i < numEdges; ++i){
+		getline(file,line); // Saves the line in line.
+		std::stringstream ss; // Create a new string stream
+		ss.str(line); // Stream the current line
+		std::getline(ss, item, delimiter); // Read the edge srcID
+	    edges[i].srcID = std::stoll(line);
+		std::getline(ss, item, delimiter); // Read the edge dstID
+	    edges[i].dstID = std::stoll(line);
+		std::getline(ss, item, delimiter); // Read the edge weight
+	    edges[i].weight = std::stold(line);
+	}
+
+	// Close the file
+	file.close();
+
+	totalVertexCount = numVertices;
+	initializeDSM(numVertices, numEdges); // Organize data in argo.
+}
