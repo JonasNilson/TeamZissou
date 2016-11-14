@@ -38,36 +38,43 @@ int main(int argc, char *argv[]){
   int activeVertexCount = 2; // Number of active nodes.
   Vertex dst;
   	
-  // START SUDO CODE from graphicionado
-  for (int i=0; i<activeVertexCount; i++) {
-    Vertex src = activeVertex[i]; // Sequential Vertex Read
-    int eID = edgeIDTable[src.ID]; // Edge ID Read
-    Edge e = edges[eID]; // Edge Read
+  while(activeVertexCount != 0) {
     
-    while (e.srcID == src.ID) {
-      dst.prop = vProperty[e.dstID]; // [OPT IONAL] Random Vertex Read
-      VertexProperty res = processEdge(e.weight, src.prop, dst.prop);
-      VertexProperty temp = vTempProperty[e.dstID]; // Random Vertex Read
-      temp = reduce(temp, res);
-      vTempProperty[e.dstID] = temp; // Random Vertex Write
-      e = edges[++eID]; // Edge Read
+    // START SUDO CODE from graphicionado
+    //A Process edge Phase
+    for (int i=0; i<activeVertexCount; i++) {
+      Vertex src = activeVertex[i]; // Sequential Vertex Read
+      int eID = edgeIDTable[src.ID]; // Edge ID Read
+      Edge e = edges[eID]; // Edge Read
+      
+      while (e.srcID == src.ID) {
+        dst.prop = vProperty[e.dstID]; // [OPT IONAL] Random Vertex Read
+        VertexProperty res = processEdge(e.weight, src.prop, dst.prop);
+        VertexProperty temp = vTempProperty[e.dstID]; // Random Vertex Read
+        temp = reduce(temp, res);
+        vTempProperty[e.dstID] = temp; // Random Vertex Write
+        e = edges[++eID]; // Edge Read
+      }
     }
-  }
-  // Reset ActiveVertex and ActiveVertexCount
-  
-  //B Apply Phase
-  for (int i=0; i<totalVertexCount; i++) {
-    VertexProperty vprop = vProperty[i]; // Sequential Vertex Read
-    VertexProperty temp = vTempProperty[i]; // Sequential Vertex Read
-    VertexProperty vconst = vConst[i];
-    temp = apply(vprop, temp, vconst);
-    vProperty[i] = temp; // Sequential Vertex Write
-    if(temp.property != vprop.property) {
-      Vertex v;
-      v.ID = i;
-      v.prop = temp;
-      activeVertex[activeVertexCount++] = v; // Sequential Vertex Write
+    // Reset ActiveVertex and ActiveVertexCount
+    activeVertexCount = 0; // reset activeVertexCount & active vertices
+
+
+    //B Apply Phase
+    for (int i=0; i<totalVertexCount; i++) {
+      VertexProperty vprop = vProperty[i]; // Sequential Vertex Read
+      VertexProperty temp = vTempProperty[i]; // Sequential Vertex Read
+      VertexProperty vconst = vConst[i];
+      temp = apply(vprop, temp, vconst);
+      vProperty[i] = temp; // Sequential Vertex Write
+      if(temp.property != vprop.property) {
+        Vertex v;
+        v.ID = i;
+        v.prop = temp;
+        activeVertex[activeVertexCount++] = v; // Sequential Vertex Write
+      }
     }
+
   }
 	
   //END OF SUDO CODE

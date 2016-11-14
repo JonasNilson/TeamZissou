@@ -25,7 +25,7 @@ unsigned int totalVertexCount; // Number of nodes in the system.
  */
 void setupDSM(unsigned int numVertices, unsigned int numEdges){
 	vertices = argo::conew_array<Vertex>(numVertices); 
-	activeVertex = argo::conew_array<Vertex>(numVertices); 
+	activeVertex = argo::conew_array<Vertex>(numVertices);
 	
 	edges = argo::conew_array<Edge>(numEdges); 
     edgeIDTable = argo::conew_array<unsigned int>(numVertices); // make it of size number of vertices
@@ -72,6 +72,9 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 
   	// TODO: Init ActiveVertices
 	// root node? where we start with. Maybe an argument what we take in
+	for(unsigned int i =0; i < numVertices; ++i) {
+    	vProperty[i] = vertices[i].prop;
+  	}
 
   	// Init EdgeIDTable
 	unsigned int j = 0;
@@ -137,7 +140,7 @@ void readTextFile(char * filename){
 	}
 
 	file.close(); // Closes file 
-	
+
 	totalVertexCount = numVertices;
 	initializeDSM(numVertices, numEdges); // Organize data in argo.
 }
