@@ -74,15 +74,16 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 	// root node? where we start with. Maybe an argument what we take in
 
   	// Init EdgeIDTable
-	unsigned int j = 0;
-	for(unsigned int i = 0; i < numVertices; ++i){
-		unsigned int vertex_ID = vertices[vertex_index].ID;	
-		for(j; j < numEdges; ++j){
-			if(vertex_ID <= edges[j].srcID){
-				break;
-			}
-		}
-		edgeIDTable[i] = j; 
+	unsigned int edgeIndex = 0;
+	for(unsigned int vertexIndex = 0; vertexIndex < numVertices; vertexIndex++){
+	  unsigned int vertex_ID = vertices[vertexIndex].ID;	
+	  for(; edgeIndex < numEdges; edgeIndex++){
+	    unsigned int edgeSource = edges[edgeIndex].srcID;
+	    if(vertex_ID <= edgeSource){
+	      break;
+	    }
+	  }
+	  edgeIDTable[vertex_ID] = edgeIndex; 
 	}
 
 

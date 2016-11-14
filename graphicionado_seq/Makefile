@@ -15,9 +15,9 @@ EXECUTABLES := main bfs
 
 all: check-env $(EXECUTABLES)
 
-main: main.cpp preprocess.cpp
+main: main.cpp preprocess.cpp test_functions.cpp
 
-bfs: main.cpp bfs.cpp preprocess.cpp
+bfs: main.cpp bfs.cpp preprocess.cpp test_functions.cpp
 
 clean:
 	rm $(EXECUTABLES)
