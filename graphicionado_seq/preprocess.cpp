@@ -5,6 +5,8 @@
 #include "graphicionado.hpp" // Data structures for graph problems
 #include "preprocess.hpp"
 #include <algorithm>
+#include <sstream>
+#include "test_functions.hpp"
 
 Vertex* vertices; // All verticies in the graph
 Vertex* activeVertex; 
@@ -85,7 +87,9 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 	  }
 	  edgeIDTable[vertex_ID] = edgeIndex; 
 	}
-
+	
+	printVertices(numVertices, vertices);
+	printEdges(numEdges, edges);
 
   	// Init VProperty
 	for(unsigned int i =0; i < numVertices; ++i) {
