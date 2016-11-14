@@ -1,7 +1,9 @@
 #ifndef preprocess_hpp
 #define preprocess_hpp preprocess_hpp
 
-void readTextFile(char * filename);
+void readTextFile(const char* filename);
+
+void readTextFileWithLineParsing(const char* filename);
 
 void setupDSM(unsigned int numVerticies, unsigned int numEdges);
 

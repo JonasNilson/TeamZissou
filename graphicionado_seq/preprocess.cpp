@@ -104,7 +104,7 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 /*
  * Read graph input data from a text file.
  */
-void readTextFile(char * filename){
+void readTextFile(const char* filename){
 	// Local variable declaration
 	std::ifstream file;
 	std::string line;
@@ -142,8 +142,6 @@ void readTextFile(char * filename){
 }
 
 void readTextFileWithLineParsing(const char* filename) {
-	std::cout << "___readTextFileWithParsing___" << std::endl;
-
 	// Local variable declaration
 	std::ifstream file;
 	std::string line;
