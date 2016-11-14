@@ -47,6 +47,8 @@ int main(int argc, char *argv[]){
   for (int i=0; i<activeVertexCount; i++) {
     Vertex src = activeVertex[i]; // Sequential Vertex Read
     int eID = edgeIDTable[src.ID]; // Edge ID Read
+    if(eID == 0) continue; // If the index for the vertex is 0, it has no outgoing edges.
+    eID--; // Edges index is shifted by 1 because if the index is 0 it indicates that there are no outgoing edges from this vertex.
     Edge e = edges[eID]; // Edge Read
     
     while (e.srcID == src.ID) {
