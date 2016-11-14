@@ -31,8 +31,13 @@ int main(int argc, char *argv[]){
   // Local variable declaration
   //	int id = argo::node_id(); // get this node unique index number starting from 0
   //int nodes = argo::number_of_nodes(); // return the total number of nodes in the Argo system.
-
-  readTextFile("filename.txt");
+  if(argc>1)
+    {
+      std::cout << "Reading graph from textfile: " << argv[1] << std::endl;
+      readTextFile(argv[1]);
+    }
+  else
+    readTextFile("filename.txt");
   
   /* TODO: Implement section */
   int activeVertexCount = 2; // Number of active nodes.
@@ -56,12 +61,13 @@ int main(int argc, char *argv[]){
         e = edges[++eID]; // Edge Read
       }
     }
+
     // Reset ActiveVertex and ActiveVertexCount
     activeVertexCount = 0; // reset activeVertexCount & active vertices
 
 
     //B Apply Phase
-    for (int i=0; i<totalVertexCount; i++) {
+    for (unsigned int i=0; i<totalVertexCount; i++) {
       VertexProperty vprop = vProperty[i]; // Sequential Vertex Read
       VertexProperty temp = vTempProperty[i]; // Sequential Vertex Read
       VertexProperty vconst = vConst[i];
