@@ -41,7 +41,7 @@ struct Edge {
 --- Graphicionado global variables ---------------
 ----------------------------------------------- */
 
-extern Vertex* vertices; // All verticies in the graph
+extern Vertex* vertices; // All vertices in the graph
 extern Vertex* activeVertex; 
 
 extern Edge* edges; // All edges in the graph
@@ -51,5 +51,6 @@ extern VertexProperty* vProperty;
 extern VertexProperty* vTempProperty;
 extern VertexProperty* vConst; // TODO: Implement this at a later time if its ever is needed. It is a constant vertex property array VConst associated with all vertices. Have not seen it been used anywhere yet.
 extern unsigned int totalVertexCount; 
+extern unsigned int activeVertexCount; 
 
 #endif

@@ -46,8 +46,7 @@ int main(int argc, char *argv[]){
     readTextFile("filename.txt");
   
   /* TODO: Implement section */
-  unsigned int activeVertexCount = 2; // Number of active nodes. TODO init this one how is that done?
-  Vertex dst;
+  Vertex dst; // WHat is this and what should it do?
   
 
   while(activeVertexCount != 0) {
@@ -72,7 +71,7 @@ int main(int argc, char *argv[]){
     }
 
     // Reset ActiveVertex and ActiveVertexCount
-    activeVertexCount = 0; // reset activeVertexCount & active vertices
+    activeVertexCount = 0; // reset activeVertexCount & active vertices      
 
 
     //B Apply Phase
@@ -88,6 +87,11 @@ int main(int argc, char *argv[]){
         v.prop = temp;
         activeVertex[activeVertexCount++] = v; // Sequential Vertex Write
       }
+    }
+
+    //Settings check. If isAllVerticesActive = true then all vertices should be active over all iterations.
+    if(isAllVerticesActive){
+      activeVertexCount = totalVertexCount;//Set active Vertex count to be the total number of vertices.
     }
 
     //Settings check if we should use max iteration implementation or not

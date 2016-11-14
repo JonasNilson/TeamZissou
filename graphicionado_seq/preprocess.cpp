@@ -8,7 +8,7 @@
 #include <sstream>
 #include "test_functions.hpp"
 
-Vertex* vertices; // All verticies in the graph
+Vertex* vertices; // All vertices in the graph
 Vertex* activeVertex; 
 
 Edge* edges; // All edges in the graph
@@ -19,6 +19,7 @@ VertexProperty* vTempProperty; // new vProperty that been changed
 VertexProperty* vConst; 
 
 unsigned int totalVertexCount; // Number of nodes in the system.
+unsigned int activeVertexCount; // Number of active nodes in the system.
 
 /*
  * Collective allocations for the argoDSM system.
@@ -72,11 +73,19 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 	// Sort vertices after ID to make sure the edge ID table correspond to correct node.
 	std::sort(vertices,&vertices[numVertices],vertexIDCompare);
 
-  	// TODO: Init ActiveVertices
-	// root node? where we start with. Maybe an argument what we take in
-	for(unsigned int i =0; i < numVertices; ++i) {
-    	vProperty[i] = vertices[i].prop;
-  	}
+  	// Init ActiveVertices
+	if(isAllVerticesActive){ //If settings are set to use all vertices as active
+		for(unsigned int i =0; i < numVertices; ++i) {
+	    	activeVertex[i] = vertices[i];
+	  	}
+	  	activeVertexCount = numVertices; //Set that it exist this many active vertices
+	}
+	else{
+		//TODO Read active nodes from file. With their ID
+		//If not using all vertices as active
+		//TODO
+		//activeVertexCount when you set the array of reading active nodes update the activeVertex count as well
+	}
 
   	// Init EdgeIDTable
 	setupEIT(numVertices, numEdges, vertices, edgeIDTable, edges);
@@ -97,7 +106,7 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
    	}
 
   	// TODO: Init VConst
-   	// Get more info what this is? Do we get this from the data?
+   	// Get more info what this is? Do we get this from the data? Is this even needed? For now it does not looks like it.
 }
 
 
