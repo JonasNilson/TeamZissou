@@ -6,6 +6,7 @@
 #include "graphicionado.hpp" // Data structures for graph problems
 #include "algorithms.hpp"
 #include "preprocess.hpp"
+#include "loadSettings.hpp"
 #include <array>
 //#include <algorithm>
 
@@ -28,13 +29,18 @@ int main(int argc, char *argv[]){
   */
   argo::init(128 * 1024 * 1024); 
 
+  // Load the configuration settings from file (settings.cfg)
+  loadSettings();
+ 
   // Local variable declaration
-  //	int id = argo::node_id(); // get this node unique index number starting from 0
+  //int id = argo::node_id(); // get this node unique index number starting from 0
   //int nodes = argo::number_of_nodes(); // return the total number of nodes in the Argo system.
+ 
   if(argc>1)
     {
       std::cout << "Reading graph from textfile: " << argv[1] << std::endl;
       readTextFile(argv[1]);
+	  // readTextFileWithLineParsing(argv[1]);
     }
   else
     readTextFile("filename.txt");
@@ -43,7 +49,6 @@ int main(int argc, char *argv[]){
   unsigned int activeVertexCount = 2; // Number of active nodes.
   Vertex dst;
   	
-
   while(activeVertexCount != 0) {
 
     // START SUDO CODE from graphicionado

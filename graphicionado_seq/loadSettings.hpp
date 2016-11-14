@@ -4,8 +4,8 @@
 void loadSettings();
 
 //Global settings variables
-extern bool isAllVerticiesActive;
-extern unsigned int maxIteration;
-extern bool edgeDuplicate;
+extern bool isAllVerticesActive;
+extern unsigned int maxIterations;
+extern bool edgeDuplicates;
 
 #endif
