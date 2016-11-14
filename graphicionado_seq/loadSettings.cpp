@@ -22,7 +22,7 @@ void setGlobalVariables(char * buffer, int index){
 	}
 	
 	//Read variable value
-	index++; // to skip ":" character
+	index = index + 2; // to skip ":[" characters
 	c = buffer[index];
 	std::string value; // String we use to store variable value.
 	while(c != ']'){
