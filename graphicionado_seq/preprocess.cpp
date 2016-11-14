@@ -79,20 +79,11 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
   	}
 
   	// Init EdgeIDTable
-	unsigned int edgeIndex = 0;
-	for(unsigned int vertexIndex = 0; vertexIndex < numVertices; vertexIndex++){
-	  unsigned int vertex_ID = vertices[vertexIndex].ID;	
-	  for(; edgeIndex < numEdges; edgeIndex++){
-	    unsigned int edgeSource = edges[edgeIndex].srcID;
-	    if(vertex_ID <= edgeSource){
-	      break;
-	    }
-	  }
-	  edgeIDTable[vertex_ID] = edgeIndex; 
-	}
+	setupEIT(numVertices, numEdges, vertices, edgeIDTable, edges);
 	
 	printVertices(numVertices, vertices);
 	printEdges(numEdges, edges);
+	printEdgeIDTable(numVertices, edgeIDTable, vertices);
 
   	// Init VProperty
 	for(unsigned int i =0; i < numVertices; ++i) {
@@ -204,4 +195,34 @@ void readTextFileWithLineParsing(const char* filename) {
 
 	totalVertexCount = numVertices;
 	initializeDSM(numVertices, numEdges); // Organize data in argo.
+}
+
+void setupEIT(unsigned int numVertices, unsigned int numEdges, Vertex* vertices, unsigned int* edgeIDTable, Edge* edges){
+  
+  unsigned int oldIndex = edges[0].srcID;
+  unsigned int newIndex = oldIndex;
+  edgeIDTable[oldIndex] = 1;
+  for(unsigned int i = 1; i <numEdges; i++)
+    {
+      oldIndex = newIndex;
+      newIndex = edges[i].srcID;
+      if(newIndex != oldIndex)
+	{
+	  edgeIDTable[newIndex] = i+1;
+	}
+    }
+	/*unsigned int edgeIndex = 0;
+  
+  for(unsigned int vertexIndex = 0; vertexIndex < numVertices; vertexIndex++){
+    unsigned int vertex_ID = vertices[vertexIndex].ID;	
+    
+    for(; edgeIndex < numEdges; edgeIndex++){
+      unsigned int edgeSource = edges[edgeIndex].srcID;
+      if(vertex_ID <= edgeSource){
+	break;
+      }
+    }
+    
+    edgeIDTable[vertex_ID] = edgeIndex; 
+    }*/
 }

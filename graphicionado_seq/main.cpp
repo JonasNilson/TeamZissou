@@ -40,16 +40,26 @@ int main(int argc, char *argv[]){
     readTextFile("filename.txt");
   
   /* TODO: Implement section */
-  int activeVertexCount = 2; // Number of active nodes.
+  unsigned int activeVertexCount = 2; // Number of active nodes.
   Vertex dst;
   	
+
   while(activeVertexCount != 0) {
+
+  // START SUDO CODE from graphicionado
+  for (unsigned int i=0; i<activeVertexCount; i++) {
+    Vertex src = activeVertex[i]; // Sequential Vertex Read
+    unsigned int eID = edgeIDTable[src.ID]; // Edge ID Read
+    if(eID == 0) continue; // If the index for the vertex is 0, it has no outgoing edges.
+    eID--; // Edges index is shifted by 1 because if the index is 0 it indicates that there are no outgoing edges from this vertex.
+    Edge e = edges[eID]; // Edge Read
+
     
     // START SUDO CODE from graphicionado
     //A Process edge Phase
-    for (int i=0; i<activeVertexCount; i++) {
+    for (unsigned int i=0; i<activeVertexCount; i++) {
       Vertex src = activeVertex[i]; // Sequential Vertex Read
-      int eID = edgeIDTable[src.ID]; // Edge ID Read
+      unsigned int eID = edgeIDTable[src.ID]; // Edge ID Read
       Edge e = edges[eID]; // Edge Read
       
       while (e.srcID == src.ID) {
