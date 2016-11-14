@@ -46,9 +46,10 @@ int main(int argc, char *argv[]){
     readTextFile("filename.txt");
   
   /* TODO: Implement section */
-  unsigned int activeVertexCount = 2; // Number of active nodes.
+  unsigned int activeVertexCount = 2; // Number of active nodes. TODO init this one how is that done?
   Vertex dst;
-  	
+  
+
   while(activeVertexCount != 0) {
 
     // START SUDO CODE from graphicionado
@@ -86,6 +87,15 @@ int main(int argc, char *argv[]){
         v.ID = i;
         v.prop = temp;
         activeVertex[activeVertexCount++] = v; // Sequential Vertex Write
+      }
+    }
+
+    //Settings check if we should use max iteration implementation or not
+    if(maxIterations != 0){ //If setting is set to 0 it will use infinity iteration possibility
+      maxIterations--;
+      if(maxIterations == 0){
+        //Only enter this stage if it reached the maximum iteration count
+        break; // break the entire loop
       }
     }
 
