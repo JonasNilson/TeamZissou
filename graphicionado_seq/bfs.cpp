@@ -15,10 +15,10 @@
 */
 VertexProperty processEdge(double weight, VertexProperty srcProp, VertexProperty dstProp) {
 	//TODO: Add user defined computation
-
+	
 	/* BFS Implementation */
 	VertexProperty v;
-	v.property = 0;
+	v.property = srcProp.property + 1; // BFS: the vertex property is the distance/depth from the starting node (IterCount)
 	return v; // BFS process edge implementation
 	/* END OF BFS Implementation */
 }
@@ -26,7 +26,7 @@ VertexProperty processEdge(double weight, VertexProperty srcProp, VertexProperty
 // User defined computation
 VertexProperty reduce(VertexProperty temp, VertexProperty result) {
 	//TODO: Add user defined computation
-  VertexProperty v;
+	VertexProperty v;
 	/* BFS Implementation */
 	//Result is currently null since we do not return anything from process edge phase. Should send IterCount to result if result is null in main loop?
 	 v.property = std::min(temp.property,result.property); // Not correct but something to see and understand is this same as: min(Vtemp, IterCount)
