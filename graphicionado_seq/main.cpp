@@ -35,8 +35,7 @@ int main(int argc, char *argv[]){
   readTextFile("filename.txt");
   
   /* TODO: Implement section */
-  int activeVertexCount = 2;
-  int totalVertexCount = 3;
+  int activeVertexCount = 2; // Number of active nodes.
   Vertex dst;
   	
   // START SUDO CODE from graphicionado

@@ -12,9 +12,11 @@ Vertex* activeVertex;
 Edge* edges; // All edges in the graph
 unsigned int* edgeIDTable;
 
-VertexProperty* vProperty;
-VertexProperty* vTempProperty;
-VertexProperty* vConst;
+VertexProperty* vProperty; // property of nodes.
+VertexProperty* vTempProperty; // new vProperty that been changed
+VertexProperty* vConst; 
+
+unsigned int totalVertexCount; // Number of nodes in the system.
 
 /*
  * Collective allocations for the argoDSM system.
@@ -135,6 +137,8 @@ void readTextFile(char * filename){
 	}
 
 	file.close(); // Closes file 
+	
+	totalVertexCount = numVertices;
 	initializeDSM(numVertices, numEdges); // Organize data in argo.
 }
 
