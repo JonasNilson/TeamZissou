@@ -114,6 +114,64 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
    	// Get more info what this is? Do we get this from the data? Is this even needed? For now it does not looks like it.
 }
 
+/*
+ * Read graph input data from a text file.
+ */
+void readGTgraphFile(const char* filename){
+  std::ifstream file;
+  std::string line;
+  std::string item;
+  unsigned int numVertices;
+  unsigned int numEdges;
+  char delimiter = ' ';
+  char comp = 'c';
+
+  file.open(filename);
+
+  while(comp == 'c'){
+	getline(file,line);
+	std::stringstream ss; // Create a new string stream		
+	std::getline(ss, item, delimiter);
+	comp = std::stoll(item);
+  }
+
+	getline(file,line);
+	std::stringstream ss; // Create a new string stream
+	std::getline(ss, item, delimiter);
+	comp = std::stoll(item);
+	if(comp == 'p'){
+	  std::getline(ss, item, delimiter);
+	  std::getline(ss, item, delimiter);
+	  numVertices = std::stoll(item); // get number of vertices
+	  std::getline(ss, item, delimiter);
+	  numEdges = std::stoll(item);   // get number of edges
+	}
+
+	for(unsigned int i=0; i < numEdges; ++i){
+	  std::getline(ss, item, delimiter);
+	  std::stringstream ss; // Create a new string stream		
+	  if('a' == std::stoll(item)){
+		std::getline(ss, item, delimiter);
+		edges[i].srcID = std::stoll(item);
+		std::getline(ss, item, delimiter);
+		edges[i].dstID = std::stoll(item);
+		std::getline(ss, item, delimiter);
+		edges[i].weight = std::stoll(item);
+	  }
+	}
+
+	for(unsigned int i=0; i< numVertices; ++i){
+	  	vertices[i].ID = i;
+		vertices[i].prop.property = (double)(rand() % 100);
+	}
+
+	file.close(); // Closes file 
+
+	totalVertexCount = numVertices;
+	initializeDSM(numVertices, numEdges); // Organize data in argo.
+  
+}
+
 
 /*
  * Read graph input data from a text file.
