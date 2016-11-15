@@ -83,27 +83,30 @@ bool unsignedIntCompare(unsigned int u1, unsigned int u2){
 void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 	std::cout << "initializeDSM: preprocessing data..." << std::endl;
 	// Sort edges after srcID and then dstID with function edgeCompare
-	std::sort(edges,&edges[numEdges],edgeIDCompare); // if this one does not work use std::sort(edges,edges+numEdges,edgeCompare);
-	std::cout << "DEBUG: Here I am! Witness me!" << std::endl;
+	std::sort(edges,&edges[numEdges],edgeIDCompare);
 	// Sort vertices after ID to make sure the edge ID table correspond to correct node.
 	std::sort(vertices,&vertices[numVertices],vertexIDCompare);
-
-	// std::cout << "DEBUG: Here I am! Witness me!" << std::endl; // VERY IMPORTANT! DON'T REMOVE!
   	
-	// Init ActiveVertices
+  	// Init totalVertexCount
+	totalVertexCount = numVertices;
+
+	// Init ActiveVertices & activeVertexCount
 	if(isAllVerticesActive){ //If settings are set to use all vertices as active
 		for(unsigned int i =0; i < numVertices; ++i) {
 	    	activeVertex[i] = vertices[i];
 	  	}
 	  	activeVertexCount = numVertices; //Set that it exist this many active vertices
 	}
-	else{
+	else{ // Setting case where it is given active starting nodes
 		activeVertexCount = sizeof(startingNodes)/sizeof(startingNodes[0]); // Get number of elements of startingNodes and set number of starting active vertices
 		std::sort(startingNodes,&startingNodes[activeVertexCount],unsignedIntCompare); // Sort it by ID
 		// initialize the starting active vertices
 		for(unsigned int i = 0; i < activeVertexCount; ++i) {
-	    	activeVertex[i] = vertices[startingNodes[i]]; // Set active Vertex from startingNodes that hold ID of what vertices.
+	    	activeVertex[i] = vertices[startingNodes[i]]; // Set active Vertex from startingNodes that hold ID of what vertices.	
 	  	}
+		
+		// Free local node memory usage for init active vertices
+		delete[] startingNodes;
 	}
 	
   	// Init EdgeIDTable
@@ -192,8 +195,6 @@ void readGTgraphFile(const char* filename){
 	}
 
 	file.close(); // Closes file 
-
-	totalVertexCount = numVertices;
 	initializeDSM(numVertices, numEdges); // Organize data in argo.
   
 }
@@ -235,7 +236,6 @@ void readTextFile(const char* filename){
 
 	file.close(); // Closes file 
 
-	totalVertexCount = numVertices;
 	initializeDSM(numVertices, numEdges); // Organize data in argo.
 }
 
@@ -288,8 +288,6 @@ void readTextFileWithLineParsing(const char* filename) {
 
 	// Close the file
 	file.close();
-
-	totalVertexCount = numVertices;
 	initializeDSM(numVertices, numEdges); // Organize data in argo.
 }
 
