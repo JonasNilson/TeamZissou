@@ -87,7 +87,7 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 	else{ // Setting case where it is given active starting nodes
 		activeVertexCount = sizeof(startingNodes)/sizeof(startingNodes[0]); // Get number of elements of startingNodes and set number of starting active vertices
 		std::sort(startingNodes,&startingNodes[activeVertexCount],unsignedIntCompare); // Sort it by ID
-		// initialize the starting active vertices
+		// Initialize the starting active vertices
 		for(unsigned int i = 0; i < activeVertexCount; ++i) {
 	    	activeVertex[i] = vertices[startingNodes[i]]; // Set active Vertex from startingNodes that hold ID of what vertices.	
 	  	}
@@ -108,10 +108,9 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
     	vProperty[i] = vertices[i].prop;
   	}
 
-  	// TODO: Init VTempProperty
-  	//WARNING might not be needed to initialized 
+  	// Init VTempProperty
   	for(unsigned int i =0; i < numVertices; ++i) {
-      	vProperty[i] = vertices[i].prop;
+      	vTempProperty[i] = vertices[i].prop;
    	}
 
   	// TODO: Init VConst
