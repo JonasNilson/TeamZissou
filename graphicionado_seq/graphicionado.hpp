@@ -55,4 +55,9 @@ struct Edge {
 --- Graphicionado functions ----------------------
 ----------------------------------------------- */
 
+// User defined functions
+VertexProperty processEdge(double weight, VertexProperty srcProp, VertexProperty dstProp);
+VertexProperty reduce(VertexProperty temp, VertexProperty result);
+VertexProperty apply(VertexProperty vprop, VertexProperty temp, VertexProperty vconst);
+
 #endif
