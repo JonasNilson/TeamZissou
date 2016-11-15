@@ -4,6 +4,7 @@
 #include <array>
 #include "graphicionado.hpp" // Data structures for graph problems
 #include "preprocess.hpp"
+#include "loadSettings.hpp"
 #include <algorithm>
 #include <sstream>
 #include "test_functions.hpp"

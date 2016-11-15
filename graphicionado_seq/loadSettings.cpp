@@ -1,12 +1,35 @@
 #include <iostream>     // std::cout
 #include <fstream>      // std::ifstream
+#include <sstream>
 #include <string>
+#include <vector>
 #include "loadSettings.hpp"
 
 //Settings
 bool isAllVerticesActive;
 unsigned int maxIterations;
 bool edgeDuplicates;
+unsigned int* startingNodes;
+
+void parseStartingNodes(std::string s) {
+	std::vector<unsigned int> intVector; // Vector (can dynamically change size at runtime)
+	std::string line(s); // Converts the char* to string
+	std::stringstream ss(line); // Create a string stream to the line
+	std::string item; // This string will temporarily hold the parsed int
+	char delimiter = ','; // Character that delimits the nodes
+	
+	// Parses the integers using the delimiter and puts them in the vector
+	while(std::getline(ss, item, delimiter)) {
+		intVector.push_back(std::stoi(item));
+	}
+	
+	// Convert the vector to array (pointer)
+	unsigned int intArray[intVector.size()];
+	std::copy(intVector.begin(), intVector.end(), intArray);
+
+	// Return the array
+    startingNodes = &intArray[0];
+}
 
 /**
 * Get the variable name
@@ -37,6 +60,8 @@ void setGlobalVariables(char * buffer, int index){
 		maxIterations = (unsigned int) std::stoll(value);
 	else if(vName == "edgeDuplicates")
 		edgeDuplicates = (value == "y" ? true : false);
+	else if(vName == "startingNodes")
+		parseStartingNodes(value);
 	else 
 		std::cout << "Something went wrong with the reading of " << vName << "\n";
 
