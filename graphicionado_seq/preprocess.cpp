@@ -144,22 +144,29 @@ void readGTgraphFile(const char* filename){
 	comp = item.c_str()[0];
   }
 
-	getline(file,line);
-	std::stringstream ss; // Create a new string stream
-	ss.str(line);
+  /*	getline(file,line);
 	std::getline(ss, item, delimiter);
 	//comp = std::stoll(item);
 	comp = item.c_str()[0];
+  */
+  std::cout << "comp borde vara p: " << comp << std::endl;
 	if(comp == 'p'){
+	  std::stringstream ss; // Create a new string stream
+	  ss.str(line);
+	  std::getline(ss, item, delimiter);
 	  std::getline(ss, item, delimiter);
 	  std::getline(ss, item, delimiter);
 	  numVertices = std::stoll(item); // get number of vertices
+	  std::cout << "numVertices: " << numVertices << std::endl;
 	  std::getline(ss, item, delimiter);
 	  numEdges = std::stoll(item);   // get number of edges
+	  std::cout << "numEdges: " << numEdges << std::endl;
 	}
 
 	setupDSM(numVertices,numEdges); // Make system ready to store data.
-	
+
+	std::cout << "after setup: " << std::endl;
+
 	for(unsigned int i=0; i < numEdges; ++i) {
 	  getline(file,line);
 	  std::stringstream ss; // Create a new string stream
@@ -176,12 +183,14 @@ void readGTgraphFile(const char* filename){
 	  }
 	}
 
-	for(unsigned int i=1; i < numVertices+1; ++i){
+	for(unsigned int i=0; i < numVertices; ++i){
 	  	vertices[i].ID = i;
 		vertices[i].prop.property = (double)(rand() % 100);
 	}
 
-	file.close(); // Closes file 
+	file.close(); // Closes file
+
+	std::cout << "file closed" << std::endl;
 	initializeDSM(numVertices, numEdges); // Organize data in argo.
   
 }
