@@ -83,11 +83,8 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 	std::cout << "initializeDSM: preprocessing data..." << std::endl;
 	// Sort edges after srcID and then dstID with function edgeCompare
 	std::sort(edges,&edges[numEdges],edgeIDCompare); // if this one does not work use std::sort(edges,edges+numEdges,edgeCompare);
-	std::cout << "DEBUG: Here I am! Witness me!" << std::endl;
 	// Sort vertices after ID to make sure the edge ID table correspond to correct node.
 	std::sort(vertices,&vertices[numVertices],vertexIDCompare);
-
-	// std::cout << "DEBUG: Here I am! Witness me!" << std::endl; // VERY IMPORTANT! DON'T REMOVE!
   	
 	// Init ActiveVertices
 	if(isAllVerticesActive){ //If settings are set to use all vertices as active
@@ -101,8 +98,11 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 		std::sort(startingNodes,&startingNodes[activeVertexCount],unsignedIntCompare); // Sort it by ID
 		// initialize the starting active vertices
 		for(unsigned int i = 0; i < activeVertexCount; ++i) {
-	    	activeVertex[i] = vertices[startingNodes[i]]; // Set active Vertex from startingNodes that hold ID of what vertices.
+	    	activeVertex[i] = vertices[startingNodes[i]]; // Set active Vertex from startingNodes that hold ID of what vertices.	
 	  	}
+		
+		// Free local node memory usage for init active vertices
+		delete[] startingNodes;
 	}
 	
   	// Init EdgeIDTable
