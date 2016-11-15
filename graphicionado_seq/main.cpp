@@ -3,12 +3,10 @@
  */
 #include <argo.hpp> // Get access to Argo function calls.
 #include <iostream> // Used for output prints.
+#include <array>
 #include "graphicionado.hpp" // Data structures for graph problems
-#include "algorithms.hpp"
 #include "preprocess.hpp"
 #include "loadSettings.hpp"
-#include <array>
-//#include <algorithm>
 
 // Global variable declaration
 //int THREADS = 4; // Set number of threads
