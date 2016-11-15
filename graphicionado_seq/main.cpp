@@ -123,7 +123,7 @@ int main(int argc, char *argv[]){
 	
   //END OF SUDO CODE
 
-  argo::finalize(); // Cleanup for this node when program has finished.
+  terminateProgram(); // Cleanup for this node when program has finished.
  
   return 0;
 }
