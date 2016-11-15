@@ -81,10 +81,14 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 	  	activeVertexCount = numVertices; //Set that it exist this many active vertices
 	}
 	else{
-		//TODO Read active nodes from file. With their ID
-		//If not using all vertices as active
-		//TODO
-		//activeVertexCount when you set the array of reading active nodes update the activeVertex count as well
+		unsigned int activeNodesLength = 
+		activeVertexCount = sizeof(startingNodes)/sizeof(startingNodes[0]); // Get number of elements of startingNodes and set number of starting active vertices
+		std::cout << " THIS IS THE NUMBER OF ACTIVE VERTICES: " << activeVertexCount;
+		std::sort(startingNodes,&startingNodes[activeNodesLength],vertexIDCompare); // Sort it by ID
+		// initialize the starting active vertices
+		for(unsigned int i = 0; i < activeVertexCount; ++i) {
+	    	activeVertex[i] = startingNodes[i];
+	  	}
 	}
 
   	// Init EdgeIDTable
