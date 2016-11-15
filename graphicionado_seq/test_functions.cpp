@@ -23,3 +23,11 @@ void printEdgeIDTable(unsigned int numVertices,unsigned int *edgeIDTable, Vertex
 	edgeIDTable[vertices[eit].ID] << std::endl; 
     }
 }
+
+void printVerticesProperties(unsigned int numVertices, VertexProperty* vertices){
+  std::cout << "##########VERTICES###########" << std::endl;
+  for(unsigned int v=0; v<numVertices;v++){
+    std::cout << v << "->" << vertices[v].property << std::endl;
+  }
+}
+

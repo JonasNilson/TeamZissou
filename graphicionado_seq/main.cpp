@@ -7,6 +7,7 @@
 #include "graphicionado.hpp" // Data structures for graph problems
 #include "preprocess.hpp"
 #include "loadSettings.hpp"
+#include "test_functions.hpp"
 
 // Global variable declaration
 //int THREADS = 4; // Set number of threads
@@ -98,6 +99,7 @@ int main(int argc, char *argv[]){
       VertexProperty temp = vTempProperty[i]; // Sequential Vertex Read
       VertexProperty vconst = vConst[i];
       temp = apply(vprop, temp, vconst);
+	  std::cout << "temp: "<< temp.property << std::endl;
       vProperty[i] = temp; // Sequential Vertex Write
       if(temp.property != vprop.property) {
         Vertex v;
@@ -126,6 +128,8 @@ int main(int argc, char *argv[]){
 	
   //END OF SUDO CODE
 
+  printVerticesProperties(64, vProperty);
+  
   terminateProgram(); // Cleanup for this node when program has finished.
  
   return 0;
