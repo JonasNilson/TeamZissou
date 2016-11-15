@@ -62,6 +62,16 @@ bool vertexIDCompare(Vertex v1, Vertex v2){
 }
 
 /*
+ * Compare unsigned int with each other.
+ */
+bool unsignedIntCompare(unsigned int u1, unsigned int u2){
+	if(u1 < u2){
+		return true;
+	}
+	return false;
+}
+
+/*
  * Organize already collective allocated space in the argoDSM system 
  * with data like graphicionado's model.
  * numVertices: total number of vertices in graph
@@ -85,10 +95,10 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 		unsigned int activeNodesLength = 
 		activeVertexCount = sizeof(startingNodes)/sizeof(startingNodes[0]); // Get number of elements of startingNodes and set number of starting active vertices
 		std::cout << " THIS IS THE NUMBER OF ACTIVE VERTICES: " << activeVertexCount;
-		std::sort(startingNodes,&startingNodes[activeNodesLength],vertexIDCompare); // Sort it by ID
+		std::sort(startingNodes,&startingNodes[activeNodesLength],unsignedIntCompare); // Sort it by ID
 		// initialize the starting active vertices
 		for(unsigned int i = 0; i < activeVertexCount; ++i) {
-	    	activeVertex[i] = startingNodes[i];
+	    	activeVertex[i] = vertices[startingNodes[i]]; // Set active Vertex from startingNodes that hold ID of what vertices.
 	  	}
 	}
 
