@@ -86,7 +86,10 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 	// Sort vertices after ID to make sure the edge ID table correspond to correct node.
 	std::sort(vertices,&vertices[numVertices],vertexIDCompare);
   	
-	// Init ActiveVertices
+  	// Init totalVertexCount
+	totalVertexCount = numVertices;
+
+	// Init ActiveVertices & activeVertexCount
 	if(isAllVerticesActive){ //If settings are set to use all vertices as active
 		for(unsigned int i =0; i < numVertices; ++i) {
 	    	activeVertex[i] = vertices[i];
@@ -182,8 +185,6 @@ void readGTgraphFile(const char* filename){
 	}
 
 	file.close(); // Closes file 
-
-	totalVertexCount = numVertices;
 	initializeDSM(numVertices, numEdges); // Organize data in argo.
   
 }
@@ -225,7 +226,6 @@ void readTextFile(const char* filename){
 
 	file.close(); // Closes file 
 
-	totalVertexCount = numVertices;
 	initializeDSM(numVertices, numEdges); // Organize data in argo.
 }
 
@@ -278,8 +278,6 @@ void readTextFileWithLineParsing(const char* filename) {
 
 	// Close the file
 	file.close();
-
-	totalVertexCount = numVertices;
 	initializeDSM(numVertices, numEdges); // Organize data in argo.
 }
 
