@@ -9,19 +9,6 @@
 #include <sstream>
 #include "test_functions.hpp"
 
-Vertex* vertices; // All vertices in the graph
-Vertex* activeVertex; 
-
-Edge* edges; // All edges in the graph
-unsigned int* edgeIDTable;
-
-VertexProperty* vProperty; // property of nodes.
-VertexProperty* vTempProperty; // new vProperty that been changed
-VertexProperty* vConst; 
-
-unsigned int totalVertexCount; // Number of nodes in the system.
-unsigned int activeVertexCount; // Number of active nodes in the system.
-
 /*
  * Collective allocations for the argoDSM system.
  * numVertices: total number of vertices in graph

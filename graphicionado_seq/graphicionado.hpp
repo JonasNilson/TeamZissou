@@ -2,11 +2,26 @@
 #ifndef graphicionado_hpp
 #define graphicionado_hpp graphicionado_hpp
 
+struct Graph; 
+struct VertexProperty;
+struct Vertex;
+struct Edge;
+
 /* -----------------------------------------------
---- Graphicionado functions ----------------------
+--- Graphicionado global variables ---------------
 ----------------------------------------------- */
 
+extern Vertex* vertices; // All vertices in the graph
+extern Vertex* activeVertex; 
 
+extern Edge* edges; // All edges in the graph
+extern unsigned int* edgeIDTable;
+
+extern VertexProperty* vProperty;
+extern VertexProperty* vTempProperty;
+extern VertexProperty* vConst; // TODO: Implement this at a later time if its ever is needed. It is a constant vertex property array VConst associated with all vertices. Have not seen it been used anywhere yet.
+extern unsigned int totalVertexCount; 
+extern unsigned int activeVertexCount; 
 
 /* -----------------------------------------------
 --- Graphicionado structs ------------------------
@@ -36,21 +51,8 @@ struct Edge {
 	double weight;
 };
 
-
 /* -----------------------------------------------
---- Graphicionado global variables ---------------
+--- Graphicionado functions ----------------------
 ----------------------------------------------- */
-
-extern Vertex* vertices; // All vertices in the graph
-extern Vertex* activeVertex; 
-
-extern Edge* edges; // All edges in the graph
-extern unsigned int* edgeIDTable;
-
-extern VertexProperty* vProperty;
-extern VertexProperty* vTempProperty;
-extern VertexProperty* vConst; // TODO: Implement this at a later time if its ever is needed. It is a constant vertex property array VConst associated with all vertices. Have not seen it been used anywhere yet.
-extern unsigned int totalVertexCount; 
-extern unsigned int activeVertexCount; 
 
 #endif

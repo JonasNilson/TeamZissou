@@ -13,7 +13,19 @@
 // Global variable declaration
 //int THREADS = 4; // Set number of threads
 
-//Graph graph; // Not being used at this moment.
+Vertex* vertices; // All vertices in the graph
+Vertex* activeVertex; 
+
+Edge* edges; // All edges in the graph
+unsigned int* edgeIDTable;
+
+VertexProperty* vProperty; // property of nodes.
+VertexProperty* vTempProperty; // new vProperty that been changed
+VertexProperty* vConst; 
+
+unsigned int totalVertexCount; // Number of nodes in the system.
+unsigned int activeVertexCount; // Number of active nodes in the system.
+
 
 /**
    Information about graphicionado
@@ -61,7 +73,7 @@ int main(int argc, char *argv[]){
       Edge e = edges[eID]; // Edge Read
       
       while (e.srcID == src.ID) {
-        dst.prop = vProperty[e.dstID]; // [OPT IONAL] Random Vertex Read
+		// dst.prop = vProperty[e.dstID]; // [OPT IONAL] Random Vertex Read
         VertexProperty res = processEdge(e.weight, src.prop, dst.prop);
         VertexProperty temp = vTempProperty[e.dstID]; // Random Vertex Read
         temp = reduce(temp, res);
@@ -98,6 +110,7 @@ int main(int argc, char *argv[]){
     if(maxIterations != 0){ //If setting is set to 0 it will use infinity iteration possibility
       maxIterations--;
       if(maxIterations == 0){
+		  std::cout << "All iterations are done!" << std::endl;
         //Only enter this stage if it reached the maximum iteration count
         break; // break the entire loop
       }
