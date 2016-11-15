@@ -96,8 +96,7 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 	  	}
 	  	activeVertexCount = numVertices; //Set that it exist this many active vertices
 	}
-	else{
-		unsigned int activeNodesLength = 
+	else{ 
 		activeVertexCount = sizeof(startingNodes)/sizeof(startingNodes[0]); // Get number of elements of startingNodes and set number of starting active vertices
 		std::sort(startingNodes,&startingNodes[activeNodesLength],unsignedIntCompare); // Sort it by ID
 		// initialize the starting active vertices
