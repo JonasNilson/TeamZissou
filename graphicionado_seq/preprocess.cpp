@@ -161,6 +161,8 @@ void readGTgraphFile(const char* filename){
 	  numEdges = std::stoll(item);   // get number of edges
 	}
 
+	setupDSM(numVertices,numEdges); // Make system ready to store data.
+	
 	for(unsigned int i=0; i < numEdges; ++i){
 	  std::getline(ss, item, delimiter);
 	  std::stringstream ss; // Create a new string stream		

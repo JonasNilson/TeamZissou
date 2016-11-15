@@ -5,6 +5,8 @@ void readTextFile(const char* filename);
 
 void readTextFileWithLineParsing(const char* filename);
 
+void readGTgraphFile(const char* filename);
+
 void setupDSM(unsigned int numVerticies, unsigned int numEdges);
 
 void initializeDSM(unsigned int numVerticies, unsigned int numEdges);
