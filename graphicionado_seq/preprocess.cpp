@@ -82,7 +82,7 @@ bool unsignedIntCompare(unsigned int u1, unsigned int u2){
 void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 	std::cout << "initializeDSM: preprocessing data..." << std::endl;
 	// Sort edges after srcID and then dstID with function edgeCompare
-	std::sort(edges,&edges[numEdges],edgeIDCompare); // if this one does not work use std::sort(edges,edges+numEdges,edgeCompare);
+	std::sort(edges,&edges[numEdges],edgeIDCompare);
 	// Sort vertices after ID to make sure the edge ID table correspond to correct node.
 	std::sort(vertices,&vertices[numVertices],vertexIDCompare);
   	
@@ -93,7 +93,7 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 	  	}
 	  	activeVertexCount = numVertices; //Set that it exist this many active vertices
 	}
-	else{
+	else{ // Setting case where it is given active starting nodes
 		activeVertexCount = sizeof(startingNodes)/sizeof(startingNodes[0]); // Get number of elements of startingNodes and set number of starting active vertices
 		std::sort(startingNodes,&startingNodes[activeVertexCount],unsignedIntCompare); // Sort it by ID
 		// initialize the starting active vertices
