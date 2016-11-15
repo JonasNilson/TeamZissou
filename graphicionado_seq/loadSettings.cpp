@@ -18,11 +18,16 @@ void parseStartingNodes(std::string s) {
 	std::string item; // This string will temporarily hold the parsed int
 	char delimiter = ','; // Character that delimits the nodes
 	
+	std::cout << "Parsing starting nodes..." << std::endl;
+	
 	// Parses the integers using the delimiter and puts them in the vector
-	while(std::getline(ss, item, delimiter)) {
+	while(!ss.eof()) {
+		std::getline(ss, item, delimiter);
 		intVector.push_back(std::stoi(item));
 	}
 	
+	std::cout << "Done parsing starting nodes!" << std::endl;
+
 	// Convert the vector to array (pointer)
 	unsigned int intArray[intVector.size()];
 	std::copy(intVector.begin(), intVector.end(), intArray);

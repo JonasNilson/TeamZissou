@@ -28,6 +28,7 @@ unsigned int activeVertexCount; // Number of active nodes in the system.
  * numEdges: total number of edges in graph
  */
 void setupDSM(unsigned int numVertices, unsigned int numEdges){
+	std::cout << "setupDSM: Setup of the Argo DSM..." << std::endl;
 	vertices = argo::conew_array<Vertex>(numVertices); 
 	activeVertex = argo::conew_array<Vertex>(numVertices);
 	
@@ -37,6 +38,7 @@ void setupDSM(unsigned int numVertices, unsigned int numEdges){
 	vProperty = argo::conew_array<VertexProperty>(numVertices);
 	vTempProperty = argo::conew_array<VertexProperty>(numVertices);
 	vConst = argo::conew_array<VertexProperty>(numVertices);
+	std::cout << "setupDSM: Setup was successfull" << std::endl;
 }
 
 
@@ -78,13 +80,16 @@ bool unsignedIntCompare(unsigned int u1, unsigned int u2){
  * numEdges: total number of edges in graph
  */
 void initializeDSM(unsigned int numVertices, unsigned int numEdges){
+	std::cout << "initializeDSM: preprocessing data..." << std::endl;
 	// Sort edges after srcID and then dstID with function edgeCompare
 	std::sort(edges,&edges[numEdges],edgeIDCompare); // if this one does not work use std::sort(edges,edges+numEdges,edgeCompare);
-
+	std::cout << "DEBUG: Here I am! Witness me!" << std::endl;
 	// Sort vertices after ID to make sure the edge ID table correspond to correct node.
 	std::sort(vertices,&vertices[numVertices],vertexIDCompare);
 
-  	// Init ActiveVertices
+	// std::cout << "DEBUG: Here I am! Witness me!" << std::endl; // VERY IMPORTANT! DON'T REMOVE!
+  	
+	// Init ActiveVertices
 	if(isAllVerticesActive){ //If settings are set to use all vertices as active
 		for(unsigned int i =0; i < numVertices; ++i) {
 	    	activeVertex[i] = vertices[i];
@@ -94,14 +99,13 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 	else{
 		unsigned int activeNodesLength = 
 		activeVertexCount = sizeof(startingNodes)/sizeof(startingNodes[0]); // Get number of elements of startingNodes and set number of starting active vertices
-		std::cout << " THIS IS THE NUMBER OF ACTIVE VERTICES: " << activeVertexCount;
 		std::sort(startingNodes,&startingNodes[activeNodesLength],unsignedIntCompare); // Sort it by ID
 		// initialize the starting active vertices
 		for(unsigned int i = 0; i < activeVertexCount; ++i) {
 	    	activeVertex[i] = vertices[startingNodes[i]]; // Set active Vertex from startingNodes that hold ID of what vertices.
 	  	}
 	}
-
+	
   	// Init EdgeIDTable
 	setupEIT(numVertices, numEdges, vertices, edgeIDTable, edges);
 	
@@ -122,6 +126,7 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 
   	// TODO: Init VConst
    	// Get more info what this is? Do we get this from the data? Is this even needed? For now it does not looks like it.
+	std::cout << "initializeDSM: done preprocessing data!" << std::endl;
 }
 
 

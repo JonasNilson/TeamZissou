@@ -47,7 +47,6 @@ int main(int argc, char *argv[]){
   
   /* TODO: Implement section */
   Vertex dst; // WHat is this and what should it do?
-  
 
   while(activeVertexCount != 0) {
 
