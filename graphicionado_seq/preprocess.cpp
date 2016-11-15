@@ -7,6 +7,7 @@
 #include "loadSettings.hpp"
 #include <algorithm>
 #include <sstream>
+#include <typeinfo>
 #include "test_functions.hpp"
 
 Vertex* vertices; // All vertices in the graph
@@ -128,6 +129,8 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 	std::cout << "initializeDSM: done preprocessing data!" << std::endl;
 }
 
+
+
 /*
  * Read graph input data from a text file.
  */
@@ -144,15 +147,19 @@ void readGTgraphFile(const char* filename){
 
   while(comp == 'c'){
 	getline(file,line);
-	std::stringstream ss; // Create a new string stream		
+	std::stringstream ss; // Create a new string stream
+	ss.str(line);
 	std::getline(ss, item, delimiter);
-	comp = std::stoll(item);
+
+	comp = item.c_str()[0];
   }
 
 	getline(file,line);
 	std::stringstream ss; // Create a new string stream
+	ss.str(line);
 	std::getline(ss, item, delimiter);
-	comp = std::stoll(item);
+	//comp = std::stoll(item);
+	comp = item.c_str()[0];
 	if(comp == 'p'){
 	  std::getline(ss, item, delimiter);
 	  std::getline(ss, item, delimiter);
@@ -161,10 +168,15 @@ void readGTgraphFile(const char* filename){
 	  numEdges = std::stoll(item);   // get number of edges
 	}
 
-	for(unsigned int i=0; i < numEdges; ++i){
+	setupDSM(numVertices,numEdges); // Make system ready to store data.
+	
+	for(unsigned int i=0; i < numEdges; ++i) {
+	  getline(file,line);
+	  std::stringstream ss; // Create a new string stream
+	  ss.str(line);
 	  std::getline(ss, item, delimiter);
-	  std::stringstream ss; // Create a new string stream		
-	  if('a' == std::stoll(item)){
+	  comp = item.c_str()[0];
+	  if('a' == comp){
 		std::getline(ss, item, delimiter);
 		edges[i].srcID = std::stoll(item);
 		std::getline(ss, item, delimiter);
@@ -174,7 +186,7 @@ void readGTgraphFile(const char* filename){
 	  }
 	}
 
-	for(unsigned int i=0; i< numVertices; ++i){
+	for(unsigned int i=1; i < numVertices+1; ++i){
 	  	vertices[i].ID = i;
 		vertices[i].prop.property = (double)(rand() % 100);
 	}
