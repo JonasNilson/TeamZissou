@@ -1,6 +1,6 @@
 #include <argo.hpp> // Get access to Argo function calls.
 #include <iostream> // Used for output prints.
-#include "algorithms.hpp"
+#include "graphicionado.hpp"
 // #include "graphicionado.hpp" // Data structures for graph problems
 #include <array>
 
