@@ -48,15 +48,18 @@ int main(int argc, char *argv[]){
   //int id = argo::node_id(); // get this node unique index number starting from 0
   //int nodes = argo::number_of_nodes(); // return the total number of nodes in the Argo system.
  
-  if(argc>1)
-    {
+  if(argc>1) {
       std::cout << "Reading graph from textfile: " << argv[1] << std::endl;
       //readGTgraphFile(argv[1]);
 	   readTextFile(argv[1]);
 	  // readTextFileWithLineParsing(argv[1]);
-    }
-  else
-    readTextFile("filename.txt");
+  }
+  else {
+    // Error no argument with filename
+    std::cout << "Missing argument: graph file. \n";
+    terminateProgram();
+    return 1;
+  }
   
   /* TODO: Implement section */
   Vertex dst; // WHat is this and what should it do?
@@ -121,6 +124,13 @@ int main(int argc, char *argv[]){
   //END OF SUDO CODE
 
   argo::finalize(); // Cleanup for this node when program has finished.
-
+ 
   return 0;
+}
+
+
+// Make all cleanups needed before closing the program.
+void terminateProgram(){
+    std::cout << "Shutting down program! \n";
+    argo::finalize(); // Cleanup for this node when program has finished.
 }
