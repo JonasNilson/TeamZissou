@@ -26,6 +26,11 @@ VertexProperty* vConst;
 unsigned int totalVertexCount; // Number of nodes in the system.
 unsigned int activeVertexCount; // Number of active nodes in the system.
 
+// Make all cleanups needed before closing the program.
+void terminateProgram(){
+    std::cout << "Shutting down program! \n";
+    argo::finalize(); // Cleanup for this node when program has finished.
+}
 
 /**
    Information about graphicionado
@@ -126,11 +131,4 @@ int main(int argc, char *argv[]){
   terminateProgram(); // Cleanup for this node when program has finished.
  
   return 0;
-}
-
-
-// Make all cleanups needed before closing the program.
-void terminateProgram(){
-    std::cout << "Shutting down program! \n";
-    argo::finalize(); // Cleanup for this node when program has finished.
 }
