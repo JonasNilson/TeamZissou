@@ -78,7 +78,6 @@ int main(int argc, char *argv[]){
       if(eID == 0) continue; // If the index for the vertex is 0, it has no outgoing edges.
       eID--; // Edges index is shifted by 1 because if the index is 0 it indicates that there are no outgoing edges from this vertex.
       Edge e = edges[eID]; // Edge Read
-      
       while (e.srcID == src.ID) {
 		// dst.prop = vProperty[e.dstID]; // [OPT IONAL] Random Vertex Read
         VertexProperty res = processEdge(e.weight, src.prop, dst.prop);
@@ -99,7 +98,7 @@ int main(int argc, char *argv[]){
       VertexProperty temp = vTempProperty[i]; // Sequential Vertex Read
       VertexProperty vconst = vConst[i];
       temp = apply(vprop, temp, vconst);
-	  std::cout << "temp: "<< temp.property << std::endl;
+	  
       vProperty[i] = temp; // Sequential Vertex Write
       if(temp.property != vprop.property) {
         Vertex v;

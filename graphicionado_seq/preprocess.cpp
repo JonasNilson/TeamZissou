@@ -183,7 +183,7 @@ void readGTgraphFile(const char* filename){
 	}
 
 	vertices[0].ID = 1;
-	vertices[0].prop.property = 1;
+	vertices[0].prop.property = 0;
 	for(unsigned int i=1; i < numVertices; ++i){
 	  	vertices[i].ID = i;
 		vertices[i].prop.property = 10; (double)(rand() % 100);
