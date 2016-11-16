@@ -99,9 +99,9 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
   	// Init EdgeIDTable
 	setupEIT(numVertices, numEdges, vertices, edgeIDTable, edges);
 	
-	//printVertices(numVertices, vertices);
-	//printEdges(numEdges, edges);
-	//printEdgeIDTable(numVertices, edgeIDTable, vertices);
+	printVertices(numVertices, vertices);
+	printEdges(numEdges, edges);
+	printEdgeIDTable(numVertices, edgeIDTable, vertices);
 
   	// Init VProperty
 	for(unsigned int i =0; i < numVertices; ++i) {
@@ -123,6 +123,7 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 /*
  * Read graph input data from a text file.
  */
+
 void readGTgraphFile(const char* filename){
   std::ifstream file;
   std::string line;
@@ -184,7 +185,7 @@ void readGTgraphFile(const char* filename){
 
 	vertices[0].ID = 1;
 	vertices[0].prop.property = 0;
-	for(unsigned int i=1; i < numVertices; ++i){
+	for(unsigned int i=2; i < numVertices+1; ++i){
 	  	vertices[i].ID = i;
 		vertices[i].prop.property = 10; //(double)(rand() % 100);
 	}

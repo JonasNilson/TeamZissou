@@ -54,9 +54,9 @@ int main(int argc, char *argv[]){
  
   if(argc>1) {
     std::cout << "Reading graph from textfile: " << argv[1] << std::endl;
-    //readGTgraphFile(argv[1]);
+    readGTgraphFile(argv[1]);
     //readTextFile(argv[1]);
-	readTextFileWithLineParsing(argv[1]);
+	//readTextFileWithLineParsing(argv[1]);
   }
   else {
     // Error no argument with filename
