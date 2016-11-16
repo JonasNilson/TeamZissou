@@ -9,6 +9,7 @@
 #include <sstream>
 #include <typeinfo>
 #include "test_functions.hpp"
+#include <math.h>
 
 /*
  * Collective allocations for the argoDSM system.
@@ -183,11 +184,11 @@ void readGTgraphFile(const char* filename){
 		edges[i].weight = std::stoll(item);
 	  }
 	}
-
+	std::cout << "value of doom: " << pow(2, 4*sizeof(double)) <<std::endl;
 	// vertices[1].ID = 1;
 	for(unsigned int i=0; i < numVertices; ++i){
 	  	vertices[i].ID = i;
-		vertices[i].prop.property = 10; //(double)(rand() % 100);
+		vertices[i].prop.property = pow(2, 4*sizeof(double)); //(double)(rand() % 100);
 	}
 	vertices[1].prop.property = 0;
 
