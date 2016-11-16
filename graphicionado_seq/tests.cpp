@@ -64,7 +64,7 @@ int testInitDataOrginization(){
 	if(errorCode == 1){
 		std::cout << "Test data organization: FAIL" << std::endl;
 	}
-	std::cout << "Test data organization: PASSED" << std::endl;
+	std::cout << "All data organization tests: [PASSED]" << std::endl;
 	return errorCode;
 }
 
@@ -90,7 +90,7 @@ int testBFS(){
 
 // Test behavior for different search logarithms.
 void runTests(){
-	std::cout << "Starting tests..." << std::endl;
+	std::cout << "--------------Starting tests--------------" << std::endl;
 
 	// Check algorithm flag if BFS is being used.
 	if(graphAlgorithm == "BFS"){
@@ -99,8 +99,10 @@ void runTests(){
 		if(testBFS() == 1){
 			std::cout << "BFS tests: FAIL" << std::endl;
 		}
-		std::cout << "BFS tests: PASSED" << std::endl;
+		std::cout << "Every BFS tests: [PASSED]" << std::endl;
 	}
 	
+
+	std::cout << "--------------Tests finished--------------" << std::endl;
 	terminateProgram(); // Cleanup when program has finished.
 }
