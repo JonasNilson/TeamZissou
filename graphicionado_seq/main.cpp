@@ -55,7 +55,7 @@ int main(int argc, char *argv[]){
   if(argc>1) {
       std::cout << "Reading graph from textfile: " << argv[1] << std::endl;
       readGTgraphFile(argv[1]);
-	  // readTextFile(argv[1]);
+      //readTextFile(argv[1]);
 	  // readTextFileWithLineParsing(argv[1]);
   }
   else {
@@ -67,9 +67,7 @@ int main(int argc, char *argv[]){
   
   /* TODO: Implement section */
   Vertex dst; // WHat is this and what should it do?
-
   while(activeVertexCount != 0) {
-
     // START SUDO CODE from graphicionado
     //A Process edge Phase
     for (unsigned int i=0; i<activeVertexCount; i++) {
@@ -107,7 +105,6 @@ int main(int argc, char *argv[]){
         activeVertex[activeVertexCount++] = v; // Sequential Vertex Write
       }
     }
-
     //Settings check. If isAllVerticesActive = true then all vertices should be active over all iterations.
     if(isAllVerticesActive){
       activeVertexCount = totalVertexCount;//Set active Vertex count to be the total number of vertices.
@@ -127,7 +124,7 @@ int main(int argc, char *argv[]){
 	
   //END OF SUDO CODE
 
-  printVerticesProperties(64, vProperty);
+  printVerticesProperties(64, vertices, vProperty);
   
   terminateProgram(); // Cleanup for this node when program has finished.
  
