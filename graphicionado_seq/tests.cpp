@@ -94,7 +94,7 @@ void runTests(){
 
 	// Check algorithm flag if BFS is being used.
 	if(graphAlgorithm == "BFS"){
-		// Test Behavior of BFS 
+		// Run BFS tests 
 		std::cout << "Run BFS tests..." << std::endl;
 		if(testBFS() == 1){
 			std::cout << "BFS tests: FAIL" << std::endl;
