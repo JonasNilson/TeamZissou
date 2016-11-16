@@ -12,31 +12,31 @@ int testInitDataOrginization(){
 	for(unsigned int i = 1; i < totalVertexCount; ++i) {
 		if(vertices[i-1].ID > vertices[i].ID){
 			errorCode = 1;
-			std::cout << "Vertices ordering: FAIL" << std::endl;
+			std::cout << "FAILED: Vertices ordering." << std::endl;
 			break;
 		} 
 	}
-	if(errorCode == 0) std::cout << "Vertices ordering: PASSED" << std::endl;
+	if(errorCode == 0) std::cout << "PASSED: Vertices ordering." << std::endl;
 
 	//Check that vTempProperty is same as vProperty
 	for(unsigned int i = 0; i < totalVertexCount; ++i) {
 		if(vProperty[i].property != vTempProperty[i].property){
 			errorCode = 1;
-			std::cout << "vTempProperty and vProperty get initialization: FAIL" << std::endl;
+			std::cout << "FAILED: vTempProperty and vProperty get initialization." << std::endl;
 			break;
 		}
 	}
-	if(errorCode == 0) std::cout << "vTempProperty and vProperty get initialization: PASSED" << std::endl;
+	if(errorCode == 0) std::cout << "PASSED: vTempProperty and vProperty get initialization." << std::endl;
 
 	//Check active Vertices ordering
 	for(unsigned int i = 1; i < activeVertexCount; ++i) {
 		if(activeVertex[i-1].ID > activeVertex[i].ID){
 			errorCode = 1;
-			std::cout << "Active vertices ordering: FAIL" << std::endl;
+			std::cout << "FAILED: Active vertices ordering." << std::endl;
 			break;
 		} 
 	}
-	if(errorCode == 0) std::cout << "Active vertices ordering: PASSED" << std::endl;
+	if(errorCode == 0) std::cout << "PASSED: Active vertices ordering." << std::endl;
 
 	// Check if vertices correspond to correct EdgeIDTable positioning.
 	Vertex v;
@@ -51,20 +51,20 @@ int testInitDataOrginization(){
 		eID = eID - 1; //The IDs in edgeIDTable is shifted by 1 to give room to use 0/NULL for nodes without edges.
 		if(v.ID != edges[eID].srcID){
 			errorCode = 1;
-			std::cout << "EdgeIDTable position: FAIL" << std::endl;
+			std::cout << "FAILED: EdgeIDTable position." << std::endl;
 			break;
 		}
 	}
-	if(errorCode == 0) std::cout << "EdgeIDTable position: PASSED" << std::endl;
+	if(errorCode == 0) std::cout << "PASSED: EdgeIDTable position." << std::endl;
 	
 	// Check if edges is correctly positioned
 	//TODO: Variable length of edges does not exist. Might add it later if we feel its necessary test. For now I let it wait
 
 	// How data is stored in memory check
 	if(errorCode == 1){
-		std::cout << "Test data organization: FAIL" << std::endl;
+		std::cout << "FAILED: Test data organization." << std::endl;
 	}
-	std::cout << "All data organization tests: [PASSED]" << std::endl;
+	std::cout << "[PASSED]: All data organization tests." << std::endl;
 	return errorCode;
 }
 
@@ -90,21 +90,21 @@ int testBFS(){
 
 // Test behavior for different search logarithms.
 void runTests(){
-	std::cout << "--------------Starting tests--------------" << std::endl;
+	std::cout << "####__START TESTING__####" << std::endl;
 
 	// Check algorithm flag if BFS is being used.
 	if(graphAlgorithm == "BFS"){
 		// Run BFS tests 
 		std::cout << "Run BFS tests..." << std::endl;
 		if(testBFS() == 1){
-			std::cout << "BFS tests: FAIL" << std::endl;
+			std::cout << "FAILED: All BFS tests." << std::endl;
 		} 
 		else {
-			std::cout << "Every BFS tests: [PASSED]" << std::endl;
+			std::cout << "[PASSED]: All BFS tests." << std::endl;
 		}
 	}
 	
 
-	std::cout << "--------------Tests finished--------------" << std::endl;
+	std::cout << "####__FINISH TESTING__####" << std::endl;
 	terminateProgram(); // Cleanup when program has finished.
 }
