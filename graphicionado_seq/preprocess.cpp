@@ -11,6 +11,26 @@
 #include "test_functions.hpp"
 #include <math.h>
 
+//Init value on starting nodes for different algorithms used
+void uniqeAlgorithmsInit(Vertex* startingNodes) {
+	if(graphAlgorithm == "BFS"){ //Check if BFS is used
+		//Set their property to 0.
+		for(unsigned int i = 0; i < activeVertexCount; ++i){
+			startingNodes[i].prop.property = 0;
+		}
+	}
+
+	if(graphAlgorithm == "SSSP"){ //Check if SSSP is used
+		//Set their property to 0.
+		for(unsigned int i = 0; i < activeVertexCount; ++i){
+			startingNodes[i].prop.property = 0;
+		}
+	}
+
+}
+
+
+
 /*
  * Collective allocations for the argoDSM system.
  * numVertices: total number of vertices in graph
@@ -118,6 +138,9 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
   	// TODO: Init VConst
    	// Get more info what this is? Do we get this from the data? Is this even needed? For now it does not looks like it.
 	std::cout << "initializeDSM: done preprocessing data!" << std::endl;
+
+	// Init starting nodes depending on algorithm used.
+	uniqeAlgorithmsInit(activeVertex);
 }
 
 

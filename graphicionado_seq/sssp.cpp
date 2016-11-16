@@ -3,6 +3,8 @@
 #include "graphicionado.hpp"
 #include <array>
 
+std::string graphAlgorithm = "SSSP"; // Set algorithm used
+
 /**
 * processEdge(double weight, int* srcProp, int* dstProp)
 * weight - the edge weight
