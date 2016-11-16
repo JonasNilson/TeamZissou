@@ -184,12 +184,12 @@ void readGTgraphFile(const char* filename){
 	  }
 	}
 
-	vertices[0].ID = 1;
-	vertices[0].prop.property = 0;
-	for(unsigned int i=2; i < numVertices+1; ++i){
+	// vertices[1].ID = 1;
+	for(unsigned int i=0; i < numVertices; ++i){
 	  	vertices[i].ID = i;
 		vertices[i].prop.property = 10; //(double)(rand() % 100);
 	}
+	vertices[1].prop.property = 0;
 
 	file.close(); // Closes file
 

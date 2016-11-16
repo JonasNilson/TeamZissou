@@ -5,7 +5,7 @@ c Max. weight		: 100
 c Min. weight		: 0
 c A directed arc from u to v of weight w
 c is represented below as ' a  u  v  w '
-p sp 5 6
+p sp 5 8
 a 1 3 52
 a 0 3 16
 a 0 1 22
