@@ -4,7 +4,7 @@
 void printEdges(unsigned int numEdges, Edge* edges){
   std::cout << "##########EDGES###########" << std::endl;
   for(unsigned int e=0; e<numEdges;e++){
-    std::cout << edges[e].srcID << "->" << edges[e].dstID << std::endl;
+    std::cout << edges[e].srcID << "->" << edges[e].dstID << " : "<< edges[e].weight<< std::endl;
   }
 }
 
