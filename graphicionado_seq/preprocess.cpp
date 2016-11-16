@@ -33,6 +33,7 @@ void initAlgorithmProperty(Vertex* startingNodes) {
 				}
 			}	
 		}
+	}
 }
 
 
