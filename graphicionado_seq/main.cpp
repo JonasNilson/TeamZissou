@@ -88,6 +88,27 @@ void graphicionado(){
 }
 
 
+/*
+* readData take data and init all data in the system so graphicionado can run.
+*/
+int readData(int argc, char *argv[]){
+  if(argc>1) {
+    //Init all data organization 
+    std::cout << "Reading graph from textfile: " << argv[1] << std::endl;
+    readGTgraphFile(argv[1]);
+    //readTextFile(argv[1]);
+    //readTextFileWithLineParsing(argv[1]);
+  }
+  else {
+    // Error no argument with filename
+    std::cout << "Missing argument: graph file. \n";
+    terminateProgram();
+    return 1;
+  }
+  return 0;
+}
+
+
 /**
    Information about graphicionado
    * EdgeIDTable - is constructed and stored in memory. It is an array that store edge id of the first edge of each vertex. Sorted by srcID and then dstID.
@@ -109,16 +130,9 @@ int main(int argc, char *argv[]){
   //int id = argo::node_id(); // get this node unique index number starting from 0
   //int nodes = argo::number_of_nodes(); // return the total number of nodes in the Argo system.
  
-  if(argc>1) {
-    std::cout << "Reading graph from textfile: " << argv[1] << std::endl;
-    readGTgraphFile(argv[1]);
-    //readTextFile(argv[1]);
-	//readTextFileWithLineParsing(argv[1]);
-  }
-  else {
-    // Error no argument with filename
-    std::cout << "Missing argument: graph file. \n";
-    terminateProgram();
+  // readData take input and organize the input
+  if(readData(argc,argv) == 1){
+    //Exist program something went wrong with reading of Data.
     return 1;
   }
   
