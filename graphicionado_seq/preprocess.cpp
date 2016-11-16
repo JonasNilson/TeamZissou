@@ -11,22 +11,28 @@
 #include "test_functions.hpp"
 #include <math.h>
 
-//Init value on starting nodes for different algorithms used
-void uniqeAlgorithmsInit(Vertex* startingNodes) {
+//Init value on starting nodes for different algorithms used. Input: startingNodes are the node(s) the algorithm it start from.
+void initAlgorithmProperty(Vertex* startingNodes) {
 	if(graphAlgorithm == "BFS"){ //Check if BFS is used
 		//Set their property to 0.
 		for(unsigned int i = 0; i < activeVertexCount; ++i){
-			startingNodes[i].prop.property = 0;
+			for(unsigned int j = 0; j < activeVertexCount; ++j) {
+				if(startingNodes[i].ID == vertices[j].ID){
+					startingNodes[i].prop.property = 0;
+				}
+			}	
 		}
 	}
 
 	if(graphAlgorithm == "SSSP"){ //Check if SSSP is used
 		//Set their property to 0.
 		for(unsigned int i = 0; i < activeVertexCount; ++i){
-			startingNodes[i].prop.property = 0;
+			for(unsigned int j = 0; j < activeVertexCount; ++j) {
+				if(startingNodes[i].ID == vertices[j].ID){
+					startingNodes[i].prop.property = 0;
+				}
+			}	
 		}
-	}
-
 }
 
 
@@ -118,6 +124,9 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 		delete[] startingNodes;
 	}
 	
+	// Init starting nodes depending on algorithm used.
+	initAlgorithmProperty(activeVertex);
+
   	// Init EdgeIDTable
 	setupEIT(numVertices, numEdges, vertices, edgeIDTable, edges);
 	
@@ -138,9 +147,6 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
   	// TODO: Init VConst
    	// Get more info what this is? Do we get this from the data? Is this even needed? For now it does not looks like it.
 	std::cout << "initializeDSM: done preprocessing data!" << std::endl;
-
-	// Init starting nodes depending on algorithm used.
-	uniqeAlgorithmsInit(activeVertex);
 }
 
 
