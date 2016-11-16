@@ -2,6 +2,8 @@
 #ifndef graphicionado_hpp
 #define graphicionado_hpp graphicionado_hpp
 
+#include <string>
+
 struct Graph; 
 struct VertexProperty;
 struct Vertex;
@@ -22,6 +24,8 @@ extern VertexProperty* vTempProperty;
 extern VertexProperty* vConst; // TODO: Implement this at a later time if its ever is needed. It is a constant vertex property array VConst associated with all vertices. Have not seen it been used anywhere yet.
 extern unsigned int totalVertexCount; 
 extern unsigned int activeVertexCount; 
+
+extern std::string graphAlgorithm; // Algorithm used e.g. BFS. This is set by e.g. bfs.cpp file or the algorithm file used during compilation.
 
 /* -----------------------------------------------
 --- Graphicionado structs ------------------------

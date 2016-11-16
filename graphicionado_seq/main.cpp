@@ -8,6 +8,7 @@
 #include "preprocess.hpp"
 #include "loadSettings.hpp"
 #include "test_functions.hpp"
+#include "tests.hpp"
 
 // Global variable declaration
 //int THREADS = 4; // Set number of threads
@@ -29,6 +30,32 @@ unsigned int activeVertexCount; // Number of active nodes in the system.
 void terminateProgram(){
     std::cout << "Shutting down program! \n";
     argo::finalize(); // Cleanup for this node when program has finished.
+}
+
+
+/*
+* readData take data and init all data in the system so graphicionado can run.
+*/
+int readData(int argc, char *argv[]){
+  if(argc>1) {
+	const std::string tests = "tests";
+    if(argv[1] == tests){
+      runTests();
+      return 2; // Return 2 when running tests
+    }
+    //Init all data organization 
+    std::cout << "Reading graph from textfile: " << argv[1] << std::endl;
+    readGTgraphFile(argv[1]);
+    //readTextFile(argv[1]);
+    //readTextFileWithLineParsing(argv[1]);
+  }
+  else {
+    // Error no argument with filename
+    std::cout << "Missing argument: graph file. \n";
+    terminateProgram();
+    return 1;
+  }
+  return 0;
 }
 
 
@@ -88,26 +115,6 @@ void graphicionado(){
 }
 
 
-/*
-* readData take data and init all data in the system so graphicionado can run.
-*/
-int readData(int argc, char *argv[]){
-  if(argc>1) {
-    //Init all data organization 
-    std::cout << "Reading graph from textfile: " << argv[1] << std::endl;
-    readGTgraphFile(argv[1]);
-    //readTextFile(argv[1]);
-    //readTextFileWithLineParsing(argv[1]);
-  }
-  else {
-    // Error no argument with filename
-    std::cout << "Missing argument: graph file. \n";
-    terminateProgram();
-    return 1;
-  }
-  return 0;
-}
-
 
 /**
    Information about graphicionado
@@ -131,11 +138,16 @@ int main(int argc, char *argv[]){
   //int nodes = argo::number_of_nodes(); // return the total number of nodes in the Argo system.
  
   // readData take input and organize the input
-  if(readData(argc,argv) == 1){
+  int code = readData(argc,argv);
+  if(code != 0){
+    if(code == 2){
+      // test run
+      return 0;
+    }
     //Exist program something went wrong with reading of Data.
     return 1;
   }
-  
+
   graphicionado();
   printVerticesProperties(totalVertexCount, vertices, vProperty); //Debug prints too see behavior
   terminateProgram(); // Cleanup for this node when program has finished.

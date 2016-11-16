@@ -3,6 +3,8 @@
 #include "graphicionado.hpp" // Data structures for graph problems
 #include <array>
 
+std::string graphAlgorithm = "BFS"; // Set algorithm used
+
 // User defined computation
 /**
 * processEdge(double weight, int* srcProp, int* dstProp)
