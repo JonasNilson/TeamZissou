@@ -10,6 +10,7 @@ bool isAllVerticesActive;
 unsigned int maxIterations;
 bool edgeDuplicates;
 unsigned int* startingNodes;
+unsigned int numberOfStartingNodes;
 
 void parseStartingNodes(std::string s) {
 	std::vector<unsigned int> intVector; // Vector (can dynamically change size at runtime)
@@ -24,12 +25,15 @@ void parseStartingNodes(std::string s) {
 		intVector.push_back(std::stoi(item));
 	}
 
-	// Convert the vector to array (pointer)
+	// Convert the vector to an array (allocated with new, needs to be deleted)
 	unsigned int* intArray = new unsigned int[intVector.size()];
 	std::copy(intVector.begin(), intVector.end(), intArray);
 
-	// Return the array
+	// Set the external global pointer to the allocated array
     startingNodes = intArray;
+	
+	// Set the external global variable numberOfStartingNodes
+	numberOfStartingNodes = intVector.size();
 }
 
 /**

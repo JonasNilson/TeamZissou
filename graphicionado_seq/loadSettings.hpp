@@ -8,5 +8,6 @@ extern bool isAllVerticesActive;
 extern unsigned int maxIterations;
 extern bool edgeDuplicates;
 extern unsigned int* startingNodes;
+extern unsigned int numberOfStartingNodes;
 
 #endif
