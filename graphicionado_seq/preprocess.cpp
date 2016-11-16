@@ -87,7 +87,7 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 	else{ // Setting case where it is given active starting nodes
 		activeVertexCount = sizeof(startingNodes)/sizeof(startingNodes[0]); // Get number of elements of startingNodes and set number of starting active vertices
 		std::sort(startingNodes,&startingNodes[activeVertexCount],unsignedIntCompare); // Sort it by ID
-		// initialize the starting active vertices
+		// Initialize the starting active vertices
 		for(unsigned int i = 0; i < activeVertexCount; ++i) {
 	    	activeVertex[i] = vertices[startingNodes[i]]; // Set active Vertex from startingNodes that hold ID of what vertices.	
 	  	}
@@ -108,10 +108,9 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
     	vProperty[i] = vertices[i].prop;
   	}
 
-  	// TODO: Init VTempProperty
-  	//WARNING might not be needed to initialized 
+  	// Init VTempProperty
   	for(unsigned int i =0; i < numVertices; ++i) {
-      	vProperty[i] = vertices[i].prop;
+      	vTempProperty[i] = vertices[i].prop;
    	}
 
   	// TODO: Init VConst
@@ -124,12 +123,13 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 /*
  * Read graph input data from a text file.
  */
+
 void readGTgraphFile(const char* filename){
   std::ifstream file;
   std::string line;
   std::string item;
-  unsigned int numVertices;
-  unsigned int numEdges;
+  unsigned int numVertices = 0;
+  unsigned int numEdges = 0;
   char delimiter = ' ';
   char comp = 'c';
 
@@ -183,16 +183,17 @@ void readGTgraphFile(const char* filename){
 	  }
 	}
 
-	for(unsigned int i=0; i < numVertices; ++i){
+	vertices[0].ID = 1;
+	vertices[0].prop.property = 0;
+	for(unsigned int i=2; i < numVertices+1; ++i){
 	  	vertices[i].ID = i;
-		vertices[i].prop.property = (double)(rand() % 100);
+		vertices[i].prop.property = 10; //(double)(rand() % 100);
 	}
 
 	file.close(); // Closes file
 
 	std::cout << "file closed" << std::endl;
 	initializeDSM(numVertices, numEdges); // Organize data in argo.
-  
 }
 
 
