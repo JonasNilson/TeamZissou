@@ -193,7 +193,6 @@ void readGTgraphFile(const char* filename){
 
 	std::cout << "file closed" << std::endl;
 	initializeDSM(numVertices, numEdges); // Organize data in argo.
-  
 }
 
 
