@@ -98,8 +98,10 @@ void runTests(){
 		std::cout << "Run BFS tests..." << std::endl;
 		if(testBFS() == 1){
 			std::cout << "BFS tests: FAIL" << std::endl;
+		} 
+		else {
+			std::cout << "Every BFS tests: [PASSED]" << std::endl;
 		}
-		std::cout << "Every BFS tests: [PASSED]" << std::endl;
 	}
 	
 
