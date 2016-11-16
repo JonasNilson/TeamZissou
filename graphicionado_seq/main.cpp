@@ -37,13 +37,12 @@ void terminateProgram(){
 * readData take data and init all data in the system so graphicionado can run.
 */
 int readData(int argc, char *argv[]){
-  if(argc>2){
-    if(argv[2] == "runTest"){
+  if(argc>1) {
+	const std::string tests = "tests";
+    if(argv[1] == tests){
       runTests();
       return 2; // Return 2 when running tests
     }
-  }
-  if(argc>1) {
     //Init all data organization 
     std::cout << "Reading graph from textfile: " << argv[1] << std::endl;
     readGTgraphFile(argv[1]);
@@ -148,7 +147,7 @@ int main(int argc, char *argv[]){
     //Exist program something went wrong with reading of Data.
     return 1;
   }
-  
+
   graphicionado();
   printVerticesProperties(totalVertexCount, vertices, vProperty); //Debug prints too see behavior
   terminateProgram(); // Cleanup for this node when program has finished.

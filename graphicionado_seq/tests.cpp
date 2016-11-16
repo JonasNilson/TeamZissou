@@ -1,5 +1,6 @@
 #include <iostream> // Used for output prints.
 #include "graphicionado.hpp" // Data structures for graph problems
+#include "preprocess.hpp"
 #include "loadSettings.hpp"
 #include "tests.hpp"
 
@@ -69,8 +70,10 @@ int testInitDataOrginization(){
 
 // Test BFS behavior
 int testBFS(){
-	char* argv[] = {"data/micro.gr"};
-	readData(1,argv); // Init reading of graph etc.
+	const char* filename = "data/micro.gr";
+	// char* argv[] = {"1","data/micro.gr"};
+	// readData(1,argv); // Init reading of graph etc.
+	readGTgraphFile(filename);
 	testInitDataOrginization(); // Check data ordering in current session
 	/* PRE GRAPHICIONADO TESTS */
 
@@ -82,8 +85,6 @@ int testBFS(){
 
 
 
-
-	terminateProgram(); // Cleanup when program has finished.
 	return 0;
 } 
 
@@ -100,4 +101,6 @@ void runTests(){
 		}
 		std::cout << "BFS tests: PASSED" << std::endl;
 	}
+	
+	terminateProgram(); // Cleanup when program has finished.
 }
