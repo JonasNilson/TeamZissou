@@ -2,6 +2,8 @@
 #ifndef graphicionado_hpp
 #define graphicionado_hpp graphicionado_hpp
 
+#include <string>
+
 struct Graph; 
 struct VertexProperty;
 struct Vertex;

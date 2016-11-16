@@ -8,6 +8,7 @@
 #include "preprocess.hpp"
 #include "loadSettings.hpp"
 #include "test_functions.hpp"
+#include "tests.hpp"
 
 // Global variable declaration
 //int THREADS = 4; // Set number of threads

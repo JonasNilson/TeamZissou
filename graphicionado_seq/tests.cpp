@@ -1,43 +1,7 @@
-
 #include <iostream> // Used for output prints.
 #include "graphicionado.hpp" // Data structures for graph problems
 #include "loadSettings.hpp"
-
-
-// Test behavior for different search logarithms.
-void runTests(){
-	std::cout << "Starting tests..." << std::endl;
-
-	// Check algorithm flag if BFS is being used.
-	if(graphAlgorithm == "BFS"){
-		// Test Behavior of BFS 
-		std::cout << "Run BFS tests..." << std::endl;
-		if(testBFS() == 1){
-			std::cout << "BFS tests: FAIL" << std::endl;
-		}
-		std::cout << "BFS tests: PASSED" << std::endl;
-	}
-}
-
-// Test BFS behavior
-int testBFS(int argc, char *argv[]){
-	readData(argc,argv) // Init reading of graph etc.
-	testInitDataOrginization(); // Check data ordering in current session
-	/* PRE GRAPHICIONADO TESTS */
-
-
-
-
-	graphicionado(); // Run the algorithm
-	/* POST GRAPHICIONADO TESTS */
-
-
-
-
-	terminateProgram(); // Cleanup when program has finished.
-	return 0;
-} 
-
+#include "tests.hpp"
 
 // Test to see if all structures are ordered as they should be for all algorithms.
 int testInitDataOrginization(){
@@ -45,7 +9,7 @@ int testInitDataOrginization(){
 
 	// Check if vertices is not in order
 	for(unsigned int i = 1; i < totalVertexCount; ++i) {
-		if(vertices[i-1].ID > vertices[i]){
+		if(vertices[i-1].ID > vertices[i].ID){
 			errorCode = 1;
 			std::cout << "Vertices ordering: FAIL" << std::endl;
 			break;
@@ -55,7 +19,7 @@ int testInitDataOrginization(){
 
 	//Check that vTempProperty is same as vProperty
 	for(unsigned int i = 0; i < totalVertexCount; ++i) {
-		if(vProperty[i] != vTempProperty[i]){
+		if(vProperty[i].property != vTempProperty[i].property){
 			errorCode = 1;
 			std::cout << "vTempProperty and vProperty get initialization: FAIL" << std::endl;
 			break;
@@ -65,7 +29,7 @@ int testInitDataOrginization(){
 
 	//Check active Vertices ordering
 	for(unsigned int i = 1; i < activeVertexCount; ++i) {
-		if(activeVertex[i-1].ID > activeVertex[i]){
+		if(activeVertex[i-1].ID > activeVertex[i].ID){
 			errorCode = 1;
 			std::cout << "Active vertices ordering: FAIL" << std::endl;
 			break;
@@ -101,4 +65,39 @@ int testInitDataOrginization(){
 	}
 	std::cout << "Test data organization: PASSED" << std::endl;
 	return errorCode;
+}
+
+// Test BFS behavior
+int testBFS(){
+	char* argv[] = {"data/micro.gr"};
+	readData(1,argv); // Init reading of graph etc.
+	testInitDataOrginization(); // Check data ordering in current session
+	/* PRE GRAPHICIONADO TESTS */
+
+
+
+
+	graphicionado(); // Run the algorithm
+	/* POST GRAPHICIONADO TESTS */
+
+
+
+
+	terminateProgram(); // Cleanup when program has finished.
+	return 0;
+} 
+
+// Test behavior for different search logarithms.
+void runTests(){
+	std::cout << "Starting tests..." << std::endl;
+
+	// Check algorithm flag if BFS is being used.
+	if(graphAlgorithm == "BFS"){
+		// Test Behavior of BFS 
+		std::cout << "Run BFS tests..." << std::endl;
+		if(testBFS() == 1){
+			std::cout << "BFS tests: FAIL" << std::endl;
+		}
+		std::cout << "BFS tests: PASSED" << std::endl;
+	}
 }

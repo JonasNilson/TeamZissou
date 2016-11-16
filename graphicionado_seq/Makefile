@@ -17,7 +17,7 @@ all: check-env $(EXECUTABLES)
 
 main: main.cpp preprocess.cpp test_functions.cpp loadSettings.cpp
 
-bfs: main.cpp bfs.cpp preprocess.cpp test_functions.cpp loadSettings.cpp
+bfs: main.cpp bfs.cpp preprocess.cpp test_functions.cpp loadSettings.cpp tests.cpp
 
 sssp: main.cpp sssp.cpp preprocess.cpp test_functions.cpp loadSettings.cpp
 

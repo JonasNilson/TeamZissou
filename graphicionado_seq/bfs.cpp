@@ -3,7 +3,7 @@
 #include "graphicionado.hpp" // Data structures for graph problems
 #include <array>
 
-graphAlgorithm = "BFS"; // Set algorithm used
+std::string graphAlgorithm = "BFS"; // Set algorithm used
 
 // User defined computation
 /**
