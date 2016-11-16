@@ -23,6 +23,8 @@ extern VertexProperty* vConst; // TODO: Implement this at a later time if its ev
 extern unsigned int totalVertexCount; 
 extern unsigned int activeVertexCount; 
 
+extern std::string graphAlgorithm; // Algorithm used e.g. BFS. This is set by e.g. bfs.cpp file or the algorithm file used during compilation.
+
 /* -----------------------------------------------
 --- Graphicionado structs ------------------------
 ----------------------------------------------- */

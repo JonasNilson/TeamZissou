@@ -32,6 +32,33 @@ void terminateProgram(){
 }
 
 
+/*
+* readData take data and init all data in the system so graphicionado can run.
+*/
+int readData(int argc, char *argv[]){
+  if(argc>2){
+    if(argv[2] == "runTest"){
+      runTests();
+      return 2; // Return 2 when running tests
+    }
+  }
+  if(argc>1) {
+    //Init all data organization 
+    std::cout << "Reading graph from textfile: " << argv[1] << std::endl;
+    readGTgraphFile(argv[1]);
+    //readTextFile(argv[1]);
+    //readTextFileWithLineParsing(argv[1]);
+  }
+  else {
+    // Error no argument with filename
+    std::cout << "Missing argument: graph file. \n";
+    terminateProgram();
+    return 1;
+  }
+  return 0;
+}
+
+
 void graphicionado(){
   Vertex dst; // TODO: Not needed for this algorithm right now? Implement in future if we want to use it
   while(activeVertexCount != 0) {
@@ -88,26 +115,6 @@ void graphicionado(){
 }
 
 
-/*
-* readData take data and init all data in the system so graphicionado can run.
-*/
-int readData(int argc, char *argv[]){
-  if(argc>1) {
-    //Init all data organization 
-    std::cout << "Reading graph from textfile: " << argv[1] << std::endl;
-    readGTgraphFile(argv[1]);
-    //readTextFile(argv[1]);
-    //readTextFileWithLineParsing(argv[1]);
-  }
-  else {
-    // Error no argument with filename
-    std::cout << "Missing argument: graph file. \n";
-    terminateProgram();
-    return 1;
-  }
-  return 0;
-}
-
 
 /**
    Information about graphicionado
@@ -131,7 +138,12 @@ int main(int argc, char *argv[]){
   //int nodes = argo::number_of_nodes(); // return the total number of nodes in the Argo system.
  
   // readData take input and organize the input
-  if(readData(argc,argv) == 1){
+  int code = readData(argc,argv);
+  if(code != 0){
+    if(code == 2){
+      // test run
+      return 0;
+    }
     //Exist program something went wrong with reading of Data.
     return 1;
   }
