@@ -54,9 +54,9 @@ int main(int argc, char *argv[]){
  
   if(argc>1) {
     std::cout << "Reading graph from textfile: " << argv[1] << std::endl;
-    readGTgraphFile(argv[1]);
+    //readGTgraphFile(argv[1]);
     //readTextFile(argv[1]);
-	  // readTextFileWithLineParsing(argv[1]);
+	readTextFileWithLineParsing(argv[1]);
   }
   else {
     // Error no argument with filename
@@ -114,9 +114,9 @@ int main(int argc, char *argv[]){
     if(maxIterations != 0){ //If setting is set to 0 it will use infinity iteration possibility
       maxIterations--;
       if(maxIterations == 0){
-		    std::cout << "All iterations are done!" << std::endl;
-        //Only enter this stage if it reached the maximum iteration count
-        break; // break the entire loop
+		  std::cout << "All iterations are done!" << std::endl;
+		  //Only enter this stage if it reached the maximum iteration count
+		  break; // break the entire loop
       }
     }
   }
@@ -124,7 +124,7 @@ int main(int argc, char *argv[]){
 
   //END OF SUDO CODE
 
-  printVerticesProperties(64, vertices, vProperty); //Debug prints too see behavior
+  printVerticesProperties(totalVertexCount, vertices, vProperty); //Debug prints too see behavior
   
   terminateProgram(); // Cleanup for this node when program has finished.
  
