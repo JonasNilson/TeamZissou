@@ -9,13 +9,13 @@ CFLAGS := -O3 -g -Wall -pthread -I$(ARGODSM)/src
 CPPFLAGS := $(CFLAGS) -std=c++11
 
 # A list of the executable files
-EXECUTABLES := main bfs sssp pagerank
+EXECUTABLES := bfs sssp pagerank
 
 .PHONY: check-env all
 
 all: check-env $(EXECUTABLES)
 
-main: main.cpp preprocess.cpp test_functions.cpp loadSettings.cpp
+main: main.cpp preprocess.cpp test_functions.cpp loadSettings.cpp tests.cpp
 
 bfs: main.cpp bfs.cpp preprocess.cpp test_functions.cpp loadSettings.cpp tests.cpp
 
