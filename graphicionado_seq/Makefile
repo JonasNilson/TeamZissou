@@ -8,6 +8,9 @@ LDLIBS := -largo -largobackend-mpi -lrt -lnuma
 CFLAGS := -O3 -g -Wall -pthread -I$(ARGODSM)/src
 CPPFLAGS := $(CFLAGS) -std=c++11
 
+# All files necessary for compiling
+BASICFILES := main.cpp preprocess.cpp loadSettings.cpp test_functions.cpp tests.cpp
+
 # A list of the executable files
 EXECUTABLES := bfs sssp pagerank
 
@@ -15,13 +18,13 @@ EXECUTABLES := bfs sssp pagerank
 
 all: check-env $(EXECUTABLES)
 
-main: main.cpp preprocess.cpp test_functions.cpp loadSettings.cpp tests.cpp
+main: $(BASICFILES)
 
-bfs: main.cpp bfs.cpp preprocess.cpp test_functions.cpp loadSettings.cpp tests.cpp
+bfs: $(BASICFILES) bfs.cpp
 
-sssp: main.cpp sssp.cpp preprocess.cpp test_functions.cpp loadSettings.cpp tests.cpp
+sssp: $(BASICFILES) sssp.cpp
 
-pagerank: main.cpp pagerank.cpp preprocess.cpp test_functions.cpp loadSettings.cpp tests.cpp
+pagerank: $(BASICFILES) pagerank.cpp
 
 clean:
 	rm $(EXECUTABLES)
