@@ -25,6 +25,7 @@ VertexProperty* vConst;
 
 unsigned int totalVertexCount; // Number of nodes in the system.
 unsigned int activeVertexCount; // Number of active nodes in the system.
+unsigned int totalEdgeCount;
 
 // Make all cleanups needed before closing the program.
 void terminateProgram(){

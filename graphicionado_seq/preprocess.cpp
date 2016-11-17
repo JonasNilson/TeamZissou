@@ -40,7 +40,7 @@ void initAlgorithmProperty(Vertex* startingNodes) {
 		for(unsigned int i = 0; i < totalVertexCount; ++i){
 			if(edgeIDTable[i] == 0){
 				//Does not have edges
-				vConst[i] = 0;
+				vConst[i].property = 0;
 				continue;
 			}
 			unsigned int counter = 0; // Counter to keep track of how many edges
@@ -54,7 +54,7 @@ void initAlgorithmProperty(Vertex* startingNodes) {
 					break;
 				}
 			}
-			vConst = counter;
+			vConst[i].property = counter;
 		}
 	}
 }
