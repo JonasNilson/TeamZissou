@@ -89,7 +89,7 @@ void graphicionado(){
       temp = apply(vprop, temp, vconst);
     
       vProperty[i] = temp; // Sequential Vertex Write
-      if(temp.property != vprop.property) {
+      if(temp.property != vprop.property) { //TODO if all vertices is active this need to change! to if/case to not set over the order
         Vertex v;
         v.ID = i;
         v.prop = temp;

@@ -3,6 +3,9 @@
 #include "graphicionado.hpp"
 #include <array>
 
+std::string graphAlgorithm = "PR"; // Set algorithm used
+double dampenFactor = 0.85; // If to low it overshoot, if to high it might get dumped
+
 /**
 * processEdge(double weight, int* srcProp, int* dstProp)
 * weight - the edge weight
@@ -32,7 +35,8 @@ VertexProperty reduce(VertexProperty temp, VertexProperty result) {
 */
 VertexProperty apply(VertexProperty vprop, VertexProperty temp, VertexProperty vconst) {
 
-  //TODO
-  // (A + (1 - A)vprop)/V deg 
+
+ 	return (dampenFactor + (1 - dampenFactor) * temp.property) / vconst.property;
+//                     (A is value between 0 - 1   used 0.85 is common dampen value)   v deg is outgoing edges 
   return temp;
 }

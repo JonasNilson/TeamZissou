@@ -34,6 +34,10 @@ void initAlgorithmProperty(Vertex* startingNodes) {
 			}	
 		}
 	}
+
+	if(graphAlgorithm == "PR"){ //Check if Page rank is used
+		//XXX
+	}
 }
 
 
