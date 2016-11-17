@@ -23,7 +23,8 @@ extern VertexProperty* vProperty;
 extern VertexProperty* vTempProperty;
 extern VertexProperty* vConst; // TODO: Implement this at a later time if its ever is needed. It is a constant vertex property array VConst associated with all vertices. Have not seen it been used anywhere yet.
 extern unsigned int totalVertexCount; 
-extern unsigned int activeVertexCount; 
+extern unsigned int activeVertexCount;
+extern unsigned int totalEdgeCount; 
 
 extern std::string graphAlgorithm; // Algorithm used e.g. BFS. This is set by e.g. bfs.cpp file or the algorithm file used during compilation.
 

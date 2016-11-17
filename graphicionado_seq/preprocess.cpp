@@ -36,7 +36,26 @@ void initAlgorithmProperty(Vertex* startingNodes) {
 	}
 
 	if(graphAlgorithm == "PR"){ //Check if Page rank is used
-		//XXX
+		//Const array gonna be used to keep degrees. Degree is number of edges away.
+		for(unsigned int i = 0; i < totalVertexCount; ++i){
+			if(edgeIDTable[i] == 0){
+				//Does not have edges
+				vConst[i] = 0;
+				continue;
+			}
+			unsigned int counter = 0; // Counter to keep track of how many edges
+			unsigned int startPos = edgeIDTable[i] - 1; // StartPos in edges where it start
+			for(unsigned int j = startPos; j < totalEdgeCount; ++j){
+				if(edges[j].srcID == vertices[i].ID){
+					counter++;
+				} 
+				else {
+					//No more edges to count
+					break;
+				}
+			}
+			vConst = counter;
+		}
 	}
 }
 
@@ -106,8 +125,9 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 	// Sort vertices after ID to make sure the edge ID table correspond to correct node.
 	std::sort(vertices,&vertices[numVertices],vertexIDCompare);
   	
-  	// Init totalVertexCount
+  	// Init totalVertexCount & totalEdgeCount
 	totalVertexCount = numVertices;
+	totalEdgeCount = numEdges;
 
 	// Init ActiveVertices & activeVertexCount
 	if(isAllVerticesActive){ //If settings are set to use all vertices as active
@@ -128,13 +148,13 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 		// Free local node memory usage for init active vertices
 		delete[] startingNodes;
 	}
-	
-	// Init starting nodes depending on algorithm used.
-	initAlgorithmProperty(activeVertex);
 
   	// Init EdgeIDTable
 	setupEIT(numVertices, numEdges, vertices, edgeIDTable, edges);
 	
+	// Init starting nodes depending on algorithm used.
+	initAlgorithmProperty(activeVertex);
+
 	//printVertices(numVertices, vertices);
 	//printEdges(numEdges, edges);
 	//printEdgeIDTable(numVertices, edgeIDTable, vertices);

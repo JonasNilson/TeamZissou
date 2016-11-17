@@ -34,9 +34,14 @@ VertexProperty reduce(VertexProperty temp, VertexProperty result) {
 * Right now, simple implementation taken from graphicionado paper
 */
 VertexProperty apply(VertexProperty vprop, VertexProperty temp, VertexProperty vconst) {
-
-
- 	return (dampenFactor + (1 - dampenFactor) * temp.property) / vconst.property;
+	VertexProperty v;
+	if(vconst.property == 0) {
+		// If no outgoing edges it give 0 property to that vertex in page rank.
+		v.property = 0;
+		return v;
+	}
+	v.property = (dampenFactor + (1 - dampenFactor) * temp.property) / vconst.property;
+ 	return v;
 //                     (A is value between 0 - 1   used 0.85 is common dampen value)   v deg is outgoing edges 
-  return temp;
+  //return temp;
 }
