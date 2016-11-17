@@ -135,9 +135,9 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
   	// Init EdgeIDTable
 	setupEIT(numVertices, numEdges, vertices, edgeIDTable, edges);
 	
-	printVertices(numVertices, vertices);
-	printEdges(numEdges, edges);
-	printEdgeIDTable(numVertices, edgeIDTable, vertices);
+	//printVertices(numVertices, vertices);
+	//printEdges(numEdges, edges);
+	//printEdgeIDTable(numVertices, edgeIDTable, vertices);
 
   	// Init VProperty
 	for(unsigned int i =0; i < numVertices; ++i) {
@@ -218,11 +218,11 @@ void readGTgraphFile(const char* filename){
 		edges[i].weight = std::stoll(item);
 	  }
 	}
-	std::cout << "value of doom: " << pow(2, 4*sizeof(double)) <<std::endl;
 	// vertices[1].ID = 1;
+	unsigned int unassignedProperty = pow(2, 4*sizeof(double));
 	for(unsigned int i=0; i < numVertices; ++i){
 	  	vertices[i].ID = i;
-		vertices[i].prop.property = pow(2, 4*sizeof(double)); //(double)(rand() % 100);
+		vertices[i].prop.property = unassignedProperty; //(double)(rand() % 100);
 	}
 	vertices[1].prop.property = 0;
 
@@ -323,7 +323,13 @@ void readTextFileWithLineParsing(const char* filename) {
 	file.close();
 	initializeDSM(numVertices, numEdges); // Organize data in argo.
 }
-
+/*
+ * Sets up the edgeIDTable. 
+ * For each vertex in vertices, the edgeIDTable will contain the edge ID of the
+ * first occurring edge in edges that has that vertex as source ID.
+ * If a vertex has no such edge in edges, the edgeIDTable contains a null value
+ * (0) for that vertex to indicate this.
+ */
 void setupEIT(unsigned int numVertices, unsigned int numEdges, Vertex* vertices, unsigned int* edgeIDTable, Edge* edges){
   
   unsigned int oldIndex = edges[0].srcID;
@@ -338,18 +344,4 @@ void setupEIT(unsigned int numVertices, unsigned int numEdges, Vertex* vertices,
 	  edgeIDTable[newIndex] = i+1;
 	}
     }
-	/*unsigned int edgeIndex = 0;
-  
-  for(unsigned int vertexIndex = 0; vertexIndex < numVertices; vertexIndex++){
-    unsigned int vertex_ID = vertices[vertexIndex].ID;	
-    
-    for(; edgeIndex < numEdges; edgeIndex++){
-      unsigned int edgeSource = edges[edgeIndex].srcID;
-      if(vertex_ID <= edgeSource){
-	break;
-      }
-    }
-    
-    edgeIDTable[vertex_ID] = edgeIndex; 
-    }*/
 }

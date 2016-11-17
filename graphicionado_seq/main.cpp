@@ -147,9 +147,9 @@ int main(int argc, char *argv[]){
     //Exist program something went wrong with reading of Data.
     return 1;
   }
-
+  
   graphicionado();
-  printVerticesProperties(totalVertexCount, vertices, vProperty); //Debug prints too see behavior
+  //printVerticesProperties(totalVertexCount, vertices, vProperty); //Debug prints too see behavior
   terminateProgram(); // Cleanup for this node when program has finished.
   return 0;
 }
