@@ -90,11 +90,21 @@ void graphicionado(){
       temp = apply(vprop, temp, vconst);
     
       vProperty[i] = temp; // Sequential Vertex Write
-      if(temp.property != vprop.property) { //TODO if all vertices is active this need to change! to if/case to not set over the order
-        Vertex v;
-        v.ID = i;
-        v.prop = temp;
-        activeVertex[activeVertexCount++] = v; // Sequential Vertex Write
+      if(isAllVerticesActive) { // Setting to check if all vertices should be active.
+        if(temp.property != vprop.property) { // No need to write all if no changed made
+          Vertex v;
+          v.ID = i;
+          v.prop = temp;
+          activeVertex[i] = v; // Sequential Vertex Write
+        }
+      }
+      else { // If not all vertices is active.
+        if(temp.property != vprop.property) { 
+          Vertex v;
+          v.ID = i;
+          v.prop = temp;
+          activeVertex[activeVertexCount++] = v; // Sequential Vertex Write
+        }
       }
     }
 
