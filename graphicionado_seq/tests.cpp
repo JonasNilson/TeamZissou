@@ -4,6 +4,7 @@
 #include "loadSettings.hpp"
 #include "tests.hpp"
 #include <math.h>
+#include <float.h>
 
 // Test to see if all structures are ordered as they should be for all algorithms.
 int testInitDataOrginization(){
@@ -76,12 +77,10 @@ int testBFS(){
 	// readData(1,argv); // Init reading of graph etc.
 	readGTgraphFile(filename);
         testInitDataOrginization(); // Check data ordering in current session
-
-
 	
 	/* PRE GRAPHICIONADO TESTS */
 	unsigned int unassignedProperty = totalVertexCount;
-	unsigned int preGtestValues[10] = {unassignedProperty, 0, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty};
+	unsigned int preGtestValues[10] = {unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty};
 
 	int fails = 0;
 
@@ -89,13 +88,13 @@ int testBFS(){
 	  {
 	    if(vProperty[i].property != preGtestValues[i])
 	      {
-		std::cout << "FAIL: " << vProperty[i].property << "!=" << preGtestValues[i] << std::endl;;
-	      fails++;
+		std::cout << "FAIL: " << vProperty[i].property << "!=" << preGtestValues[i] << std::endl;
+		fails++;
 	      }
+	    else
+	      std::cout << "PASS: " << vProperty[i].property << "=" << preGtestValues[i] << std::endl;
 	  }
 	std::cout << "PRE GRAPHICIONADO: Passed " << (10-fails) << "/10 properties." << std::endl;
-
-
 
 	graphicionado(); // Run the algorithm
 	/* POST GRAPHICIONADO TESTS */		
@@ -106,9 +105,11 @@ int testBFS(){
 	  {
 	    if(vProperty[i].property != testValues[i])
 	      {
-		std::cout << "FAIL: " << vProperty[i].property << "!=" << testValues[i] << std::endl;;
-	      fails++;
+		std::cout << "FAIL: " << vProperty[i].property << "!=" << testValues[i] << std::endl;
+		fails++;
 	      }
+	    else
+	      std::cout << "PASS: " << vProperty[i].property << "=" << testValues[i] << std::endl;
 	  }
 	std::cout << "POST GRAPHICIONADO: Passed " << (10-fails) << "/10 properties." << std::endl;
 	return 0;
@@ -121,12 +122,10 @@ int testSSSP(){
 	// readData(1,argv); // Init reading of graph etc.
 	readGTgraphFile(filename);
         testInitDataOrginization(); // Check data ordering in current session
-
-
 	
 	/* PRE GRAPHICIONADO TESTS */
-	unsigned int unassignedProperty = pow(2, 4*sizeof(double));
-	unsigned int preGtestValues[10] = {unassignedProperty, 0, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty};
+	double unassignedProperty = DBL_MAX;
+	double preGtestValues[10] = {unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty};
 
 	int fails = 0;
 
@@ -134,26 +133,28 @@ int testSSSP(){
 	  {
 	    if(vProperty[i].property != preGtestValues[i])
 	      {
-		std::cout << "FAIL: " << vProperty[i].property << "!=" << preGtestValues[i] << std::endl;;
-	      fails++;
+		std::cout << "FAIL: " << vProperty[i].property << "!=" << preGtestValues[i] << std::endl;
+		fails++;
 	      }
+	    else
+	      std::cout << "PASS: " << vProperty[i].property << "=" << preGtestValues[i] << std::endl;
 	  }
 	std::cout << "PRE GRAPHICIONADO: Passed " << (10-fails) << "/10 properties." << std::endl;
 
-
-
 	graphicionado(); // Run the algorithm
 	/* POST GRAPHICIONADO TESTS */		
-	unsigned int testValues[10] = {unassignedProperty, 0, unassignedProperty, 23, 86, unassignedProperty, 44, 4, 74, 84};
+	double testValues[10] = {unassignedProperty, 0, unassignedProperty, 23, 86, unassignedProperty, 44, 4, 74, 84};
 	fails = 0;
 
 	for(int i = 0; i<10; i++)
 	  {
 	    if(vProperty[i].property != testValues[i])
 	      {
-		std::cout << "FAIL: " << vProperty[i].property << "!=" << testValues[i] << std::endl;;
-	      fails++;
+		std::cout << "FAIL: " << vProperty[i].property << "!=" << testValues[i] << std::endl;
+		fails++;
 	      }
+	    else
+	      std::cout << "PASS: " << vProperty[i].property << "=" << testValues[i] << std::endl;
 	  }
 	std::cout << "POST GRAPHICIONADO: Passed " << (10-fails) << "/10 properties." << std::endl;
 	return 0;
