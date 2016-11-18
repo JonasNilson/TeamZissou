@@ -10,21 +10,34 @@
 #include <typeinfo>
 #include "test_functions.hpp"
 #include <math.h>
+#include <limits>
 
 //Init value on starting nodes for different algorithms used. Input: startingNodes are the node(s) the algorithm it start from.
 void initAlgorithmProperty(Vertex* startingNodes) {
 	if(graphAlgorithm == "BFS"){ //Check if BFS is used
+		// Init all vertex properties for BFS
+		for(unsigned int i=0; i < totalVertexCount; ++i){
+			// Property can't be larger than totalVertexCount
+			vertices[i].prop.property = totalVertexCount;
+		}
+
 		//Set their property to 0.
 		for(unsigned int i = 0; i < activeVertexCount; ++i){
 			for(unsigned int j = 0; j < activeVertexCount; ++j) {
 				if(startingNodes[i].ID == vertices[j].ID){
 					startingNodes[i].prop.property = 0;
 				}
-			}	
+			}
 		}
 	}
 
 	if(graphAlgorithm == "SSSP"){ //Check if SSSP is used
+		// Init all vertex properties for SSSP
+		for(unsigned int i=0; i < totalVertexCount; ++i){
+			// Each vertex property is set to the maximum allowed double value
+			vertices[i].prop.property = std::numeric_limits<double>::max();
+		}
+
 		//Set their property to 0.
 		for(unsigned int i = 0; i < activeVertexCount; ++i){
 			for(unsigned int j = 0; j < activeVertexCount; ++j) {
@@ -38,6 +51,8 @@ void initAlgorithmProperty(Vertex* startingNodes) {
 	if(graphAlgorithm == "PR"){ //Check if Page rank is used
 		//Const array gonna be used to keep degrees. Degree is number of edges away.
 		for(unsigned int i = 0; i < totalVertexCount; ++i){
+			vertices[i].prop.property = 0.3; // From GraphMat
+			
 			if(edgeIDTable[i] == 0){
 				//Does not have edges
 				vConst[i].property = 0;
@@ -238,13 +253,11 @@ void readGTgraphFile(const char* filename){
 		edges[i].weight = std::stoll(item);
 	  }
 	}
-	// vertices[1].ID = 1;
-	unsigned int unassignedProperty = pow(2, 4*sizeof(double));
+	
+	// Initialize all vertex ID's
 	for(unsigned int i=0; i < numVertices; ++i){
 	  	vertices[i].ID = i;
-		vertices[i].prop.property = unassignedProperty; //(double)(rand() % 100);
 	}
-	vertices[1].prop.property = 0;
 
 	file.close(); // Closes file
 

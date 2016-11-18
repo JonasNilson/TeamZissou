@@ -80,7 +80,7 @@ int testBFS(){
 
 	
 	/* PRE GRAPHICIONADO TESTS */
-	unsigned int unassignedProperty = pow(2, 4*sizeof(double));
+	unsigned int unassignedProperty = totalVertexCount;
 	unsigned int preGtestValues[10] = {unassignedProperty, 0, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty};
 
 	int fails = 0;
