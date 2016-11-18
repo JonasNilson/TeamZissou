@@ -24,7 +24,7 @@ void initAlgorithmProperty() {
 		//Set their property to 0.
 		for(unsigned int i = 0; i < activeVertexCount; ++i){
 			for(unsigned int j = 0; j < totalVertexCount; ++j) {
-				if(activeVertex[i].ID == vertices[j].ID) {
+				if(startingNodes[i] == vertices[j].ID) { // startingNodes are ID's of active nodes
 					vertices[j].prop.property = 0;
 				}
 			}
@@ -41,7 +41,7 @@ void initAlgorithmProperty() {
 		//Set their property to 0.
 	    for(unsigned int i = 0; i < activeVertexCount; ++i){
 		    for(unsigned int j = 0; j < totalVertexCount; ++j) {
-				if(activeVertex[i].ID == vertices[j].ID) {
+				if(startingNodes[i] == vertices[j].ID) { // startingNodes are ID's of active nodes
 					// std::cout << "PREPROCESS: initAlgorithmProperty: vertex index: " << j << std::endl;
 					vertices[j].prop.property = 0;
 				}
@@ -156,9 +156,11 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 
   	// Init EdgeIDTable
 	setupEIT(numVertices, numEdges, vertices, edgeIDTable, edges);
+
 	
-	// Init starting nodes depending on algorithm used.
+    // Init starting nodes depending on algorithm used.
 	initAlgorithmProperty();
+
 
 	// Init ActiveVertices
 	if(isAllVerticesActive){ //If settings are set to use all vertices as active
@@ -176,8 +178,6 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 		// Free local node memory usage for init active vertices
 		delete[] startingNodes;
 	}
-
-
 
 	//printVertices(numVertices, vertices);
 	//printEdges(numEdges, edges);

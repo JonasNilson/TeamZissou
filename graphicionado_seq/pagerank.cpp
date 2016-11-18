@@ -15,7 +15,10 @@ double dampenFactor = 0.85; // If to low it overshoot, if to high it might get d
 */
 VertexProperty processEdge(double weight, VertexProperty srcProp, VertexProperty dstProp) {  
   VertexProperty v;
+  std::cout << "PAGERANK: processEdge: srcProp.property: " << srcProp.property << std::endl;
+  
   v.property = srcProp.property;
+  
   return v;
 }
 
@@ -24,7 +27,8 @@ VertexProperty processEdge(double weight, VertexProperty srcProp, VertexProperty
 * Right now, simple implementation taken from graphicionado paper
 */
 VertexProperty reduce(VertexProperty temp, VertexProperty result) {
-
+  std::cout << "PAGERANK: reduce: temp.property: " << temp.property << "; result.property: " << result.property << std::endl;
+  
   temp.property = temp.property + result.property;
   return temp;
 }
@@ -40,7 +44,13 @@ VertexProperty apply(VertexProperty vprop, VertexProperty temp, VertexProperty v
 		v.property = 0;
 		return v;
 	}
+	
+	std::cout << "PAGERANK: apply: temp.property: " << temp.property << "; vconst.property: " << vconst.property << std::endl;
+	
 	v.property = (dampenFactor + (1 - dampenFactor) * temp.property) / vconst.property;
+	
+	std::cout << "PAGERANK: apply: v.property: " << v.property << std::endl;
+	
  	return v;
 //                     (A is value between 0 - 1   used 0.85 is common dampen value)   v deg is outgoing edges 
   //return temp;
