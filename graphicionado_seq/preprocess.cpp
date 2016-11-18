@@ -12,8 +12,8 @@
 #include <math.h>
 #include <limits>
 
-//Init value on starting nodes for different algorithms used. Input: startingNodes are the node(s) the algorithm it start from.
-void initAlgorithmProperty(Vertex* startingNodes) {
+//Init value on starting nodes for different algorithms used.
+void initAlgorithmProperty() {
 	if(graphAlgorithm == "BFS"){ //Check if BFS is used
 		// Init all vertex properties for BFS
 		for(unsigned int i=0; i < totalVertexCount; ++i){
@@ -145,31 +145,39 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 	totalVertexCount = numVertices;
 	totalEdgeCount = numEdges;
 
-	// Init ActiveVertices & activeVertexCount
+	// Init activeVertexCount
 	if(isAllVerticesActive){ //If settings are set to use all vertices as active
-		for(unsigned int i =0; i < numVertices; ++i) {
-	    	activeVertex[i] = vertices[i];
-	  	}
 	  	activeVertexCount = numVertices; //Set that it exist this many active vertices
 	}
-	else{ // Setting case where it is given active starting nodes
-		//activeVertexCount = sizeof(startingNodes)/sizeof(startingNodes[0]); // Get number of elements of startingNodes and set number of starting active vertices
-		activeVertexCount = numberOfStartingNodes;
-		std::sort(startingNodes,&startingNodes[activeVertexCount],unsignedIntCompare); // Sort it by ID
-		// Initialize the starting active vertices
-		for(unsigned int i = 0; i < activeVertexCount; ++i) {
-	    	activeVertex[i] = vertices[startingNodes[i]]; // Set active Vertex from startingNodes that hold ID of what vertices.	
-	  	}
-		
-		// Free local node memory usage for init active vertices
-		delete[] startingNodes;
+	else{ // Setting case where a subset of vertices are active.
+		activeVertexCount = numberOfStartingNodes;	
 	}
+
 
   	// Init EdgeIDTable
 	setupEIT(numVertices, numEdges, vertices, edgeIDTable, edges);
 	
 	// Init starting nodes depending on algorithm used.
-	initAlgorithmProperty(activeVertex);
+	initAlgorithmProperty();
+
+	// Init ActiveVertices
+	if(isAllVerticesActive){ //If settings are set to use all vertices as active
+		for(unsigned int i =0; i < numVertices; ++i) {
+	    	activeVertex[i] = vertices[i];
+	  	}
+	}
+	else{ // Setting case where it is given active starting nodes
+		std::sort(startingNodes,&startingNodes[activeVertexCount],unsignedIntCompare); // Sort it by ID
+		// Initialize the starting active vertices
+		for(unsigned int i = 0; i < activeVertexCount; ++i) {
+	    	activeVertex[i] = vertices[startingNodes[i]]; // Set active Vertex from startingNodes that hold ID of what vertices.	
+	  	}
+	
+		// Free local node memory usage for init active vertices
+		delete[] startingNodes;
+	}
+
+
 
 	//printVertices(numVertices, vertices);
 	//printEdges(numEdges, edges);
