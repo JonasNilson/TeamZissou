@@ -23,9 +23,9 @@ void initAlgorithmProperty(Vertex* startingNodes) {
 
 		//Set their property to 0.
 		for(unsigned int i = 0; i < activeVertexCount; ++i){
-			for(unsigned int j = 0; j < activeVertexCount; ++j) {
-				if(startingNodes[i].ID == vertices[j].ID){
-					startingNodes[i].prop.property = 0;
+			for(unsigned int j = 0; j < totalVertexCount; ++j) {
+				if(activeVertex[i].ID == vertices[j].ID) {
+					vertices[j].prop.property = 0;
 				}
 			}
 		}
@@ -39,12 +39,13 @@ void initAlgorithmProperty(Vertex* startingNodes) {
 		}
 
 		//Set their property to 0.
-		for(unsigned int i = 0; i < activeVertexCount; ++i){
-			for(unsigned int j = 0; j < activeVertexCount; ++j) {
-				if(startingNodes[i].ID == vertices[j].ID){
-					startingNodes[i].prop.property = 0;
+	    for(unsigned int i = 0; i < activeVertexCount; ++i){
+		    for(unsigned int j = 0; j < totalVertexCount; ++j) {
+				if(activeVertex[i].ID == vertices[j].ID) {
+					// std::cout << "PREPROCESS: initAlgorithmProperty: vertex index: " << j << std::endl;
+					vertices[j].prop.property = 0;
 				}
-			}	
+			}
 		}
 	}
 
