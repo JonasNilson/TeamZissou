@@ -9,5 +9,9 @@ void graphicionado();
 
 void terminateProgram();
 
+bool assertUnsignedInt(unsigned int a, unsigned int b);
+
+bool assertDouble(double a, double b);
+
 
 #endif
