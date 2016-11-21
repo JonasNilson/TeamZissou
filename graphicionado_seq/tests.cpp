@@ -75,41 +75,50 @@ int testBFS(){
 	const char* filename = "data/small.gr";
 	// char* argv[] = {"1","data/micro.gr"};
 	// readData(1,argv); // Init reading of graph etc.
+
+	// Overwriting settings
+	//startingNodes[0] = {1};
+	//numberOfStartingNodes = 1;
+
 	readGTgraphFile(filename);
-        testInitDataOrginization(); // Check data ordering in current session
+	testInitDataOrginization(); // Check data ordering in current session
 	
 	/* PRE GRAPHICIONADO TESTS */
 	unsigned int unassignedProperty = totalVertexCount;
-	unsigned int preGtestValues[10] = {unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty};
-
+	unsigned int preGtestValues[10] = {0, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty};
+	
+	/* for(unsigned int i = 0; i < activeVertexCount; ++i) {
+		preGtestValues[startingNodes[i]] = 0;
+		} */
+	
 	int fails = 0;
 
 	for(int i = 0; i<10; i++)
 	  {
 	    if(vProperty[i].property != preGtestValues[i])
 	      {
-		std::cout << "FAIL: " << vProperty[i].property << "!=" << preGtestValues[i] << std::endl;
+		std::cout << "FAILED: " << vProperty[i].property << "!=" << preGtestValues[i] << std::endl;
 		fails++;
 	      }
 	    else
-	      std::cout << "PASS: " << vProperty[i].property << "=" << preGtestValues[i] << std::endl;
+	      std::cout << "PASSED: " << vProperty[i].property << "=" << preGtestValues[i] << std::endl;
 	  }
 	std::cout << "PRE GRAPHICIONADO: Passed " << (10-fails) << "/10 properties." << std::endl;
 
 	graphicionado(); // Run the algorithm
 	/* POST GRAPHICIONADO TESTS */		
-	unsigned int testValues[10] = {unassignedProperty, 0, unassignedProperty, 1, 2, unassignedProperty, 1, 1, 2, 3};
+	unsigned int testValues[10] = {0, unassignedProperty, 1, 2, unassignedProperty, 1, 1, 2, 3, unassignedProperty};
 	fails = 0;
 
 	for(int i = 0; i<10; i++)
 	  {
 	    if(vProperty[i].property != testValues[i])
 	      {
-		std::cout << "FAIL: " << vProperty[i].property << "!=" << testValues[i] << std::endl;
+		std::cout << "FAILED: " << vProperty[i].property << "!=" << testValues[i] << std::endl;
 		fails++;
 	      }
 	    else
-	      std::cout << "PASS: " << vProperty[i].property << "=" << testValues[i] << std::endl;
+	      std::cout << "PASSED: " << vProperty[i].property << "=" << testValues[i] << std::endl;
 	  }
 	std::cout << "POST GRAPHICIONADO: Passed " << (10-fails) << "/10 properties." << std::endl;
 	return 0;

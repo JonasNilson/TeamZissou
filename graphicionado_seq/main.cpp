@@ -60,8 +60,7 @@ int readData(int argc, char *argv[]){
 
 void graphicionado(){
   Vertex dst; // TODO: Not needed for this algorithm right now? Implement in future if we want to use it
-  //printVerticesProperties(totalVertexCount, vertices, vProperty);
-  //printVerticesProperties(totalVertexCount, vertices, vConst);
+  
   while(activeVertexCount != 0) {
     // Pipeline from graphicionado behavior 
     //A Process edge Phase

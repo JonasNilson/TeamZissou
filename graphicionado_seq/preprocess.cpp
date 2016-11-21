@@ -255,18 +255,25 @@ void readGTgraphFile(const char* filename){
 	  comp = item.c_str()[0];
 	  if('a' == comp){
 		std::getline(ss, item, delimiter);
-		edges[i].srcID = std::stoll(item);
+		edges[i].srcID = std::stoll(item) - 1; // NOTE: GTGraph IDs start from 1, hence -1
 		std::getline(ss, item, delimiter);
-		edges[i].dstID = std::stoll(item);
+		edges[i].dstID = std::stoll(item) - 1; // NOTE: GTGraph IDs start from 1, hence -1
 		std::getline(ss, item, delimiter);
 		edges[i].weight = std::stoll(item);
 	  }
 	}
 	
-	// Initialize all vertex ID's
+	// Initialize all vertex ID's (starting from 0)
 	for(unsigned int i=0; i < numVertices; ++i){
 	  	vertices[i].ID = i;
 	}
+
+	// Update startingNodes IDs from settings file
+	for(unsigned int i = 0; i < numberOfStartingNodes; ++i) {
+		startingNodes[i] = startingNodes[i] - 1;
+	}
+
+	printVertices(numVertices, vertices);
 
 	file.close(); // Closes file
 
