@@ -137,6 +137,14 @@ int testSSSP(){
 void runTests(){
 	std::cout << "####__START TESTING__####" << std::endl;
 	int fails = 0;
+
+	// Set setting here so its not depending on the setting file.
+	numberOfStartingNodes = 1; // Number of active nodes;
+	delete[] startingNodes;
+	startingNodes = new unsigned int[numberOfStartingNodes];
+	startingNodes[0] = 1; // Active nodes with ID 1 from file.
+
+
 	// Check algorithm flag if BFS is being used.
 	if(graphAlgorithm == "BFS"){
 	  // Run BFS tests 
