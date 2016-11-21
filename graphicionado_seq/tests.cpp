@@ -115,7 +115,7 @@ int testSSSP(){
 	
 	/* PRE GRAPHICIONADO TESTS */
 	double unassignedProperty = DBL_MAX;
-	double preGraphicionadoV[10] = {unassignedProperty, 0, unassignedProperty, unassignedProperty, unassignedProperty
+	double preGraphicionadoV[10] = {0, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty
 				     , unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty
 				     , unassignedProperty};
 	int preFails = 0;
@@ -125,7 +125,7 @@ int testSSSP(){
 
 	graphicionado(); // Run the algorithm
 	/* POST GRAPHICIONADO TESTS */		
-	double postGraphicionadoV[10] = {unassignedProperty, 0, unassignedProperty, 23, 86, unassignedProperty, 44, 4, 74, 84};
+	double postGraphicionadoV[10] = {0, unassignedProperty, 23, 86, unassignedProperty, 44, 4, 74, 84, unassignedProperty};
 	int postFails = 0;
 
 	for(int i = 0; i<10; i++) if(!assertDouble(vProperty[i].property, postGraphicionadoV[i])) postFails++;
