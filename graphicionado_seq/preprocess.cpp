@@ -12,41 +12,32 @@
 #include <math.h>
 #include <limits>
 
+void setAllProperties(double value){
+  for(unsigned int i=0; i < totalVertexCount; ++i){
+    vertices[i].prop.property = value;
+  }
+}
+
+void setActiveProperties(double value){
+  for(unsigned int i = 0; i < activeVertexCount; ++i){
+    for(unsigned int j = 0; j < totalVertexCount; ++j) {
+      if(startingNodes[i] == vertices[j].ID) { // startingNodes are ID's of active nodes
+	vertices[j].prop.property = value;
+      }
+    }
+  }
+}
+
 //Init value on starting nodes for different algorithms used.
 void initAlgorithmProperty() {
 	if(graphAlgorithm == "BFS"){ //Check if BFS is used
-		// Init all vertex properties for BFS
-		for(unsigned int i=0; i < totalVertexCount; ++i){
-			// Property can't be larger than totalVertexCount
-			vertices[i].prop.property = totalVertexCount;
-		}
-
-		//Set their property to 0.
-		for(unsigned int i = 0; i < activeVertexCount; ++i){
-			for(unsigned int j = 0; j < totalVertexCount; ++j) {
-				if(startingNodes[i] == vertices[j].ID) { // startingNodes are ID's of active nodes
-					vertices[j].prop.property = 0;
-				}
-			}
-		}
+	  setAllProperties(totalVertexCount); // Init all vertex properties for BFS
+	  setActiveProperties(0); //Set active vertices' property to 0.
 	}
 
 	if(graphAlgorithm == "SSSP"){ //Check if SSSP is used
-		// Init all vertex properties for SSSP
-		for(unsigned int i=0; i < totalVertexCount; ++i){
-			// Each vertex property is set to the maximum allowed double value
-			vertices[i].prop.property = std::numeric_limits<double>::max();
-		}
-
-		//Set their property to 0.
-	    for(unsigned int i = 0; i < activeVertexCount; ++i){
-		    for(unsigned int j = 0; j < totalVertexCount; ++j) {
-				if(startingNodes[i] == vertices[j].ID) { // startingNodes are ID's of active nodes
-					// std::cout << "PREPROCESS: initAlgorithmProperty: vertex index: " << j << std::endl;
-					vertices[j].prop.property = 0;
-				}
-			}
-		}
+	  setAllProperties(std::numeric_limits<double>::max()); // Init all vertex properties for SSSP
+	  setActiveProperties(0); //Set active vertices' property to 0.
 	}
 
 	if(graphAlgorithm == "PR"){ //Check if Page rank is used
@@ -55,8 +46,7 @@ void initAlgorithmProperty() {
 			vertices[i].prop.property = 0.3; // From GraphMat
 			
 			if(edgeIDTable[i] == 0){
-				//Does not have edges
-				vConst[i].property = 0;
+				vConst[i].property = 0; //Does not have edges
 				continue;
 			}
 			unsigned int counter = 0; // Counter to keep track of how many edges
@@ -88,7 +78,7 @@ void setupDSM(unsigned int numVertices, unsigned int numEdges){
 	activeVertex = argo::conew_array<Vertex>(numVertices);
 	
 	edges = argo::conew_array<Edge>(numEdges); 
-    edgeIDTable = argo::conew_array<unsigned int>(numVertices); // make it of size number of vertices
+	edgeIDTable = argo::conew_array<unsigned int>(numVertices); // make it of size number of vertices
 
 	vProperty = argo::conew_array<VertexProperty>(numVertices);
 	vTempProperty = argo::conew_array<VertexProperty>(numVertices);

@@ -81,55 +81,57 @@ int testInitDataOrginization(){
 
 // Test BFS behavior
 int testBFS(){
-	const char* filename = "data/small.gr";
-	readGTgraphFile(filename);
+        const char* filename = "data/small.gr"; // Set graph to use
+	int preFails = 0, postFails = 0; // Number of fails.
 
-    if(testInitDataOrginization() == 1)
+	readGTgraphFile(filename); // Read graph
+	unsigned int unassignedProperty = totalVertexCount; // Initial value for properties.
+	unsigned int preGraphicionadoV[10] = {0, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty
+					      , unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty
+					      , unassignedProperty};
+	unsigned int postGraphicionadoV[10] = {0, unassignedProperty, 1, 2, unassignedProperty, 1, 1, 2, 3, unassignedProperty};
+
+	if(testInitDataOrginization() == 1)
 	  return -1; // Check data ordering in current session
 	
 	/* PRE GRAPHICIONADO TESTS */
-	unsigned int unassignedProperty = totalVertexCount; // Initial value for properties.
-	unsigned int preGraphicionadoV[10] = {0, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty};
-	int preFails = 0; // Number of fails.
-
 	for(int i = 0; i<10; i++) if(!assertUnsignedInt(vProperty[i].property, preGraphicionadoV[i])) preFails++;
 	std::cout << "PRE GRAPHICIONADO: Passed " << (10-preFails) << "/10 properties." << std::endl;
 
 	graphicionado(); // Run the algorithm
-	/* POST GRAPHICIONADO TESTS */		
-	unsigned int postGraphicionadoV[10] = {0, unassignedProperty, 1, 2, unassignedProperty, 1, 1, 2, 3, unassignedProperty};
-	int postFails = 0;
 
+	/* POST GRAPHICIONADO TESTS */		
 	for(int i = 0; i<10; i++) if(!assertUnsignedInt(vProperty[i].property, postGraphicionadoV[i])) postFails++;
 	std::cout << "POST GRAPHICIONADO: Passed " << (10-postFails) << "/10 properties." << std::endl;
+	
 	return preFails+postFails;
 }
 
 // Test SSSP behavior
 int testSSSP(){
 	const char* filename = "data/small.gr";
-	readGTgraphFile(filename);
-        
+	int preFails = 0, postFails = 0; // Number of fails
+	
+	readGTgraphFile(filename); // Read graph
+        double unassignedProperty = DBL_MAX; // Value for unassigned properties
+	double preGraphicionadoV[10] = {0, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty
+				     , unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty
+				     , unassignedProperty};
+	double postGraphicionadoV[10] = {0, unassignedProperty, 23, 86, unassignedProperty, 44, 4, 74, 84, unassignedProperty};
+	
 	if(testInitDataOrginization() == 1)
 	  return -1; // Check data ordering in current session
 	
 	/* PRE GRAPHICIONADO TESTS */
-	double unassignedProperty = DBL_MAX;
-	double preGraphicionadoV[10] = {0, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty
-				     , unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty
-				     , unassignedProperty};
-	int preFails = 0;
-
-	for(int i = 0; i<10; i++) if(!assertDouble(vProperty[i].property, preGraphicionadoV[i])) preFails++;
+       	for(int i = 0; i<10; i++) if(!assertDouble(vProperty[i].property, preGraphicionadoV[i])) preFails++;
 	std::cout << "PRE GRAPHICIONADO: Passed " << (10-preFails) << "/10 properties." << std::endl;
 
 	graphicionado(); // Run the algorithm
-	/* POST GRAPHICIONADO TESTS */		
-	double postGraphicionadoV[10] = {0, unassignedProperty, 23, 86, unassignedProperty, 44, 4, 74, 84, unassignedProperty};
-	int postFails = 0;
 
+	/* POST GRAPHICIONADO TESTS */		
 	for(int i = 0; i<10; i++) if(!assertDouble(vProperty[i].property, postGraphicionadoV[i])) postFails++;
 	std::cout << "POST GRAPHICIONADO: Passed " << (10-postFails) << "/10 properties." << std::endl;
+	
 	return preFails+postFails;
 } 
 
@@ -143,7 +145,6 @@ void runTests(){
 	delete[] startingNodes;
 	startingNodes = new unsigned int[numberOfStartingNodes];
 	startingNodes[0] = 1; // Active nodes with ID 1 from file.
-
 
 	// Check algorithm flag if BFS is being used.
 	if(graphAlgorithm == "BFS"){

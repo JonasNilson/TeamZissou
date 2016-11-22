@@ -57,14 +57,8 @@ int readData(int argc, char *argv[]){
   return 0;
 }
 
-
-void graphicionado(){
-  Vertex dst; // TODO: Not needed for this algorithm right now? Implement in future if we want to use it
-  
-  while(activeVertexCount != 0) {
-    // Pipeline from graphicionado behavior 
-    //A Process edge Phase
-    for (unsigned int i=0; i<activeVertexCount; i++) {
+void processEdges(Vertex dst){
+for (unsigned int i=0; i<activeVertexCount; i++) {
       Vertex src = activeVertex[i]; // Sequential Vertex Read
       unsigned int eID = edgeIDTable[src.ID]; // Edge ID Read
       if(eID == 0) continue; // If the index for the vertex is 0, it has no outgoing edges.
@@ -79,10 +73,10 @@ void graphicionado(){
         e = edges[++eID]; // Edge Read
       }
     }
-    // Reset ActiveVertex and ActiveVertexCount
-    activeVertexCount = 0; // reset activeVertexCount & active vertices.
-    //B Apply Phase
-    for (unsigned int i=0; i<totalVertexCount; i++) {
+}
+
+void applyEdges(){
+for (unsigned int i=0; i<totalVertexCount; i++) {
       VertexProperty vprop = vProperty[i]; // Sequential Vertex Read
       VertexProperty temp = vTempProperty[i]; // Sequential Vertex Read
       VertexProperty vconst = vConst[i];
@@ -106,6 +100,19 @@ void graphicionado(){
         }
       }
     }
+}
+
+void graphicionado(){
+  Vertex dst; // TODO: Not needed for this algorithm right now? Implement in future if we want to use it
+  
+  while(activeVertexCount != 0) {
+    // Pipeline from graphicionado behavior 
+   
+    processEdges(dst); //A Process edge Phase
+    
+    activeVertexCount = 0; // reset activeVertexCount & active vertices.
+    
+    applyEdges(); //B Apply Phase
 
     //Settings check. If isAllVerticesActive = true then all vertices should be active over all iterations.
     if(isAllVerticesActive){
