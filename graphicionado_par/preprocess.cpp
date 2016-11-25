@@ -20,7 +20,7 @@ void initAlgorithmProperty(unsigned int numVertices, unsigned int numEdges) {
 		for(unsigned int j=0; j < NODES; ++j){
 			for(unsigned int i=0; i < totalVertexCount[j]; ++i){
 				// Property can't be larger than totalVertexCount
-				vertices[i].prop.property = numVertices;
+				vertices[j][i].prop.property = numVertices;
 			}
 		}
 	}
@@ -116,7 +116,7 @@ void setupDSM(unsigned int numVertices, unsigned int numEdges){
 
 	edges = argo::conew_array<Edge*>(NODES);
 	for(unsigned int i = 0; i < NODES; ++i){
-		edges[i] = argo::conew_array<Vertex>(numEdges); // TODO: NEED to be optimized, should not be needed to keep entire space for number of edges times NODES.
+		edges[i] = argo::conew_array<Edge>(numEdges); // TODO: NEED to be optimized, should not be needed to keep entire space for number of edges times NODES.
 	} 
 	
     edgeIDTable = argo::conew_array<unsigned int>(numVertices); // might need to change the structure of this one.
@@ -145,7 +145,7 @@ void setupDSM(unsigned int numVertices, unsigned int numEdges){
 
 	totalVertexCount = argo::conew_array<unsigned int>(NODES);
 
-	outputCount = argo::conew_array<unsigned int>(NODES);
+	initPipelines(); // Initialize locks etc. for the pipelines
 
 	std::cout << "setupDSM: Setup was successfull" << std::endl;
 }
@@ -215,7 +215,7 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 
 
   	// Init EdgeIDTable
-	setupEIT(numVertices, numEdges, vertices, edgeIDTable, edges);
+	setupEIT(numVertices, numEdges, edgeIDTable);
 
 	
     // Init starting nodes depending on algorithm used.
@@ -240,7 +240,7 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 	  	}
 
 	  	for(unsigned int j=0; j < NODES; ++j){
-	  			std::sort(activeVertex[j],activeVertex[j][activeVertexCount[j]],unsignedIntCompare); // Sort by ID
+	  			std::sort(activeVertex[j],&activeVertex[j][activeVertexCount[j]],vertexIDCompare); // Sort by ID
 	  	}
 		// Free local node memory usage for init active vertices
 		delete[] startingNodes;
@@ -364,7 +364,7 @@ void readGTgraphFile(const char* filename){
  */
 
 //TEST THIS FUNCTION TO SEE IF IT DO WHAT IT SUPPOSE TO DO.
-void setupEIT(unsigned int numVertices, unsigned int numEdges, Vertex** vertices, unsigned int* edgeIDTable, Edge** edges){
+void setupEIT(unsigned int numVertices, unsigned int numEdges, unsigned int* edgeIDTable){
   
 	unsigned int edgesPosition[NODES]; //Is 0 from start
 	unsigned int previousID[NODES];
@@ -384,7 +384,7 @@ void setupEIT(unsigned int numVertices, unsigned int numEdges, Vertex** vertices
 				else {
 					//No more edges found.
 					edgeIDTable[i] = edgesPosition[stream] + 1;
-					previousID = i;
+					previousID[stream] = i;
 					edgesPosition[stream] = j;
 					break;
 				}
@@ -399,7 +399,7 @@ void setupEIT(unsigned int numVertices, unsigned int numEdges, Vertex** vertices
 				else {
 					//No more edges found.
 					edgeIDTable[i] = edgesPosition[stream] + 1;
-					previousID = i;
+					previousID[stream] = i;
 					edgesPosition[stream] = j;
 					break;
 				}

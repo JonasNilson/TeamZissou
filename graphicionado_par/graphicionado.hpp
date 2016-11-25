@@ -29,8 +29,10 @@ extern std::string graphAlgorithm; // Algorithm used e.g. BFS. This is set by e.
 */
 
 /* -----------------------------------------------
---- Graphicionado pipeline global variables ---------------
+--- Graphicionado pipeline global variables ------
 ----------------------------------------------- */
+
+extern unsigned int NODES;
 
 extern Vertex** vertices; // All vertices in the graph
 extern Vertex** activeVertex; 

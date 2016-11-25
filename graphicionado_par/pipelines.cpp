@@ -1,13 +1,22 @@
 //
 
 #include "graphicionado.hpp" // Data structures for graph problems
-
-unsigned int NODES = 2; // Need to init this before setup of argo allocation.
+#include "pipelines.hpp"
 
 //Global variables
 DataCrossbar** outputQueue; // Crossbar output for destination oriented part.
 unsigned int* outputCount;
 
+argo::globallock::cohort_lock* primelock;
+
+void initPipelines() {
+	outputCount = argo::conew_array<unsigned int>(NODES);	
+	primelock = new argo::globallock::cohort_lock;
+}
+
+void cleanupPipelines() {
+	delete primelock;
+}
 
 // TODO: data structure
 //Edges = double array list
@@ -28,7 +37,7 @@ of the crossbar switch.
 // Crossbar should switch this edge to correct pipeline. It take in a pointer to an edge. 
 // ID of who is running.
 
-void crossbar(unsigned int ID, Edge* e, VertexProperty srcProp){
+void crossbar(unsigned int ID, Edge e, VertexProperty srcProp){
 	
 	unsigned int stream = e.dstID % NODES; // Check which pipeline to go to
 
@@ -38,18 +47,18 @@ void crossbar(unsigned int ID, Edge* e, VertexProperty srcProp){
 	data.srcProp = srcProp;
 
 
-	primelock.lock();
-	argo::aquire(); // TODO: Local counter and synchronize them in the end.
+	primelock->lock();
+	argo::backend::acquire(); // TODO: Local counter and synchronize them in the end.
 	unsigned int count = outputCount[stream];
 	outputCount[stream] = outputCount[stream] + 1;
-	argo::release();
-	primelock.unlock();
+	argo::backend::release();
+	primelock->unlock();
 	outputQueue[stream][count] = data;
 
 }
 
 void processingPhaseSourceOriented(unsigned int ID){
-	Vertex dst; // TODO: Not needed for this algorithm right now? Implement in future if we want to use it
+	//Vertex dst; // TODO: Not needed for this algorithm right now? Implement in future if we want to use it
 
     // Pipeline from graphicionado behavior 
     //A Process edge Phase
@@ -74,10 +83,9 @@ void processingPhaseSourceOriented(unsigned int ID){
 //outputQueue [][] put in IDs on edges thats gonna be used.
 // edgeID
 
-
 void processingPhaseDestinationOriented(unsigned int ID){
-
-	for(unsigned int i = 0; i < outputCount[ID]){
+	Vertex dst; // [OPTIONAL]
+	for(unsigned int i = 0; i < outputCount[ID]; ++i){
     	//dst.prop = vProperty[e.dstID]; // [OPT IONAL] Random Vertex Read
     	VertexProperty res = processEdge(outputQueue[ID][i].weight, outputQueue[ID][i].srcProp, dst.prop);
     	VertexProperty temp = vTempProperty[ID][outputQueue[ID][i].dstID]; // Random Vertex Read
@@ -88,11 +96,3 @@ void processingPhaseDestinationOriented(unsigned int ID){
 	// Reset ActiveVertex and ActiveVertexCount
 	activeVertexCount[ID] = 0; // reset activeVertexCount & active vertices.
 }
-
-
-
-
-
-
-
-

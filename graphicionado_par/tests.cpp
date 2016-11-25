@@ -5,7 +5,7 @@
 #include "tests.hpp"
 #include <math.h>
 #include <float.h>
-
+/*
 // Test to see if all structures are ordered as they should be for all algorithms.
 int testInitDataOrginization(){
 	int errorCode = 0; // if 0 then everything is fine otherwise 1 if something went wrong.
@@ -87,7 +87,7 @@ int testBFS(){
     if(testInitDataOrginization() == 1)
 	  return -1; // Check data ordering in current session
 	
-	/* PRE GRAPHICIONADO TESTS */
+	// PRE GRAPHICIONADO TESTS
 	unsigned int unassignedProperty = totalVertexCount; // Initial value for properties.
 	unsigned int preGraphicionadoV[10] = {0, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty};
 	int preFails = 0; // Number of fails.
@@ -96,7 +96,7 @@ int testBFS(){
 	std::cout << "PRE GRAPHICIONADO: Passed " << (10-preFails) << "/10 properties." << std::endl;
 
 	graphicionado(); // Run the algorithm
-	/* POST GRAPHICIONADO TESTS */		
+	// POST GRAPHICIONADO TESTS		
 	unsigned int postGraphicionadoV[10] = {0, unassignedProperty, 1, 2, unassignedProperty, 1, 1, 2, 3, unassignedProperty};
 	int postFails = 0;
 
@@ -113,7 +113,7 @@ int testSSSP(){
 	if(testInitDataOrginization() == 1)
 	  return -1; // Check data ordering in current session
 	
-	/* PRE GRAPHICIONADO TESTS */
+	// PRE GRAPHICIONADO TESTS
 	double unassignedProperty = DBL_MAX;
 	double preGraphicionadoV[10] = {0, unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty
 				     , unassignedProperty, unassignedProperty, unassignedProperty, unassignedProperty
@@ -124,7 +124,7 @@ int testSSSP(){
 	std::cout << "PRE GRAPHICIONADO: Passed " << (10-preFails) << "/10 properties." << std::endl;
 
 	graphicionado(); // Run the algorithm
-	/* POST GRAPHICIONADO TESTS */		
+	// POST GRAPHICIONADO TESTS		
 	double postGraphicionadoV[10] = {0, unassignedProperty, 23, 86, unassignedProperty, 44, 4, 74, 84, unassignedProperty};
 	int postFails = 0;
 
@@ -132,10 +132,11 @@ int testSSSP(){
 	std::cout << "POST GRAPHICIONADO: Passed " << (10-postFails) << "/10 properties." << std::endl;
 	return preFails+postFails;
 } 
+*/
 
 // Test behavior for different search logarithms.
 void runTests(){
-	std::cout << "####__START TESTING__####" << std::endl;
+	/*std::cout << "####__START TESTING__####" << std::endl;
 	int fails = 0;
 
 	// Set setting here so its not depending on the setting file.
@@ -175,8 +176,10 @@ void runTests(){
 
 	std::cout << "####__FINISH TESTING__####" << std::endl;
 	terminateProgram(); // Cleanup when program has finished.
+	*/
 }
 
+/*
 bool assertUnsignedInt(unsigned int a, unsigned int b){
   bool statement = (a == b);
   if(statement) std::cout << "PASS: " << a << "=" << b << std::endl;
@@ -190,3 +193,4 @@ bool assertDouble(double a, double b){
   else std::cout << "FAIL: " << a << "!=" << b << std::endl;
   return statement;
 }
+*/

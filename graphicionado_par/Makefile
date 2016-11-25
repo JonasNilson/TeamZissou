@@ -9,7 +9,7 @@ CFLAGS := -O3 -g -Wall -pthread -I$(ARGODSM)/src
 CPPFLAGS := $(CFLAGS) -std=c++11
 
 # All files necessary for compiling
-BASICFILES := main.cpp preprocess.cpp loadSettings.cpp test_functions.cpp tests.cpp
+BASICFILES := main.cpp preprocess.cpp loadSettings.cpp pipelines.cpp test_functions.cpp tests.cpp
 
 # A list of the executable files
 EXECUTABLES := bfs sssp pagerank

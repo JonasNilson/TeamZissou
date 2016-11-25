@@ -9,10 +9,11 @@
 #include "loadSettings.hpp"
 #include "test_functions.hpp"
 #include "tests.hpp"
-#include "pipeline.hpp"
+#include "pipelines.hpp"
 
 // Global variable declaration
 int THREADS = 4; // Set number of threads
+unsigned int NODES = 2;
 
 Vertex** vertices; // All vertices in the graph
 Vertex** activeVertex; 
@@ -31,9 +32,9 @@ unsigned int* totalEdgeCount;
 // Make all cleanups needed before closing the program.
 void terminateProgram(){
     std::cout << "Shutting down program! \n";
+	cleanupPipelines(); // Cleanup the allocations from pipelines
     argo::finalize(); // Cleanup for this node when program has finished.
 }
-
 
 /*
 * readData take data and init all data in the system so graphicionado can run.
@@ -58,13 +59,6 @@ int readData(int argc, char *argv[]){
   return 0;
 }
 
-
-
-
-
-
-
-
 // ID is for node/thread
 void graphicionado(unsigned int id){
     
@@ -74,6 +68,7 @@ void graphicionado(unsigned int id){
     argo::barrier(); // Synchronization
     processingPhaseDestinationOriented(id); //
 
+	/*
     //B Apply Phase
     for (unsigned int i=start; i<end; i++) {
       VertexProperty vprop = vProperty[i]; // Sequential Vertex Read
@@ -100,6 +95,7 @@ void graphicionado(unsigned int id){
         }
       }
     }
+	*/
 
     //Settings check. If isAllVerticesActive = true then all vertices should be active over all iterations.
     if(isAllVerticesActive){
@@ -152,7 +148,6 @@ int main(int argc, char *argv[]){
   }
   
   graphicionado(id);
-
 
   //printVerticesProperties(totalVertexCount, vertices, vProperty); //Debug prints too see behavior
   terminateProgram(); // Cleanup for this node when program has finished.
