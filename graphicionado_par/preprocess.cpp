@@ -145,6 +145,8 @@ void setupDSM(unsigned int numVertices, unsigned int numEdges){
 
 	totalVertexCount = argo::conew_array<unsigned int>(NODES);
 
+	totalEdgeCount = argo::conew_array<unsigned int>(NODES);
+
 	initPipelines(); // Initialize locks etc. for the pipelines
 
 	std::cout << "setupDSM: Setup was successfull" << std::endl;
@@ -218,7 +220,7 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 	setupEIT(numVertices, numEdges, edgeIDTable);
 
 	
-    // Init starting nodes depending on algorithm used.
+	// Init starting nodes depending on algorithm used.
 	initAlgorithmProperty(numVertices,numEdges);
 
 
@@ -325,17 +327,20 @@ void readGTgraphFile(const char* filename){
 		std::getline(ss, item, delimiter);
 		
 		unsigned int stream = (std::stoll(item) - 1) % NODES; 
-
-		edges[stream][totalEdgeCount[stream]].srcID = std::stoll(item) - 1; // NOTE: GTGraph IDs start from 1, hence -1
+		Edge* currentEdges = edges[stream];
+		Edge currentEdge = currentEdges[totalEdgeCount[stream]];
+		
+		unsigned int src = std::stoll(item);
+		currentEdge.srcID = src-1;
 		std::getline(ss, item, delimiter);
-		edges[stream][totalEdgeCount[stream]].dstID = std::stoll(item) - 1; // NOTE: GTGraph IDs start from 1, hence -1
+	        unsigned int dst = std::stoll(item);
+		currentEdge.dstID = dst-1;
 		std::getline(ss, item, delimiter);
-		edges[stream][totalEdgeCount[stream]].weight = std::stoll(item);
-
+		unsigned int weight = std::stoll(item);
+		currentEdge.weight = weight;
 		totalEdgeCount[stream]++;
 	  }
 	}
-	
 	// Initialize all vertex ID's (starting from 0)
 	for(unsigned int i=0; i < numVertices; ++i){
 		unsigned int stream = i % NODES;
