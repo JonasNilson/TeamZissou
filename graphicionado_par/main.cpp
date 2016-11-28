@@ -68,39 +68,8 @@ void graphicionado(unsigned int id){
     argo::barrier(); // Synchronization
     processingPhaseDestinationOriented(id); //
 
-	/*
     //B Apply Phase
-    for (unsigned int i=start; i<end; i++) {
-      VertexProperty vprop = vProperty[i]; // Sequential Vertex Read
-      VertexProperty temp = vTempProperty[i]; // Sequential Vertex Read
-      VertexProperty vconst = vConst[i];
-      temp = apply(vprop, temp, vconst);
-    
-      vProperty[i] = temp; // Sequential Vertex Write
-      if(isAllVerticesActive) { // Setting to check if all vertices should be active.
-        if(temp.property != vprop.property) { // No need to write all if no changed made
-          Vertex v;
-          v.ID = i;
-          v.prop = temp;
-          activeVertex[i] = v; // Sequential Vertex Write
-        }
-      }
-      else { // If not all vertices is active.
-        if(temp.property != vprop.property) { 
-          Vertex v;
-          v.ID = i;
-          v.prop = temp;
-          //Active synch for this
-          activeVertex[activeVertexCounterLocalForNow++] = v; // Sequential Vertex Write
-        }
-      }
-    }
-	*/
-
-    //Settings check. If isAllVerticesActive = true then all vertices should be active over all iterations.
-    if(isAllVerticesActive){
-      activeVertexCount = totalVertexCount;//Set active Vertex count to be the total number of vertices.
-    }
+    void applyPhase(id);
 
     //Settings check if we should use max iteration implementation or not
     if(maxIterations != 0){ //If setting is set to 0 it will use infinity iteration possibility

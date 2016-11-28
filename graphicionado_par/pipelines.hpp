@@ -18,7 +18,7 @@ void initPipelines();
 void cleanupPipelines();
 void processingPhaseSourceOriented(unsigned int ID);
 void processingPhaseDestinationOriented(unsigned int ID);
-
+void applyPhase(unsigned int ID);
 // Struct
 struct DataCrossbar{
 	unsigned int dstID;

@@ -97,3 +97,50 @@ void processingPhaseDestinationOriented(unsigned int ID){
 	// Reset ActiveVertex and ActiveVertexCount
 	activeVertexCount[ID] = 0; // reset activeVertexCount & active vertices.
 }
+
+
+
+
+
+
+
+
+
+/*
+* Update phase for active vertices
+* ID - is the node ID which is the stream in what array that is being used.
+*/
+void applyPhase(unsigned int ID){
+    for (unsigned int i = 0; i < totalVertexCount[ID]; i++) {
+	    VertexProperty vprop = vProperty[ID][i]; // Sequential Vertex Read
+		VertexProperty temp = vTempProperty[ID][i]; // Sequential Vertex Read
+		VertexProperty vconst = vConst[ID][i];
+		temp = apply(vprop, temp, vconst);
+
+		vProperty[ID][i] = temp; // Sequential Vertex Write
+	  	if(isAllVerticesActive) { // Setting to check if all vertices should be active.
+	    	if(temp.property != vprop.property) { // No need to write all if no changed made
+	      		Vertex v;
+	      		v.ID = ID + NODES * i; // Calculate the ID of the vertex in that position id + nodes * i.
+	      		v.prop = temp;
+	      		activeVertex[ID][i] = v; // Sequential Vertex Write
+	    	}
+	  	}
+	  	else{ 
+	  		// If not all vertices is active.
+	    	if(temp.property != vprop.property) { 
+	      		Vertex v;
+	      		v.ID = ID + NODES * i; // Calculate the ID of the vertex in that position id + nodes * i.
+	      		v.prop = temp;
+	      		//Active synch for this
+	      		activeVertex[ID][activeVertexCount[ID]++] = v; // Sequential Vertex Write
+	    	}
+	  	}
+	}
+
+
+	//Settings check. If isAllVerticesActive = true then all vertices should be active over all iterations.
+    if(isAllVerticesActive){
+      	activeVertexCount[ID] = totalVertexCount[ID];//Set active Vertex count to be the total number of vertices in their node id stream.
+    }
+}
