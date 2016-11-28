@@ -98,26 +98,31 @@ int main(int argc, char *argv[]){
   */
   argo::init(128 * 1024 * 1024); 
 
-  // Load the configuration settings from file (settings.cfg)
-  loadSettings();
- 
   // Local variable declaration
   unsigned int id = argo::node_id(); // get this node unique index number starting from 0
   //int nodes = argo::number_of_nodes(); // return the total number of nodes in the Argo system.
- 
-  // readData take input and organize the input
-  int code = readData(argc,argv);
-  if(code != 0){
-    if(code == 2){
-      // test run
-      return 0;
-    }
-    //Exist program something went wrong with reading of Data.
-    return 1;
-  }
-  
-  graphicionado(id);
 
+  // Make sure only node 0 run 
+  if(id == 0){
+
+    // Load the configuration settings from file (settings.cfg)
+    loadSettings();
+   
+    // readData take input and organize the input
+    int code = readData(argc,argv);
+    if(code != 0){
+      if(code == 2){
+        // test run
+        return 0;
+      }
+      //Exist program something went wrong with reading of Data.
+      return 1;
+    }
+  }  
+  
+  argo::barrier(); // Synchronize after node 0 is done with the initialization.
+  graphicionado(id);
+  
   //printVerticesProperties(totalVertexCount, vertices, vProperty); //Debug prints too see behavior
   terminateProgram(); // Cleanup for this node when program has finished.
   return 0;
