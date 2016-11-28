@@ -86,11 +86,12 @@ void processingPhaseSourceOriented(unsigned int ID){
 void processingPhaseDestinationOriented(unsigned int ID){
 	Vertex dst; // [OPTIONAL]
 	for(unsigned int i = 0; i < outputCount[ID]; ++i){
+		unsigned int position = (outputQueue[ID][i].dstID/NODES);// TODO: Check if correct position //This get position in the [][] array for dstID
     	//dst.prop = vProperty[e.dstID]; // [OPT IONAL] Random Vertex Read
     	VertexProperty res = processEdge(outputQueue[ID][i].weight, outputQueue[ID][i].srcProp, dst.prop);
-    	VertexProperty temp = vTempProperty[ID][outputQueue[ID][i].dstID]; // Random Vertex Read
+    	VertexProperty temp = vTempProperty[ID][position]; // Random Vertex Read     
 	    temp = reduce(temp, res);
-	    vTempProperty[ID][outputQueue[ID][i].dstID] = temp; // Random Vertex Write
+	    vTempProperty[ID][position] = temp; // Random Vertex Write 
 	}
 
 	// Reset ActiveVertex and ActiveVertexCount

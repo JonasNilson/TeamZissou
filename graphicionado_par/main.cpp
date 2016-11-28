@@ -12,7 +12,7 @@
 #include "pipelines.hpp"
 
 // Global variable declaration
-int THREADS = 4; // Set number of threads
+unsigned int THREADS = 4; // Set number of threads
 unsigned int NODES = 2;
 
 Vertex** vertices; // All vertices in the graph
