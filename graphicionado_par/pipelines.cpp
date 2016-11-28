@@ -1,30 +1,27 @@
-//
-
 #include "graphicionado.hpp" // Data structures for graph problems
 #include "loadSettings.hpp"
 #include "pipelines.hpp"
 
 //Global variables
-DataCrossbar** outputQueue; // Crossbar output for destination oriented part.
+DataCrossbar** outputQueue;
 unsigned int* outputCount;
+argo::globallock::cohort_lock* primelock; // Cohort lock for the Argo nodes
 
-argo::globallock::cohort_lock* primelock;
-
+/* 
+ * Initialize the data structures required by the pipeline
+ */
 void initPipelines() {
-	outputCount = argo::conew_array<unsigned int>(NODES);	
+	outputCount = argo::conew_array<unsigned int>(NODES);
 	primelock = new argo::globallock::cohort_lock;
 }
 
+/*
+ * Clean up the data structures initialized for the pipelines
+ */
 void cleanupPipelines() {
+	argo::codelete_array(outputCount);
 	delete primelock;
 }
-
-// TODO: data structure
-//Edges = double array list
-//Vertices = double array list
-//ActiveVertices = double array list
-//EdgeIDTable: Unsure maybe not 
-
 
 /*The crossbar switch routes edge data by matching the
 destination vertex id of the edge. To maximize the throughput
@@ -37,7 +34,6 @@ of the crossbar switch.
 
 // Crossbar should switch this edge to correct pipeline. It take in a pointer to an edge. 
 // ID of who is running.
-
 void crossbar(unsigned int ID, Edge e, VertexProperty srcProp){
 	
 	unsigned int stream = e.dstID % NODES; // Check which pipeline to go to
@@ -47,7 +43,6 @@ void crossbar(unsigned int ID, Edge e, VertexProperty srcProp){
 	data.weight = e.weight;
 	data.srcProp = srcProp;
 
-
 	primelock->lock();
 	argo::backend::acquire(); // TODO: Local counter and synchronize them in the end.
 	unsigned int count = outputCount[stream];
@@ -55,7 +50,6 @@ void crossbar(unsigned int ID, Edge e, VertexProperty srcProp){
 	argo::backend::release();
 	primelock->unlock();
 	outputQueue[stream][count] = data;
-
 }
 
 void processingPhaseSourceOriented(unsigned int ID){
@@ -73,17 +67,15 @@ void processingPhaseSourceOriented(unsigned int ID){
 
       	while (e.srcID == src.ID) {
 	        // Crossbar should switch this edge e to correct pipeline 
-	        crossbar(ID,e,src.prop); // TODO check if correct value is send. 
-	        e = edges[ID][++eID]; // Edge Read
+	        crossbar(ID,e,src.prop); // TODO check if correct value is sent. 
+	        e = edges[ID][++eID]; // Edge Read // TODO: make sure this does not go out of bounds
       	}
     }
 }
 
-
 //outputQueue with current ID's of edges thats gonna be used. //Double array
 //outputQueue [][] put in IDs on edges thats gonna be used.
 // edgeID
-
 void processingPhaseDestinationOriented(unsigned int ID){
 	Vertex dst; // [OPTIONAL]
 	for(unsigned int i = 0; i < outputCount[ID]; ++i){
@@ -98,14 +90,6 @@ void processingPhaseDestinationOriented(unsigned int ID){
 	// Reset ActiveVertex and ActiveVertexCount
 	activeVertexCount[ID] = 0; // reset activeVertexCount & active vertices.
 }
-
-
-
-
-
-
-
-
 
 /*
 * Update phase for active vertices

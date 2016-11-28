@@ -112,7 +112,7 @@ void setupDSM(unsigned int numVertices, unsigned int numEdges){
 	activeVertex = argo::conew_array<Vertex*>(NODES);
 	for(unsigned int i = 0; i < NODES; ++i){
 		activeVertex[i] = argo::conew_array<Vertex>(ceil(numVertices/NODES));
-	} 
+	}
 
 	edges = argo::conew_array<Edge*>(NODES);
 	for(unsigned int i = 0; i < NODES; ++i){
@@ -268,79 +268,113 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 	std::cout << "initializeDSM: done preprocessing data!" << std::endl;
 }
 
+void readHeader(const char* filename) {
+	std::ifstream file;
+	std::string line;
+	std::string item;
+	unsigned int numVertices = 0;
+	unsigned int numEdges = 0;
+	char delimiter = ' ';
+	char comp = 'c';
 
+	file.open(filename);
 
-/*
- * Read graph input data from a text file.
- */
+	while(comp == 'c'){
+		getline(file,line);
+		std::stringstream ss; // Create a new string stream
+		ss.str(line);
+		std::getline(ss, item, delimiter);
 
-void readGTgraphFile(const char* filename){
-  std::ifstream file;
-  std::string line;
-  std::string item;
-  unsigned int numVertices = 0;
-  unsigned int numEdges = 0;
-  char delimiter = ' ';
-  char comp = 'c';
-
-  file.open(filename);
-
-  while(comp == 'c'){
-	getline(file,line);
-	std::stringstream ss; // Create a new string stream
-	ss.str(line);
-	std::getline(ss, item, delimiter);
-
-	comp = item.c_str()[0];
-  }
-
-  /*	getline(file,line);
-	std::getline(ss, item, delimiter);
-	//comp = std::stoll(item);
-	comp = item.c_str()[0];
-  */
-  std::cout << "comp borde vara p: " << comp << std::endl;
-	if(comp == 'p'){
-	  std::stringstream ss; // Create a new string stream
-	  ss.str(line);
-	  std::getline(ss, item, delimiter);
-	  std::getline(ss, item, delimiter);
-	  std::getline(ss, item, delimiter);
-	  numVertices = std::stoll(item); // get number of vertices
-	  std::cout << "numVertices: " << numVertices << std::endl;
-	  std::getline(ss, item, delimiter);
-	  numEdges = std::stoll(item);   // get number of edges
-	  std::cout << "numEdges: " << numEdges << std::endl;
+		comp = item.c_str()[0];
 	}
 
-	setupDSM(numVertices,numEdges); // Make system ready to store data.
+	/*	getline(file,line);
+		std::getline(ss, item, delimiter);
+		//comp = std::stoll(item);
+		comp = item.c_str()[0];
+	*/
+	std::cout << "comp borde vara p: " << comp << std::endl;
+	if(comp == 'p'){
+		std::stringstream ss; // Create a new string stream
+		ss.str(line);
+		std::getline(ss, item, delimiter);
+		std::getline(ss, item, delimiter);
+		std::getline(ss, item, delimiter);
+		numVertices = std::stoll(item); // get number of vertices
+		std::cout << "numVertices: " << numVertices << std::endl;
+		std::getline(ss, item, delimiter);
+		numEdges = std::stoll(item);   // get number of edges
+		std::cout << "numEdges: " << numEdges << std::endl;
+	}
 
-	std::cout << "after setup: " << std::endl;
+	file.close();
+
+	setupDSM(numVertices,numEdges); // Make system ready to store data.
+}
+
+void readData(const char* filename) {
+	std::ifstream file;
+	std::string line;
+	std::string item;
+	unsigned int numVertices = 0;
+	unsigned int numEdges = 0;
+	char delimiter = ' ';
+	char comp = 'c';
+
+	file.open(filename);
+
+	while(comp == 'c'){
+		getline(file,line);
+		std::stringstream ss; // Create a new string stream
+		ss.str(line);
+		std::getline(ss, item, delimiter);
+
+		comp = item.c_str()[0];
+	}
+
+	/*	getline(file,line);
+		std::getline(ss, item, delimiter);
+		//comp = std::stoll(item);
+		comp = item.c_str()[0];
+	*/
+	std::cout << "comp borde vara p: " << comp << std::endl;
+	if(comp == 'p'){
+		std::stringstream ss; // Create a new string stream
+		ss.str(line);
+		std::getline(ss, item, delimiter);
+		std::getline(ss, item, delimiter);
+		std::getline(ss, item, delimiter);
+		numVertices = std::stoll(item); // get number of vertices
+		std::cout << "numVertices: " << numVertices << std::endl;
+		std::getline(ss, item, delimiter);
+		numEdges = std::stoll(item);   // get number of edges
+		std::cout << "numEdges: " << numEdges << std::endl;
+	}
 
 	for(unsigned int i=0; i < numEdges; ++i) {
-	  getline(file,line);
-	  std::stringstream ss; // Create a new string stream
-	  ss.str(line);
-	  std::getline(ss, item, delimiter);
-	  comp = item.c_str()[0];
-	  if('a' == comp){ 
+		getline(file,line);
+		std::stringstream ss; // Create a new string stream
+		ss.str(line);
 		std::getline(ss, item, delimiter);
+		comp = item.c_str()[0];
+		if('a' == comp){ 
+			std::getline(ss, item, delimiter);
 		
-		unsigned int stream = (std::stoll(item) - 1) % NODES; 
-		Edge* currentEdges = edges[stream];
-		Edge currentEdge;
-		currentEdge = currentEdges[totalEdgeCount[stream]];
+			unsigned int stream = (std::stoll(item) - 1) % NODES; 
+			Edge* currentEdges = edges[stream];
+			Edge currentEdge;
+			currentEdge = currentEdges[totalEdgeCount[stream]];
 		
-		unsigned int src = std::stoll(item);
-		currentEdge.srcID = src-1;
-		std::getline(ss, item, delimiter);
-	    unsigned int dst = std::stoll(item);
-		currentEdge.dstID = dst-1;
-		std::getline(ss, item, delimiter);
-		unsigned int weight = std::stoll(item);
-		currentEdge.weight = weight;
-		totalEdgeCount[stream]++;
-	  }
+			unsigned int src = std::stoll(item);
+			currentEdge.srcID = src-1;
+			std::getline(ss, item, delimiter);
+			unsigned int dst = std::stoll(item);
+			currentEdge.dstID = dst-1;
+			std::getline(ss, item, delimiter);
+			unsigned int weight = std::stoll(item);
+			currentEdge.weight = weight;
+			totalEdgeCount[stream]++;
+		}
 	}
 	// Initialize all vertex ID's (starting from 0)
 	for(unsigned int i=0; i < numVertices; ++i){
@@ -354,11 +388,22 @@ void readGTgraphFile(const char* filename){
 		startingNodes[i] = startingNodes[i] - 1;
 	}
 
-
 	file.close(); // Closes file
 
 	std::cout << "file closed" << std::endl;
 	initializeDSM(numVertices, numEdges); // Organize data in argo.
+}
+
+/*
+ * Read graph input data from a text file.
+ */
+void readGTgraphFile(const char* filename){
+	readHeader(filename); // Init argo with collective allocations
+	argo::barrier();
+	if(argo::node_id() == 0) { 
+		readData(filename);
+	}
+	argo::barrier();
 }
 
 /*

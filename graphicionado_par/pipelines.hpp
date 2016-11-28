@@ -7,11 +7,8 @@
 struct DataCrossbar;
 
 // Global visible variables
-extern DataCrossbar** outputQueue;
-extern unsigned int* outputCount;
-
-// Argo variables.
-
+extern DataCrossbar** outputQueue; // outputQueue[][]: Crossbar output to the destination oriented part
+extern unsigned int* outputCount; // outputCount[]: Counter for the number of elements in the outputQueue
 
 // Methods
 void initPipelines();
@@ -19,7 +16,8 @@ void cleanupPipelines();
 void processingPhaseSourceOriented(unsigned int ID);
 void processingPhaseDestinationOriented(unsigned int ID);
 void applyPhase(unsigned int ID);
-// Struct
+
+// Structs
 struct DataCrossbar{
 	unsigned int dstID;
 	double weight;
