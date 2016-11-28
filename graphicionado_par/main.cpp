@@ -69,7 +69,7 @@ void graphicionado(unsigned int id){
     processingPhaseDestinationOriented(id); //
 
     //B Apply Phase
-    void applyPhase(id);
+    applyPhase(id);
 
     //Settings check if we should use max iteration implementation or not
     if(maxIterations != 0){ //If setting is set to 0 it will use infinity iteration possibility

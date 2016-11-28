@@ -328,12 +328,13 @@ void readGTgraphFile(const char* filename){
 		
 		unsigned int stream = (std::stoll(item) - 1) % NODES; 
 		Edge* currentEdges = edges[stream];
-		Edge currentEdge = currentEdges[totalEdgeCount[stream]];
+		Edge currentEdge;
+		currentEdge = currentEdges[totalEdgeCount[stream]];
 		
 		unsigned int src = std::stoll(item);
 		currentEdge.srcID = src-1;
 		std::getline(ss, item, delimiter);
-	        unsigned int dst = std::stoll(item);
+	    unsigned int dst = std::stoll(item);
 		currentEdge.dstID = dst-1;
 		std::getline(ss, item, delimiter);
 		unsigned int weight = std::stoll(item);

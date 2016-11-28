@@ -1,6 +1,7 @@
 //
 
 #include "graphicionado.hpp" // Data structures for graph problems
+#include "loadSettings.hpp"
 #include "pipelines.hpp"
 
 //Global variables
