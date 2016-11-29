@@ -77,6 +77,17 @@ void setupDSM(unsigned int numVertices, unsigned int numEdges){
 	vertices = argo::conew_array<Vertex>(numVertices); 
 	activeVertex = argo::conew_array<Vertex>(numVertices);
 	
+	edgesArray = argo::conew_array<Edge*>(partitions);
+	for(unsigned int i = 0; i < partitions; ++i){
+		edgesArray[i] = argo::conew_array<Edge>(numEdges); // TODO: NEED to be optimized, should not be needed to keep entire space for number of edges times NODES.
+	} 
+
+	edgeIDTableArray = argo::conew_array<unsigned int*>(partitions);
+	for(unsigned int i = 0; i < partitions; ++i){
+		edgeIDTableArray[i] = argo::conew_array<unsigned int>(numEdges); // TODO: NEED to be optimized, should not be needed to keep entire space for number of edges times NODES.
+	} 
+
+
 	edges = argo::conew_array<Edge>(numEdges); 
 	edgeIDTable = argo::conew_array<unsigned int>(numVertices); // make it of size number of vertices
 

@@ -9,6 +9,7 @@
 #include "loadSettings.hpp"
 #include "test_functions.hpp"
 #include "tests.hpp"
+#include "graph_slicer.hpp"
 
 // Global variable declaration
 //int THREADS = 4; // Set number of threads
@@ -17,7 +18,9 @@ Vertex* vertices; // All vertices in the graph
 Vertex* activeVertex; 
 
 Edge* edges; // All edges in the graph
+Edge** edgesArray;
 unsigned int* edgeIDTable;
+unsigned int** edgeIDTableArray;
 
 VertexProperty* vProperty; // property of nodes.
 VertexProperty* vTempProperty; // new vProperty that been changed
@@ -164,6 +167,8 @@ int main(int argc, char *argv[]){
     //Exist program something went wrong with reading of Data.
     return 1;
   }
+
+  graphSlicer();
   
   graphicionado();
   //printVerticesProperties(totalVertexCount, vertices, vProperty); //Debug prints too see behavior
