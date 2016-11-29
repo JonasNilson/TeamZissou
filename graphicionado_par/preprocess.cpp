@@ -249,7 +249,6 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 	}
 
   	// Init VProperty
-
 	for(unsigned int j=0; j < NODES; ++j){
 		for(unsigned int i =0; i < totalVertexCount[j]; ++i) {
 	    	vProperty[j][i] = vertices[j][i].prop;
@@ -268,6 +267,10 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 	std::cout << "initializeDSM: done preprocessing data!" << std::endl;
 }
 
+/* readHeader(filename)
+ * Read the graph text file header information (number of edges and vertices)
+ * and set up the ArgoDSM allocations using setupDSM().
+ */
 void readHeader(const char* filename) {
 	std::ifstream file;
 	std::string line;
@@ -279,6 +282,7 @@ void readHeader(const char* filename) {
 
 	file.open(filename);
 
+	// Skip all the lines starting with the character 'c'
 	while(comp == 'c'){
 		getline(file,line);
 		std::stringstream ss; // Create a new string stream
@@ -288,11 +292,7 @@ void readHeader(const char* filename) {
 		comp = item.c_str()[0];
 	}
 
-	/*	getline(file,line);
-		std::getline(ss, item, delimiter);
-		//comp = std::stoll(item);
-		comp = item.c_str()[0];
-	*/
+	// Read the line starting with the character 'p' containing info. about number of vert/edges
 	std::cout << "comp borde vara p: " << comp << std::endl;
 	if(comp == 'p'){
 		std::stringstream ss; // Create a new string stream
@@ -307,11 +307,16 @@ void readHeader(const char* filename) {
 		std::cout << "numEdges: " << numEdges << std::endl;
 	}
 
+	// Close the file
 	file.close();
 
-	setupDSM(numVertices,numEdges); // Make system ready to store data.
+	setupDSM(numVertices,numEdges); // Allocate space in ArgoDSM
 }
 
+/* readData(filename)
+ * Read the edge data from the graph text file (filename) and initialize the allocated
+ * array(s) using the data read.
+ */
 void readData(const char* filename) {
 	std::ifstream file;
 	std::string line;
@@ -323,6 +328,7 @@ void readData(const char* filename) {
 
 	file.open(filename);
 
+	// Skip all the lines starting with the character 'c'
 	while(comp == 'c'){
 		getline(file,line);
 		std::stringstream ss; // Create a new string stream
@@ -332,11 +338,7 @@ void readData(const char* filename) {
 		comp = item.c_str()[0];
 	}
 
-	/*	getline(file,line);
-		std::getline(ss, item, delimiter);
-		//comp = std::stoll(item);
-		comp = item.c_str()[0];
-	*/
+	// Read the line starting with the character 'p' containing info. about number of vert/edges
 	std::cout << "comp borde vara p: " << comp << std::endl;
 	if(comp == 'p'){
 		std::stringstream ss; // Create a new string stream
@@ -351,6 +353,7 @@ void readData(const char* filename) {
 		std::cout << "numEdges: " << numEdges << std::endl;
 	}
 
+	// Read all the coming lines, which contains edge data (srcID, dstID, weight)
 	for(unsigned int i=0; i < numEdges; ++i) {
 		getline(file,line);
 		std::stringstream ss; // Create a new string stream
@@ -360,22 +363,26 @@ void readData(const char* filename) {
 		if('a' == comp){ 
 			std::getline(ss, item, delimiter);
 		
-			unsigned int stream = (std::stoll(item) - 1) % NODES; 
-			Edge* currentEdges = edges[stream];
-			Edge currentEdge;
-			currentEdge = currentEdges[totalEdgeCount[stream]];
+			unsigned int stream = (std::stoll(item) - 1) % NODES;
+			
+			std::cout << "@@@ readData: stream: " << stream << std::endl;
+
+			//Edge* currentEdges = edges[stream];
+			//Edge currentEdge;
+			//currentEdge = currentEdges[totalEdgeCount[stream]];
 		
 			unsigned int src = std::stoll(item);
-			currentEdge.srcID = src-1;
+			edges[stream][totalEdgeCount[stream]].srcID = src-1;
 			std::getline(ss, item, delimiter);
 			unsigned int dst = std::stoll(item);
-			currentEdge.dstID = dst-1;
+			edges[stream][totalEdgeCount[stream]].dstID = dst-1;
 			std::getline(ss, item, delimiter);
 			unsigned int weight = std::stoll(item);
-			currentEdge.weight = weight;
+			edges[stream][totalEdgeCount[stream]].weight = weight;
 			totalEdgeCount[stream]++;
 		}
 	}
+
 	// Initialize all vertex ID's (starting from 0)
 	for(unsigned int i=0; i < numVertices; ++i){
 		unsigned int stream = i % NODES;
@@ -388,22 +395,37 @@ void readData(const char* filename) {
 		startingNodes[i] = startingNodes[i] - 1;
 	}
 
-	file.close(); // Closes file
+	// Close the file
+	file.close();
 
 	std::cout << "file closed" << std::endl;
-	initializeDSM(numVertices, numEdges); // Organize data in argo.
+	
+	initializeDSM(numVertices, numEdges); // Initialize the data in the allocated ArgoDSM memory
 }
 
 /*
- * Read graph input data from a text file.
+ * Read graph data from a text file and initialize the arrays
  */
 void readGTgraphFile(const char* filename){
-	readHeader(filename); // Init argo with collective allocations
+	// All nodes needs to run the collective allocations
+	readHeader(filename); // Read header info. and set up ArgoDSM with collective allocations
+	
 	argo::barrier();
+	
+	// Only one node needs to read the edge data and initialize the arrays with data
 	if(argo::node_id() == 0) { 
-		readData(filename);
+		readData(filename); // Read edge data and save the information in the array(s)
+		
+		// DEBUG: print the arrays to confirm the data is written correctly
+		for(unsigned int i = 0; i < NODES; ++i) {
+			// printEdges(totalEdgeCount[i], edges[i]); // Print the edges for each node
+			printEdgeIDTable(totalVertexCount[i], edgeIDTable, vertices[i]);
+			// printVertices(totalVertexCount[i], vertices[i]);
+			// printVerticesProperties(totalVertexCount[i], vertices[i], vProperty[i]);
+		}
 	}
-	argo::barrier();
+
+	argo::barrier(); // Wait for all nodes/threads to finish the reading
 }
 
 /*

@@ -1,5 +1,5 @@
 /**
- * Sequential implementation of graphicionado
+ * Parallel implementation of graphicionado
  */
 #include <argo.hpp> // Get access to Argo function calls.
 #include <iostream> // Used for output prints.
@@ -16,7 +16,7 @@ unsigned int THREADS = 4; // Set number of threads
 unsigned int NODES = 2;
 
 Vertex** vertices; // All vertices in the graph
-Vertex** activeVertex; 
+Vertex** activeVertex;
 
 Edge** edges; // All edges in the graph
 unsigned int* edgeIDTable;
@@ -59,17 +59,30 @@ int readData(int argc, char *argv[]){
   return 0;
 }
 
+/*
+ * Use this to check if there are any active vertices left to process
+ */
+bool hasActiveVertices() {
+	for(unsigned int i = 0; i < NODES; ++i) {
+		if(activeVertexCount[i] != 0) {
+			return true;
+		}
+	}
+	return false;
+}
+
 // ID is for node/thread
 void graphicionado(unsigned int id){
-    
-  while(activeVertexCount != 0) {
-    //A process edge
+  while(hasActiveVertices()) {
+	//A process edge
     processingPhaseSourceOriented(id); //
     argo::barrier(); // Synchronization
     processingPhaseDestinationOriented(id); //
 
+	argo::barrier();
     //B Apply Phase
     applyPhase(id);
+	argo::barrier();
 
     //Settings check if we should use max iteration implementation or not
     if(maxIterations != 0){ //If setting is set to 0 it will use infinity iteration possibility
@@ -82,7 +95,6 @@ void graphicionado(unsigned int id){
     }
   }
 }
-
 
 /**
    Information about graphicionado
@@ -102,11 +114,8 @@ int main(int argc, char *argv[]){
   unsigned int id = argo::node_id(); // get this node unique index number starting from 0
   //int nodes = argo::number_of_nodes(); // return the total number of nodes in the Argo system.
 
-  // Make sure only node 0 run 
-  if(id == 0){
-    // Load the configuration settings from file (settings.cfg)
-    loadSettings();
-  }
+  // Load the configuration settings from file (settings.cfg)
+  loadSettings();
   argo::barrier();
   // readData take input and organize the input
   int code = readData(argc,argv);
