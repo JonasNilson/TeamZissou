@@ -5,7 +5,7 @@
 
 int add(Edge ID, unsigned int magicNum, int* next_index){
 
-  std::cout << "segfault check \n";
+  // std::cout << "segfault check \n";
 
   unsigned int dst = ID.dstID;
 
@@ -15,8 +15,8 @@ int add(Edge ID, unsigned int magicNum, int* next_index){
 
   while(1){
     if(dst < newNum){
-	  std::cout <<"dst: "  << dst << "\n";
-	  std::cout << "segfault check 3 \n";
+      //	  std::cout <<"dst: "  << dst << "\n";
+      //	  std::cout << "segfault check 3 \n";
       edgesArray[i][next_index[i]] = ID;
       next_index[i]++;
       return 0;
@@ -24,15 +24,19 @@ int add(Edge ID, unsigned int magicNum, int* next_index){
     
     newNum = magicNum*(i+2);
     i++;
-	std::cout << "segfault check 2 \n";
+    //	std::cout << "segfault check 2 \n";
   }
 
 }
 void graphSlicer(){
 
-  std::cout << "graph slicer initiated \n";
+  //  std::cout << "graph slicer initiated \n";
   
   int next_index[partitions];
+  for(unsigned int i = 0; i<partitions; i++){
+    next_index[i]=0;
+  }
+  
   unsigned int magicNum = numVertices / partitions;
 
   for(unsigned int i = 0; i < numEdges; i++){
