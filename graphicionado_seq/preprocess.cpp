@@ -12,6 +12,10 @@
 #include <math.h>
 #include <limits>
 
+unsigned int numVertices;
+unsigned int numEdges;
+  
+
 void setAllProperties(double value){
   for(unsigned int i=0; i < totalVertexCount; ++i){
     vertices[i].prop.property = value;
@@ -209,8 +213,6 @@ void readGTgraphFile(const char* filename){
   std::ifstream file;
   std::string line;
   std::string item;
-  unsigned int numVertices = 0;
-  unsigned int numEdges = 0;
   char delimiter = ' ';
   char comp = 'c';
 
@@ -274,7 +276,7 @@ void readGTgraphFile(const char* filename){
 		startingNodes[i] = startingNodes[i] - 1;
 	}
 
-	printVertices(numVertices, vertices);
+	//printVertices(numVertices, vertices);
 
 	file.close(); // Closes file
 

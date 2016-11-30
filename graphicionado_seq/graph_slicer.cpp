@@ -1,8 +1,12 @@
-
 #include "graphicionado.hpp"
-
+#include "loadSettings.hpp"
+#include "preprocess.hpp"
+#include <iostream>
 
 int add(Edge ID, unsigned int magicNum, int* next_index){
+
+  std::cout << "segfault check \n";
+
   unsigned int dst = ID.dstID;
 
   
@@ -11,6 +15,8 @@ int add(Edge ID, unsigned int magicNum, int* next_index){
 
   while(1){
     if(dst < newNum){
+	  std::cout <<"dst: "  << dst << "\n";
+	  std::cout << "segfault check 3 \n";
       edgesArray[i][next_index[i]] = ID;
       next_index[i]++;
       return 0;
@@ -18,23 +24,26 @@ int add(Edge ID, unsigned int magicNum, int* next_index){
     
     newNum = magicNum*(i+2);
     i++;
+	std::cout << "segfault check 2 \n";
   }
 
 }
 void graphSlicer(){
 
+  std::cout << "graph slicer initiated \n";
+  
   int next_index[partitions];
   unsigned int magicNum = numVertices / partitions;
 
-  for(int i = 0; i < numEdges; i++){
+  for(unsigned int i = 0; i < numEdges; i++){
     
     //spann av dst id sorterade på srcid numvert/port
     add(edges[i], magicNum, next_index); 
           
   }
 
-  for(int i= 0; i< partitions; i++){
-    setupEIT(numVertices,numEdges, vertices, edgeIDTableArray[i][0],edgesArray[i][0]);
+  for(unsigned int i= 0; i< partitions; i++){
+    setupEIT(numVertices,numEdges, vertices, &edgeIDTableArray[i][0],&edgesArray[i][0]);
   }  
   
 }

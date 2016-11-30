@@ -169,7 +169,13 @@ int main(int argc, char *argv[]){
   }
 
   graphSlicer();
+
+  for(int i=0; i<4;i++){
+		printEdges(10,&edgesArray[i][0]);
+  }
   
+
+
   graphicionado();
   //printVerticesProperties(totalVertexCount, vertices, vProperty); //Debug prints too see behavior
   terminateProgram(); // Cleanup for this node when program has finished.
