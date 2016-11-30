@@ -106,12 +106,12 @@ void setupDSM(unsigned int numVertices, unsigned int numEdges){
 
 	vertices = argo::conew_array<Vertex*>(NODES);
 	for(unsigned int i = 0; i < NODES; ++i){
-		vertices[i] = argo::conew_array<Vertex>(ceil(numVertices/NODES));
+		vertices[i] = argo::conew_array<Vertex>(ceil((double)numVertices/NODES));
 	} 
 
 	activeVertex = argo::conew_array<Vertex*>(NODES);
 	for(unsigned int i = 0; i < NODES; ++i){
-		activeVertex[i] = argo::conew_array<Vertex>(ceil(numVertices/NODES));
+		activeVertex[i] = argo::conew_array<Vertex>(ceil((double)numVertices/NODES));
 	}
 
 	edges = argo::conew_array<Edge*>(NODES);
@@ -123,17 +123,17 @@ void setupDSM(unsigned int numVertices, unsigned int numEdges){
 
 	vProperty = argo::conew_array<VertexProperty*>(NODES);
 	for(unsigned int i = 0; i < NODES; ++i){
-		vProperty[i] = argo::conew_array<VertexProperty>(ceil(numVertices/NODES));
+		vProperty[i] = argo::conew_array<VertexProperty>(ceil((double)numVertices/NODES));
 	}
 	
 	vTempProperty = argo::conew_array<VertexProperty*>(NODES);
 	for(unsigned int i = 0; i < NODES; ++i){
-		vTempProperty[i] = argo::conew_array<VertexProperty>(ceil(numVertices/NODES));
+		vTempProperty[i] = argo::conew_array<VertexProperty>(ceil((double)numVertices/NODES));
 	}
 
 	vConst = argo::conew_array<VertexProperty*>(NODES);
 	for(unsigned int i = 0; i < NODES; ++i){
-		vConst[i] = argo::conew_array<VertexProperty>(ceil(numVertices/NODES));
+		vConst[i] = argo::conew_array<VertexProperty>(ceil((double)numVertices/NODES));
 	}
 
 	activeVertexCount = argo::conew_array<unsigned int>(NODES);
@@ -445,10 +445,11 @@ void readData(const char* filename) {
 	// Initialize all vertex ID's (starting from 0)
 	for(unsigned int i=0; i < numVertices; ++i){
 		unsigned int stream = i % NODES;
+		
 	  	vertices[stream][totalVertexCount[stream]].ID = i;
 	  	totalVertexCount[stream]++;
 	}
-
+	
 	// Update startingNodes IDs from settings file
 	for(unsigned int i = 0; i < numberOfStartingNodes; ++i) {
 		startingNodes[i] = startingNodes[i] - 1;
@@ -477,6 +478,7 @@ void readGTgraphFile(const char* filename){
 		
 		// DEBUG: print the arrays to confirm the data is written correctly
 		for(unsigned int i = 0; i < NODES; ++i) {
+			// std::cout << "Argo NODE: " << i << std::endl;
 			// printEdges(totalEdgeCount[i], edges[i]); // Print the edges for each node
 			// printEdgeIDTable(totalVertexCount[i], edgeIDTable, vertices[i]);
 			// printVertices(totalVertexCount[i], vertices[i]);
