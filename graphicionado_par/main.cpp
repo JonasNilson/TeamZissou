@@ -13,7 +13,7 @@
 
 // Global variable declaration
 unsigned int THREADS = 4; // Set number of threads
-unsigned int NODES = 1;
+unsigned int NODES = 4;
 
 Vertex** vertices; // All vertices in the graph
 Vertex** activeVertex;
@@ -119,7 +119,6 @@ int main(int argc, char *argv[]){
   argo::barrier();
   // readData take input and organize the input
   int code = readData(argc,argv);
-  std::cout << "DONE READING DATA: node id: " << id << std::endl;
   if(code != 0){
       if(code == 2){
 		  // test run
@@ -129,10 +128,8 @@ int main(int argc, char *argv[]){
       return 1;
   }  
   
-  std::cout << "BEFORE GRAPHICIONADO: node id: " << id << std::endl;
   argo::barrier(); // Synchronize after node 0 is done with the initialization.
   graphicionado(id);
-  std::cout << "AFTER GRAPHICIONADO: node id: " << id << std::endl;
   argo::barrier(); // Synchronize before cleaning up
   // printVerticesProperties(totalVertexCount[id], vertices[id], vProperty[id]); //Debug prints too see behavior
   terminateProgram(); // Cleanup for this node when program has finished.

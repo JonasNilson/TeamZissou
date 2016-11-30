@@ -142,7 +142,7 @@ void setupDSM(unsigned int numVertices, unsigned int numEdges){
 
 	totalEdgeCount = argo::conew_array<unsigned int>(NODES);
 
-	initPipelines(numVertices); // Initialize locks etc. for the pipelines
+	initPipelines(numEdges); // Initialize locks etc. for the pipelines
 
 	std::cout << "setupDSM: Setup was successfull" << std::endl;
 }

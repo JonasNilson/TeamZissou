@@ -1,6 +1,7 @@
 #include "graphicionado.hpp" // Data structures for graph problems
 #include "loadSettings.hpp"
 #include "pipelines.hpp"
+#include "test_functions.hpp"
 #include <math.h>
 
 //Global variables
@@ -11,12 +12,12 @@ argo::globallock::cohort_lock* primelock; // Cohort lock for the Argo nodes
 /* 
  * Initialize the data structures required by the pipeline
  */
-void initPipelines(unsigned int numVertices) {
+void initPipelines(unsigned int numEdges) {
 
 	//Init output queue
 	outputQueue = argo::conew_array<DataCrossbar*>(NODES);
 	for(unsigned int i = 0; i < NODES; ++i){
-		outputQueue[i] = argo::conew_array<DataCrossbar>(ceil(numVertices/NODES));
+		outputQueue[i] = argo::conew_array<DataCrossbar>(numEdges);
 	}
 
 	//Init output Count (number of element in outputQueue)
@@ -57,7 +58,9 @@ of the crossbar switch.
 // Crossbar should switch this edge to correct pipeline. It take in a pointer to an edge. 
 // ID of who is running.
 void crossbar(unsigned int ID, Edge e, VertexProperty srcProp){
-	
+	primelock->lock();
+	argo::backend::acquire(); // TODO: Local counter and synchronize them in the end.
+
 	unsigned int stream = e.dstID % NODES; // Check which pipeline to go to
 
 	DataCrossbar data;
@@ -65,13 +68,12 @@ void crossbar(unsigned int ID, Edge e, VertexProperty srcProp){
 	data.weight = e.weight;
 	data.srcProp = srcProp;
 
-	primelock->lock();
-	argo::backend::acquire(); // TODO: Local counter and synchronize them in the end.
 	unsigned int count = outputCount[stream];
 	outputCount[stream] = outputCount[stream] + 1;
+	outputQueue[stream][count] = data;
+
 	argo::backend::release();
 	primelock->unlock();
-	outputQueue[stream][count] = data;
 }
 
 void processingPhaseSourceOriented(unsigned int ID){
@@ -101,7 +103,8 @@ void processingPhaseSourceOriented(unsigned int ID){
 void processingPhaseDestinationOriented(unsigned int ID){
 	Vertex dst; // [OPTIONAL]
 	for(unsigned int i = 0; i < outputCount[ID]; ++i){
-		unsigned int position = (outputQueue[ID][i].dstID/NODES);// TODO: Check if correct position //This get position in the [][] array for dstID
+		unsigned int position = (outputQueue[ID][i].dstID/NODES); // This get position in the [][] array for dstID
+		
     	//dst.prop = vProperty[e.dstID]; // [OPT IONAL] Random Vertex Read
     	VertexProperty res = processEdge(outputQueue[ID][i].weight, outputQueue[ID][i].srcProp, dst.prop);
     	VertexProperty temp = vTempProperty[ID][position]; // Random Vertex Read     
