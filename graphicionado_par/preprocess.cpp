@@ -136,11 +136,6 @@ void setupDSM(unsigned int numVertices, unsigned int numEdges){
 		vConst[i] = argo::conew_array<VertexProperty>(ceil(numVertices/NODES));
 	}
 
-	outputQueue = argo::conew_array<DataCrossbar*>(NODES);
-	for(unsigned int i = 0; i < NODES; ++i){
-		outputQueue[i] = argo::conew_array<DataCrossbar>(ceil(numVertices/NODES));
-	}
-
 	activeVertexCount = argo::conew_array<unsigned int>(NODES);
 
 	totalVertexCount = argo::conew_array<unsigned int>(NODES);

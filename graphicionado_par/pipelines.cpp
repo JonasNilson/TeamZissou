@@ -11,15 +11,36 @@ argo::globallock::cohort_lock* primelock; // Cohort lock for the Argo nodes
  * Initialize the data structures required by the pipeline
  */
 void initPipelines() {
+
+	//Init output queue
+	outputQueue = argo::conew_array<DataCrossbar*>(NODES);
+	for(unsigned int i = 0; i < NODES; ++i){
+		outputQueue[i] = argo::conew_array<DataCrossbar>(ceil(numVertices/NODES));
+	}
+
+	//Init output Count (number of element in outputQueue)
 	outputCount = argo::conew_array<unsigned int>(NODES);
+	
+	//Init lock so no data races
 	primelock = new argo::globallock::cohort_lock;
+
 }
 
 /*
  * Clean up the data structures initialized for the pipelines
  */
 void cleanupPipelines() {
+
+	//Free output Queue
+	for(unsigned int i = 0; i < NODES; ++i){
+		argo::codelete_array(outputQueue[i]);
+	}
+	argo::codelete_array(outputQueue);
+	
+	// Free output count
 	argo::codelete_array(outputCount);
+	
+	// Free output count
 	delete primelock;
 }
 
