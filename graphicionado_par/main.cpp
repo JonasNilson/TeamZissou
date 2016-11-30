@@ -13,7 +13,7 @@
 
 // Global variable declaration
 unsigned int THREADS = 4; // Set number of threads
-unsigned int NODES = 4;
+unsigned int NODES = 1;
 
 Vertex** vertices; // All vertices in the graph
 Vertex** activeVertex;
@@ -23,7 +23,7 @@ unsigned int* edgeIDTable;
 
 VertexProperty** vProperty; // property of nodes.
 VertexProperty** vTempProperty; // new vProperty that been changed
-VertexProperty** vConst; 
+VertexProperty** vConst;
 
 unsigned int* totalVertexCount; // Number of nodes in the system.
 unsigned int* activeVertexCount; // Number of active nodes in the system.
@@ -134,7 +134,7 @@ int main(int argc, char *argv[]){
   graphicionado(id);
   std::cout << "AFTER GRAPHICIONADO: node id: " << id << std::endl;
   argo::barrier(); // Synchronize before cleaning up
-  printVerticesProperties(totalVertexCount[id], vertices[id], vProperty[id]); //Debug prints too see behavior
+  // printVerticesProperties(totalVertexCount[id], vertices[id], vProperty[id]); //Debug prints too see behavior
   terminateProgram(); // Cleanup for this node when program has finished.
   return 0;
 }
