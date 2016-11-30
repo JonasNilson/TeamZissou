@@ -192,15 +192,16 @@ bool unsignedIntCompare(unsigned int u1, unsigned int u2){
  */
 void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 	std::cout << "initializeDSM: preprocessing data..." << std::endl;
+	
 	// Sort edges after srcID and then dstID with function edgeCompare
 	for(unsigned int i = 0; i < NODES; ++i){
 		std::sort(edges[i],&edges[i][totalEdgeCount[i]],edgeIDCompare);
 	}
+	
 	// Sort vertices after ID to make sure the edge ID table correspond to correct node.
 	for(unsigned int i = 0; i < NODES; ++i){
 		std::sort(vertices[i],&vertices[i][totalVertexCount[i]],vertexIDCompare);
 	}
-
 
 	// Init activeVertexCount
 	if(isAllVerticesActive){ //If settings are set to use all vertices as active
@@ -215,14 +216,11 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 		}	
 	}
 
-
   	// Init EdgeIDTable
 	setupEIT(numVertices, numEdges, edgeIDTable);
-
 	
 	// Init starting nodes depending on algorithm used.
 	initAlgorithmProperty(numVertices,numEdges);
-
 
 	// Init ActiveVertices  //XXX
 	if(isAllVerticesActive){ //If settings are set to use all vertices as active
@@ -235,15 +233,25 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 	else{ 
 		// Setting case where it is given active starting nodes
 		// Initialize the starting active vertices
-		unsigned int counter[NODES];
+		unsigned int counterAV[NODES];
+
+		// Initialize the local array with 0's
+		for(unsigned int i = 0; i < NODES; ++i) {
+			counterAV[i] = 0;
+		}
+
+		// Initialize the activeVertex array
 		for(unsigned int i = 0; i < numberOfStartingNodes; ++i) {
 			unsigned int stream = startingNodes[i] % NODES;
-	    	activeVertex[stream][counter[stream]++] = vertices[stream][startingNodes[i]]; // Set active Vertex from startingNodes that hold ID of what vertices.	
+	    	activeVertex[stream][counterAV[stream]] = vertices[stream][startingNodes[i]]; // Set active Vertex from startingNodes that hold ID of what vertices.
+			counterAV[stream] = counterAV[stream] + 1;
 	  	}
 
+		// Sort the activeVertex array by ID
 	  	for(unsigned int j=0; j < NODES; ++j){
 	  			std::sort(activeVertex[j],&activeVertex[j][activeVertexCount[j]],vertexIDCompare); // Sort by ID
 	  	}
+
 		// Free local node memory usage for init active vertices
 		delete[] startingNodes;
 	}
@@ -372,13 +380,16 @@ void readData(const char* filename) {
 			//currentEdge = currentEdges[totalEdgeCount[stream]];
 		
 			unsigned int src = std::stoll(item);
-			edges[stream][totalEdgeCount[stream]].srcID = src-1;
 			std::getline(ss, item, delimiter);
 			unsigned int dst = std::stoll(item);
-			edges[stream][totalEdgeCount[stream]].dstID = dst-1;
 			std::getline(ss, item, delimiter);
 			unsigned int weight = std::stoll(item);
+			
+			std::cout << "@@@ readData: " << src-1 << "->" << dst-1 << " : " << weight << std::endl;
+			edges[stream][totalEdgeCount[stream]].srcID = src-1;
+			edges[stream][totalEdgeCount[stream]].dstID = dst-1;
 			edges[stream][totalEdgeCount[stream]].weight = weight;
+
 			totalEdgeCount[stream]++;
 		}
 	}
@@ -419,7 +430,7 @@ void readGTgraphFile(const char* filename){
 		// DEBUG: print the arrays to confirm the data is written correctly
 		for(unsigned int i = 0; i < NODES; ++i) {
 			// printEdges(totalEdgeCount[i], edges[i]); // Print the edges for each node
-			printEdgeIDTable(totalVertexCount[i], edgeIDTable, vertices[i]);
+			// printEdgeIDTable(totalVertexCount[i], edgeIDTable, vertices[i]);
 			// printVertices(totalVertexCount[i], vertices[i]);
 			// printVerticesProperties(totalVertexCount[i], vertices[i], vProperty[i]);
 		}
@@ -438,17 +449,24 @@ void readGTgraphFile(const char* filename){
 
 //TEST THIS FUNCTION TO SEE IF IT DO WHAT IT SUPPOSE TO DO.
 void setupEIT(unsigned int numVertices, unsigned int numEdges, unsigned int* edgeIDTable){
-  
-	unsigned int edgesPosition[NODES]; //Is 0 from start
+	unsigned int edgesPosition[NODES];
 	unsigned int previousID[NODES];
+	
+	// Initialize the local array(s) with 0's because they point to the stack
+	for(unsigned int i = 0; i < NODES; ++i) {
+		edgesPosition[i] = 0;
+		previousID[i] = 0;
+	}
 
 	for(unsigned int i = 0; i < numVertices; ++i) {
 		unsigned int stream = i % NODES;
-		
+
 		for(unsigned int j = edgesPosition[stream]; j < totalEdgeCount[stream]; ++j){	
 			
+			// std::cout << "@@@ setupEIT: loop j: " << j << std::endl;
+
 			//Base case
-			if(i == 0){
+			if(j == 0){
 				//Exist edges for this vertex
 				if(edges[stream][j].srcID == i){
 					//Progress through number of edges with same source.

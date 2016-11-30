@@ -13,7 +13,7 @@
 
 // Global variable declaration
 unsigned int THREADS = 4; // Set number of threads
-unsigned int NODES = 2;
+unsigned int NODES = 1;
 
 Vertex** vertices; // All vertices in the graph
 Vertex** activeVertex;
