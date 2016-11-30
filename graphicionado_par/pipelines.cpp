@@ -111,6 +111,7 @@ void processingPhaseDestinationOriented(unsigned int ID){
 
 	// Reset ActiveVertex and ActiveVertexCount
 	activeVertexCount[ID] = 0; // reset activeVertexCount & active vertices.
+	outputCount[ID] = 0; // reset the output queue counter for the next iteration
 }
 
 /*
