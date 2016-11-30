@@ -11,7 +11,7 @@ extern DataCrossbar** outputQueue; // outputQueue[][]: Crossbar output to the de
 extern unsigned int* outputCount; // outputCount[]: Counter for the number of elements in the outputQueue
 
 // Methods
-void initPipelines();
+void initPipelines(unsigned int numVertices);
 void cleanupPipelines();
 void processingPhaseSourceOriented(unsigned int ID);
 void processingPhaseDestinationOriented(unsigned int ID);

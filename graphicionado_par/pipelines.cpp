@@ -10,7 +10,7 @@ argo::globallock::cohort_lock* primelock; // Cohort lock for the Argo nodes
 /* 
  * Initialize the data structures required by the pipeline
  */
-void initPipelines() {
+void initPipelines(unsigned int numVertices) {
 
 	//Init output queue
 	outputQueue = argo::conew_array<DataCrossbar*>(NODES);
