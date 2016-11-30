@@ -372,8 +372,6 @@ void readData(const char* filename) {
 			std::getline(ss, item, delimiter);
 		
 			unsigned int stream = (std::stoll(item) - 1) % NODES;
-			
-			std::cout << "@@@ readData: stream: " << stream << std::endl;
 
 			//Edge* currentEdges = edges[stream];
 			//Edge currentEdge;
@@ -384,8 +382,7 @@ void readData(const char* filename) {
 			unsigned int dst = std::stoll(item);
 			std::getline(ss, item, delimiter);
 			unsigned int weight = std::stoll(item);
-			
-			std::cout << "@@@ readData: " << src-1 << "->" << dst-1 << " : " << weight << std::endl;
+
 			edges[stream][totalEdgeCount[stream]].srcID = src-1;
 			edges[stream][totalEdgeCount[stream]].dstID = dst-1;
 			edges[stream][totalEdgeCount[stream]].weight = weight;
@@ -462,8 +459,6 @@ void setupEIT(unsigned int numVertices, unsigned int numEdges, unsigned int* edg
 		unsigned int stream = i % NODES;
 
 		for(unsigned int j = edgesPosition[stream]; j < totalEdgeCount[stream]; ++j){	
-			
-			// std::cout << "@@@ setupEIT: loop j: " << j << std::endl;
 
 			//Base case
 			if(j == 0){
