@@ -218,6 +218,7 @@ void initializeDSM(unsigned int numVertices, unsigned int numEdges){
 
   	// Init EdgeIDTable
 	setupEIT(numVertices, numEdges, edgeIDTable);
+
 	
 	// Init starting nodes depending on algorithm used.
 	initAlgorithmProperty(numVertices,numEdges);
@@ -444,60 +445,29 @@ void readGTgraphFile(const char* filename){
  * (0) for that vertex to indicate this.
  */
 
-//TEST THIS FUNCTION TO SEE IF IT DO WHAT IT SUPPOSE TO DO.
 void setupEIT(unsigned int numVertices, unsigned int numEdges, unsigned int* edgeIDTable){
-	unsigned int edgesPosition[NODES];
-	unsigned int previousID[NODES];
-	
-	// Initialize the local array(s) with 0's because they point to the stack
-	for(unsigned int i = 0; i < NODES; ++i) {
-		edgesPosition[i] = 0;
-		previousID[i] = 0;
+
+  // Base case
+  Edge* currentEdges = edges[0];
+  Edge currentEdge = currentEdges[0];
+  unsigned int previousSrc = currentEdge.srcID;
+  unsigned int pointer = 0;
+  edgeIDTable[previousSrc] = 1;
+
+  // Normal case
+  for(unsigned int node = 0; node < NODES; node++)
+    {
+      currentEdges = edges[node];
+      pointer = 0;
+      for(unsigned int e = 0; e < totalEdgeCount[node]; e++)
+	{
+	  currentEdge = currentEdges[e];
+	  pointer++;
+	  if(previousSrc != currentEdge.srcID)
+	    {
+	      edgeIDTable[currentEdge.srcID] = pointer;
+	      previousSrc = currentEdge.srcID;
+	    }
 	}
-
-	for(unsigned int i = 0; i < numVertices; ++i) {
-		unsigned int stream = i % NODES;
-
-		for(unsigned int j = edgesPosition[stream]; j < totalEdgeCount[stream]; ++j){	
-
-			//Base case
-			if(j == 0){
-				//Exist edges for this vertex
-				if(edges[stream][j].srcID == i){
-					//Progress through number of edges with same source.
-					continue;
-				}
-				else {
-					//No more edges found.
-					edgeIDTable[i] = edgesPosition[stream] + 1;
-					previousID[stream] = i;
-					edgesPosition[stream] = j;
-					break;
-				}
-			}
-			//Normal case
-			else if(i == previousID[stream]+1){
-				//Exist edges for this vertex
-				if(edges[stream][j].srcID == i){
-					//Progress through number of edges with same source.
-					continue;
-				}
-				else {
-					//No more edges found.
-					edgeIDTable[i] = edgesPosition[stream] + 1;
-					previousID[stream] = i;
-					edgesPosition[stream] = j;
-					break;
-				}
-			}
-			else{
-				//There is no edges for this vertex
-				edgeIDTable[i] = 0;
-				previousID[stream] = i;
-			}
-		}
     }
-
-
-
 }
