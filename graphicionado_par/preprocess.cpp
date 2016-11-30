@@ -147,6 +147,61 @@ void setupDSM(unsigned int numVertices, unsigned int numEdges){
 	std::cout << "setupDSM: Setup was successfull" << std::endl;
 }
 
+/*
+* Free allocated items that was created in preProcess
+*/
+void cleanupPreprocess(){
+	//Free vertices
+	for(unsigned int i = 0; i < NODES; ++i){
+		argo::codelete_array(vertices[i]);
+	}
+	argo::codelete_array(vertices);
+
+	//Free activeVertex
+	for(unsigned int i = 0; i < NODES; ++i){
+		argo::codelete_array(activeVertex[i]);
+	}
+	argo::codelete_array(activeVertex);
+
+	//Free edges
+	for(unsigned int i = 0; i < NODES; ++i){
+		argo::codelete_array(edges[i]);
+	}
+	argo::codelete_array(edges);
+
+	//Free edgeIDTable
+	argo::codelete_array(edgeIDTable);
+
+	//Free vProperty
+	for(unsigned int i = 0; i < NODES; ++i){
+		argo::codelete_array(vProperty[i]);
+	}
+	argo::codelete_array(vProperty);
+
+	//Free vTempProperty
+	for(unsigned int i = 0; i < NODES; ++i){
+		argo::codelete_array(vTempProperty[i]);
+	}
+	argo::codelete_array(vTempProperty);
+
+	//Free vConst
+	for(unsigned int i = 0; i < NODES; ++i){
+		argo::codelete_array(vConst[i]);
+	}
+	argo::codelete_array(vConst);
+
+	//Free activeVertexCount
+	argo::codelete_array(activeVertex);
+
+	//Free totalVertexCount
+	argo::codelete_array(totalVertexCount);
+
+	//Free totalEdgeCount
+	argo::codelete_array(totalEdgeCount);
+
+	//Free everything allocated for pipelines
+	cleanupPipelines(); // Cleanup the allocations from pipelines
+}
 
 /*
  * Compare edges with srcID then dstID

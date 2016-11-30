@@ -32,7 +32,7 @@ unsigned int* totalEdgeCount;
 // Make all cleanups needed before closing the program.
 void terminateProgram(){
     std::cout << "Shutting down program! \n";
-	cleanupPipelines(); // Cleanup the allocations from pipelines
+    cleanupPreprocess(); // Free everything thats allocated in preprocess
     argo::finalize(); // Cleanup for this node when program has finished.
 }
 
