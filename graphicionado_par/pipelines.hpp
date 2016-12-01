@@ -20,6 +20,7 @@ void cleanupPipelines();
 void processingPhaseSourceOriented(unsigned int ID);
 void processingPhaseDestinationOriented(unsigned int ID);
 void applyPhase(unsigned int ID);
+void mergeQueues();
 
 // Structs
 struct DataCrossbar{

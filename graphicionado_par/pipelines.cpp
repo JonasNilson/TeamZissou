@@ -118,7 +118,7 @@ void mergeQueues(){
 
 	for(unsigned int i = 0; i < NODES; ++i) {
 		for(unsigned int j = 0; j < localCounter[i]; ++j){
-			outputQueue[i][outputCount+j] = localQueue[i][j]; //outputCount where to put it in, where j is the fill in from 
+			outputQueue[i][outputCount[i]+j] = localQueue[i][j]; //outputCount where to put it in, where j is the fill in from 
 		}
 		outputCount[i] = outputCount[i] + localCounter[i];
 	}
