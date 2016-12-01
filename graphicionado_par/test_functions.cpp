@@ -62,8 +62,8 @@ void writeTwoDimensionalVerticesProperties(unsigned int numberOfNodes, unsigned 
 	std::cout << "######## Writing the vProperty array to file ###########" << std::endl;
 	
 	// Count the total number of vertices
-    int totalNumberOfVertices = 0;
-    for(unsigned int i = 0; i < numberOfNodes; ++i) {
+	int totalNumberOfVertices = 0;
+	for(unsigned int i = 0; i < numberOfNodes; ++i) {
 		totalNumberOfVertices += numVertices[i];
 	}
 	
