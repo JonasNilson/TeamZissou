@@ -9,10 +9,23 @@ DataCrossbar** outputQueue;
 unsigned int* outputCount;
 argo::globallock::cohort_lock* primelock; // Cohort lock for the Argo nodes
 
+DataCrossbar** localQueue; // Local queue to store the crossbar data before synchronization/merging the local lists into output queue.
+unsigned int* localCounter; // Counter for localQueue how many element is in it currently.
+
 /* 
  * Initialize the data structures required by the pipeline
  */
 void initPipelines(unsigned int numEdges) {
+
+	// Init localQueue
+	localQeueue = new DataCrossbar*[NODES];
+	for(unsigned int i = 0; i < NODES; ++i){
+		localQueue[i] = new DataCrossbar[numEdges];
+	}
+
+	// Init Local counter for local queue
+	localCounter = new unsigned int[NODES];
+
 
 	//Init output queue
 	outputQueue = argo::conew_array<DataCrossbar*>(NODES);
@@ -32,6 +45,14 @@ void initPipelines(unsigned int numEdges) {
  * Clean up the data structures initialized for the pipelines
  */
 void cleanupPipelines() {
+	// Free localQueue
+	for(unsigned int i = 0; i < NODES; ++i){
+		delete localQueue[i];
+	}
+	delete localQueue;
+
+	// Free local counter
+	delete localCounter;
 
 	//Free output Queue
 	for(unsigned int i = 0; i < NODES; ++i){
@@ -58,6 +79,7 @@ of the crossbar switch.
 // Crossbar should switch this edge to correct pipeline. It take in a pointer to an edge. 
 // ID of who is running.
 void crossbar(unsigned int ID, Edge e, VertexProperty srcProp){
+	/*
 	primelock->lock();
 	argo::backend::acquire(); // TODO: Local counter and synchronize them in the end.
 
@@ -74,7 +96,37 @@ void crossbar(unsigned int ID, Edge e, VertexProperty srcProp){
 
 	argo::backend::release();
 	primelock->unlock();
+	*/
+
+	unsigned int stream = e.dstID % NODES; // Check which pipeline to go to
+
+	DataCrossbar data;
+	data.dstID = e.dstID;
+	data.weight = e.weight;
+	data.srcProp = srcProp;
+
+	localQueue[stream][localCounter[stream]] = data;
+	localCounter[stream]++;
 }
+
+/*
+* Merge all local queues from crossbar to outputQueue. 
+*/
+void mergeQueues(){
+	primelock->lock();
+	argo::backend::acquire();
+
+	for(unsigned int i = 0; i < NODES; ++i) {
+		for(unsigned int j = 0; j < localCounter[i]; ++j){
+			outputQueue[i][outputCount+j] = localQueue[i][j] //outputCount where to put it in, where j is the fill in from 
+		}
+		outputCount[i] = outputCount[i] + localCounter[i];
+	}
+
+	argo::backend::release();
+	primelock->unlock();
+}
+
 
 void processingPhaseSourceOriented(unsigned int ID){
 	//Vertex dst; // TODO: Not needed for this algorithm right now? Implement in future if we want to use it

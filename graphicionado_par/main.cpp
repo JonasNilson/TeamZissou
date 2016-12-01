@@ -76,6 +76,8 @@ void graphicionado(unsigned int id){
   while(hasActiveVertices()) {
 	//A process edge
     processingPhaseSourceOriented(id); //
+
+    mergeQueues(); // Take all local queues and merge them into one output Queue.
     argo::barrier(); // Synchronization
     processingPhaseDestinationOriented(id); //
 
