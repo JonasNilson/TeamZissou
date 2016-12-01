@@ -10,10 +10,11 @@
 #include "test_functions.hpp"
 #include "tests.hpp"
 #include "pipelines.hpp"
+#include <chrono>
 
 // Global variable declaration
 unsigned int THREADS = 4; // Set number of threads
-unsigned int NODES = 4;
+unsigned int NODES;
 
 Vertex** vertices; // All vertices in the graph
 Vertex** activeVertex;
@@ -74,7 +75,7 @@ bool hasActiveVertices() {
 // ID is for node/thread
 void graphicionado(unsigned int id){
   while(hasActiveVertices()) {
-	//A process edge
+    //A process edge
     processingPhaseSourceOriented(id); //
 
     mergeQueues(); // Take all local queues and merge them into one output Queue.
@@ -114,7 +115,7 @@ int main(int argc, char *argv[]){
 
   // Local variable declaration
   unsigned int id = argo::node_id(); // get this node unique index number starting from 0
-  //int nodes = argo::number_of_nodes(); // return the total number of nodes in the Argo system.
+  NODES = argo::number_of_nodes(); // return the total number of nodes in the Argo system.
 
   // Load the configuration settings from file (settings.cfg)
   loadSettings();
@@ -131,9 +132,26 @@ int main(int argc, char *argv[]){
   }  
   
   argo::barrier(); // Synchronize after node 0 is done with the initialization.
+  std::chrono::time_point<std::chrono::system_clock> start, end;
+  std::time_t end_time;
+  std::chrono::duration<double> elapsed_seconds;
+  
+  if(id == 0){
+    
+    start = std::chrono::system_clock::now();
+  }
   graphicionado(id);
   argo::barrier(); // Synchronize before cleaning up
-  // printVerticesProperties(totalVertexCount[id], vertices[id], vProperty[id]); //Debug prints too see behavior
+  if(id == 0){
+    end = std::chrono::system_clock::now();
+    elapsed_seconds = end-start;
+    end_time = std::chrono::system_clock::to_time_t(end);
+  }
+  //printVerticesProperties(totalVertexCount[id], vertices[id], vProperty[id]); //Debug prints too see behavior
   terminateProgram(); // Cleanup for this node when program has finished.
+  if (id == 0){
+        std::cout << "finished computation at " << std::ctime(&end_time)
+              << "elapsed time: " << elapsed_seconds.count() << "s\n";
+  }
   return 0;
 }

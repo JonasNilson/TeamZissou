@@ -82,24 +82,6 @@ of the crossbar switch.
 // Crossbar should switch this edge to correct pipeline. It take in a pointer to an edge. 
 // ID of who is running.
 void crossbar(unsigned int ID, Edge e, VertexProperty srcProp){
-	/*
-	primelock->lock();
-	argo::backend::acquire(); // TODO: Local counter and synchronize them in the end.
-
-	unsigned int stream = e.dstID % NODES; // Check which pipeline to go to
-
-	DataCrossbar data;
-	data.dstID = e.dstID;
-	data.weight = e.weight;
-	data.srcProp = srcProp;
-
-	unsigned int count = outputCount[stream];
-	outputCount[stream] = outputCount[stream] + 1;
-	outputQueue[stream][count] = data;
-
-	argo::backend::release();
-	primelock->unlock();
-	*/
 	unsigned int stream = e.dstID % NODES; // Check which pipeline to go to
 
 	DataCrossbar data;

@@ -423,10 +423,6 @@ void readData(const char* filename) {
 			std::getline(ss, item, delimiter);
 		
 			unsigned int stream = (std::stoll(item) - 1) % NODES;
-
-			//Edge* currentEdges = edges[stream];
-			//Edge currentEdge;
-			//currentEdge = currentEdges[totalEdgeCount[stream]];
 		
 			unsigned int src = std::stoll(item);
 			std::getline(ss, item, delimiter);
