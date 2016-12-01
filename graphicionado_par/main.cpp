@@ -148,7 +148,12 @@ int main(int argc, char *argv[]){
     end_time = std::chrono::system_clock::to_time_t(end);
   }
   //printVerticesProperties(totalVertexCount[id], vertices[id], vProperty[id]); //Debug prints too see behavior
+  if(id == 0) { // Node 0 writes the parallel results to file
+	  writeTwoDimensionalVerticesProperties(NODES, totalVertexCount, vertices, vProperty); 
+  }
+
   terminateProgram(); // Cleanup for this node when program has finished.
+
   if (id == 0){
         std::cout << "finished computation at " << std::ctime(&end_time)
               << "elapsed time: " << elapsed_seconds.count() << "s\n";
