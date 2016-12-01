@@ -18,13 +18,16 @@ unsigned int* localCounter; // Counter for localQueue how many element is in it 
 void initPipelines(unsigned int numEdges) {
 
 	// Init localQueue
-	localQeueue = new DataCrossbar*[NODES];
+	localQueue = new DataCrossbar*[NODES];
 	for(unsigned int i = 0; i < NODES; ++i){
 		localQueue[i] = new DataCrossbar[numEdges];
 	}
 
 	// Init Local counter for local queue
 	localCounter = new unsigned int[NODES];
+	for (unsigned int node = 0; node < NODES; ++node){
+	  localCounter[node] = 0;
+	}
 
 
 	//Init output queue
@@ -97,14 +100,12 @@ void crossbar(unsigned int ID, Edge e, VertexProperty srcProp){
 	argo::backend::release();
 	primelock->unlock();
 	*/
-
 	unsigned int stream = e.dstID % NODES; // Check which pipeline to go to
 
 	DataCrossbar data;
 	data.dstID = e.dstID;
 	data.weight = e.weight;
 	data.srcProp = srcProp;
-
 	localQueue[stream][localCounter[stream]] = data;
 	localCounter[stream]++;
 }
