@@ -127,13 +127,14 @@ int main(int argc, char *argv[]){
 
   // Local variable declaration
   unsigned int id = argo::node_id(); // get this node unique index number starting from 0
+  // TODO: set the id to a thread id instead of node id
   NODES = argo::number_of_nodes(); // return the total number of nodes in the Argo system.
 
   // Load the configuration settings from file (settings.cfg)
   loadSettings();
 
-  // Set the number of streams across all nodes
-  setNumberOfStreams(); 
+  // Set the number of streams across all nodes (saved in NUM_STREAMS)
+  setNumberOfStreams();
 
   argo::barrier();
 
@@ -149,9 +150,7 @@ int main(int argc, char *argv[]){
   }  
   
   argo::barrier(); // Synchronize after node 0 is done with the initialization.
-
   graphicionado(id);
-
   argo::barrier(); // Synchronize before cleaning up
 
   //printVerticesProperties(totalVertexCount[id], vertices[id], vProperty[id]); //Debug prints too see behavior

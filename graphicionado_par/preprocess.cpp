@@ -23,19 +23,18 @@ void initAlgorithmProperty(unsigned int numVertices, unsigned int numEdges) {
 				vertices[j][i].prop.property = numVertices;
 			}
 		}
-	}
 
 		//Set their property to 0. //Can be optimized. The id is key to which stream so no need to check everything.
-	for(unsigned int k=0; k < NUM_STREAMS; ++k){
-		for(unsigned int i = 0; i < activeVertexCount[k]; ++i){
-			for(unsigned int j = 0; j < totalVertexCount[k]; ++j) {
-				if(startingNodes[i] == vertices[k][j].ID) { // startingNodes are ID's of active nodes
-					vertices[k][j].prop.property = 0;
+		for(unsigned int k=0; k < NUM_STREAMS; ++k) {
+			for(unsigned int i = 0; i < activeVertexCount[k]; ++i){
+				for(unsigned int j = 0; j < totalVertexCount[k]; ++j) {
+					if(startingNodes[i] == vertices[k][j].ID) { // startingNodes are ID's of active nodes
+						vertices[k][j].prop.property = 0;
+					}
 				}
 			}
 		}
 	}
-
 
 	if(graphAlgorithm == "SSSP"){ //Check if SSSP is used
 		// Init all vertex properties for SSSP
@@ -58,7 +57,7 @@ void initAlgorithmProperty(unsigned int numVertices, unsigned int numEdges) {
 		}
 	}
 
-	if(graphAlgorithm == "PR"){ //Check if Page rank is used
+	if(graphAlgorithm == "PR") { //Check if Page rank is used
 
 		//Set their property to 0.3
 		for(unsigned int k=0; k < NUM_STREAMS; ++k){
@@ -91,7 +90,6 @@ void initAlgorithmProperty(unsigned int numVertices, unsigned int numEdges) {
 				vConst[stream][startPos].property = counter;
 			}
 		}
-	
 }
 
 
