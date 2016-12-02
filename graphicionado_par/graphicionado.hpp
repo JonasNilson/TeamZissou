@@ -12,7 +12,7 @@ struct Edge;
 --- Graphicionado pipeline global variables ------
 ----------------------------------------------- */
 
-extern unsigned int NODES;
+extern unsigned int NUM_STREAMS;
 extern unsigned int THREADS;
 
 extern Vertex** vertices; // All vertices in the graph

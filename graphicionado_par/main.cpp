@@ -14,7 +14,7 @@
 
 // Global variable declaration
 unsigned int THREADS; // Number of threads. Read and set from setting file
-unsigned int NODES;
+unsigned int NUM_STREAMS;
 
 unsigned int numberOfStreams; // Streams that is how many parts running graphicionado on its own set of vertices.
 
@@ -66,7 +66,7 @@ int readData(int argc, char *argv[]){
  * Use this to check if there are any active vertices left to process
  */
 bool hasActiveVertices() {
-	for(unsigned int i = 0; i < NODES; ++i) {
+	for(unsigned int i = 0; i < NUM_STREAMS; ++i) {
 		if(activeVertexCount[i] != 0) {
 			return true;
 		}
@@ -117,7 +117,7 @@ int main(int argc, char *argv[]){
 
   // Local variable declaration
   unsigned int id = argo::node_id(); // get this node unique index number starting from 0
-  NODES = argo::number_of_nodes(); // return the total number of nodes in the Argo system.
+  NUM_STREAMS = argo::number_of_nodes(); // return the total number of nodes in the Argo system.
 
   // Load the configuration settings from file (settings.cfg)
   loadSettings();
@@ -151,7 +151,7 @@ int main(int argc, char *argv[]){
   }
   //printVerticesProperties(totalVertexCount[id], vertices[id], vProperty[id]); //Debug prints too see behavior
   if(id == 0) { // Node 0 writes the parallel results to file
-	  writeTwoDimensionalVerticesProperties(NODES, totalVertexCount, vertices, vProperty); 
+	  writeTwoDimensionalVerticesProperties(NUM_STREAMS, totalVertexCount, vertices, vProperty); 
   }
 
   terminateProgram(); // Cleanup for this node when program has finished.

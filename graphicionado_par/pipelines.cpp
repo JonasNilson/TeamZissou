@@ -18,26 +18,26 @@ unsigned int* localCounter; // Counter for localQueue how many element is in it 
 void initPipelines(unsigned int numEdges) {
 
 	// Init localQueue
-	localQueue = new DataCrossbar*[NODES];
-	for(unsigned int i = 0; i < NODES; ++i){
+	localQueue = new DataCrossbar*[NUM_STREAMS];
+	for(unsigned int i = 0; i < NUM_STREAMS; ++i){
 		localQueue[i] = new DataCrossbar[numEdges];
 	}
 
 	// Init Local counter for local queue
-	localCounter = new unsigned int[NODES];
-	for (unsigned int node = 0; node < NODES; ++node){
+	localCounter = new unsigned int[NUM_STREAMS];
+	for (unsigned int node = 0; node < NUM_STREAMS; ++node){
 	  localCounter[node] = 0;
 	}
 
 
 	//Init output queue
-	outputQueue = argo::conew_array<DataCrossbar*>(NODES);
-	for(unsigned int i = 0; i < NODES; ++i){
+	outputQueue = argo::conew_array<DataCrossbar*>(NUM_STREAMS);
+	for(unsigned int i = 0; i < NUM_STREAMS; ++i){
 		outputQueue[i] = argo::conew_array<DataCrossbar>(numEdges);
 	}
 
 	//Init output Count (number of element in outputQueue)
-	outputCount = argo::conew_array<unsigned int>(NODES);
+	outputCount = argo::conew_array<unsigned int>(NUM_STREAMS);
 	
 	//Init lock so no data races
 	primelock = new argo::globallock::cohort_lock;
@@ -49,7 +49,7 @@ void initPipelines(unsigned int numEdges) {
  */
 void cleanupPipelines() {
 	// Free localQueue
-	for(unsigned int i = 0; i < NODES; ++i){
+	for(unsigned int i = 0; i < NUM_STREAMS; ++i){
 		delete localQueue[i];
 	}
 	delete localQueue;
@@ -58,7 +58,7 @@ void cleanupPipelines() {
 	delete localCounter;
 
 	//Free output Queue
-	for(unsigned int i = 0; i < NODES; ++i){
+	for(unsigned int i = 0; i < NUM_STREAMS; ++i){
 		argo::codelete_array(outputQueue[i]);
 	}
 	argo::codelete_array(outputQueue);
@@ -82,7 +82,7 @@ of the crossbar switch.
 // Crossbar should switch this edge to correct pipeline. It take in a pointer to an edge. 
 // ID of who is running.
 void crossbar(unsigned int ID, Edge e, VertexProperty srcProp){
-	unsigned int stream = e.dstID % NODES; // Check which pipeline to go to
+	unsigned int stream = e.dstID % NUM_STREAMS; // Check which pipeline to go to
 
 	DataCrossbar data;
 	data.dstID = e.dstID;
@@ -99,7 +99,7 @@ void mergeQueues(){
 	primelock->lock();
 	argo::backend::acquire();
 
-	for(unsigned int i = 0; i < NODES; ++i) {
+	for(unsigned int i = 0; i < NUM_STREAMS; ++i) {
 		for(unsigned int j = 0; j < localCounter[i]; ++j){
 			outputQueue[i][outputCount[i]+j] = localQueue[i][j]; //outputCount where to put it in, where j is the fill in from 
 		}
@@ -138,7 +138,7 @@ void processingPhaseSourceOriented(unsigned int ID){
 void processingPhaseDestinationOriented(unsigned int ID){
 	Vertex dst; // [OPTIONAL]
 	for(unsigned int i = 0; i < outputCount[ID]; ++i){
-		unsigned int position = (outputQueue[ID][i].dstID/NODES); // This get position in the [][] array for dstID
+		unsigned int position = (outputQueue[ID][i].dstID/NUM_STREAMS); // This get position in the [][] array for dstID
 		
     	//dst.prop = vProperty[e.dstID]; // [OPT IONAL] Random Vertex Read
     	VertexProperty res = processEdge(outputQueue[ID][i].weight, outputQueue[ID][i].srcProp, dst.prop);
@@ -167,7 +167,7 @@ void applyPhase(unsigned int ID){
 	  	if(isAllVerticesActive) { // Setting to check if all vertices should be active.
 	    	if(temp.property != vprop.property) { // No need to write all if no changed made
 	      		Vertex v;
-	      		v.ID = ID + NODES * i; // Calculate the ID of the vertex in that position id + nodes * i.
+	      		v.ID = ID + NUM_STREAMS * i; // Calculate the ID of the vertex in that position id + nodes * i.
 	      		v.prop = temp;
 	      		activeVertex[ID][i] = v; // Sequential Vertex Write
 	    	}
@@ -176,7 +176,7 @@ void applyPhase(unsigned int ID){
 	  		// If not all vertices is active.
 	    	if(temp.property != vprop.property) { 
 	      		Vertex v;
-	      		v.ID = ID + NODES * i; // Calculate the ID of the vertex in that position id + nodes * i.
+	      		v.ID = ID + NUM_STREAMS * i; // Calculate the ID of the vertex in that position id + nodes * i.
 	      		v.prop = temp;
 	      		//Active synch for this
 	      		activeVertex[ID][activeVertexCount[ID]++] = v; // Sequential Vertex Write
