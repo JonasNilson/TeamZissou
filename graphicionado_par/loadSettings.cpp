@@ -12,7 +12,6 @@ bool edgeDuplicates;
 unsigned int* startingNodes;
 unsigned int numberOfStartingNodes;
 bool singleNodeRunning;
-unsigned int THREADS;
 
 void parseStartingNodes(std::string s) {
 	std::vector<unsigned int> intVector; // Vector (can dynamically change size at runtime)

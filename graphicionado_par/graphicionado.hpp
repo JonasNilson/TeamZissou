@@ -13,6 +13,7 @@ struct Edge;
 ----------------------------------------------- */
 
 extern unsigned int NODES;
+extern unsigned int THREADS;
 
 extern Vertex** vertices; // All vertices in the graph
 extern Vertex** activeVertex; 

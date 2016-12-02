@@ -11,7 +11,6 @@ extern unsigned int* startingNodes;
 extern unsigned int numberOfStartingNodes;
 
 extern bool singleNodeRunning;
-extern unsigned int THREADS;
 
 
 #endif
