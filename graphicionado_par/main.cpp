@@ -14,6 +14,7 @@
 
 // Global variable declaration
 unsigned int THREADS; // Number of threads. Read and set from setting file
+unsigned int NODES;
 unsigned int NUM_STREAMS;
 
 unsigned int numberOfStreams; // Streams that is how many parts running graphicionado on its own set of vertices.
@@ -37,6 +38,15 @@ void terminateProgram(){
     std::cout << "Shutting down program! \n";
     cleanupPreprocess(); // Free everything thats allocated in preprocess
     argo::finalize(); // Cleanup for this node when program has finished.
+}
+
+// Calculate the total number of streams over all nodes
+void setNumberOfStreams() {
+	if(singleNodeRunning) {
+		NUM_STREAMS = THREADS;
+	} else {
+		NUM_STREAMS = THREADS * NODES;
+	}
 }
 
 /*
@@ -117,11 +127,16 @@ int main(int argc, char *argv[]){
 
   // Local variable declaration
   unsigned int id = argo::node_id(); // get this node unique index number starting from 0
-  NUM_STREAMS = argo::number_of_nodes(); // return the total number of nodes in the Argo system.
+  NODES = argo::number_of_nodes(); // return the total number of nodes in the Argo system.
 
   // Load the configuration settings from file (settings.cfg)
   loadSettings();
+
+  // Set the number of streams across all nodes
+  setNumberOfStreams(); 
+
   argo::barrier();
+
   // readData take input and organize the input
   int code = readData(argc,argv);
   if(code != 0){
@@ -134,31 +149,16 @@ int main(int argc, char *argv[]){
   }  
   
   argo::barrier(); // Synchronize after node 0 is done with the initialization.
-  std::chrono::time_point<std::chrono::system_clock> start, end;
-  std::time_t end_time;
-  std::chrono::duration<double> elapsed_seconds;
-  
-  if(id == 0){
-    
-    start = std::chrono::system_clock::now();
-  }
+
   graphicionado(id);
+
   argo::barrier(); // Synchronize before cleaning up
-  if(id == 0){
-    end = std::chrono::system_clock::now();
-    elapsed_seconds = end-start;
-    end_time = std::chrono::system_clock::to_time_t(end);
-  }
+
   //printVerticesProperties(totalVertexCount[id], vertices[id], vProperty[id]); //Debug prints too see behavior
   if(id == 0) { // Node 0 writes the parallel results to file
 	  writeTwoDimensionalVerticesProperties(NUM_STREAMS, totalVertexCount, vertices, vProperty); 
   }
 
   terminateProgram(); // Cleanup for this node when program has finished.
-
-  if (id == 0){
-        std::cout << "finished computation at " << std::ctime(&end_time)
-              << "elapsed time: " << elapsed_seconds.count() << "s\n";
-  }
   return 0;
 }
