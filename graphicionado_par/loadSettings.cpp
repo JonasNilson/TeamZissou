@@ -3,6 +3,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include "graphicionado.hpp"
 #include "loadSettings.hpp"
 
 //Settings
@@ -11,6 +12,7 @@ unsigned int maxIterations;
 bool edgeDuplicates;
 unsigned int* startingNodes;
 unsigned int numberOfStartingNodes;
+bool singleNodeRunning;
 
 void parseStartingNodes(std::string s) {
 	std::vector<unsigned int> intVector; // Vector (can dynamically change size at runtime)
@@ -67,6 +69,10 @@ void setGlobalVariables(char * buffer, int index){
 		edgeDuplicates = (value == "y" ? true : false);
 	else if(vName == "startingNodes")
 		parseStartingNodes(value);
+	else if(vName == "singleNodeRunning")
+		singleNodeRunning = (value == "y" ? true : false);
+	else if(vName == "THREADS")
+		THREADS = (unsigned int) std::stoll(value);
 	else 
 		std::cout << "Something went wrong with the reading of " << vName << "\n";
 

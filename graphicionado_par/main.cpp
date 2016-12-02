@@ -13,8 +13,10 @@
 #include <chrono>
 
 // Global variable declaration
-unsigned int THREADS = 4; // Set number of threads
+unsigned int THREADS; // Number of threads. Read and set from setting file
 unsigned int NODES;
+
+unsigned int numberOfStreams; // Streams that is how many parts running graphicionado on its own set of vertices.
 
 Vertex** vertices; // All vertices in the graph
 Vertex** activeVertex;

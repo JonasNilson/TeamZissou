@@ -70,7 +70,7 @@ void writeTwoDimensionalVerticesProperties(unsigned int numberOfNodes, unsigned 
 	// Create a vector containing pairs of vertex ID and vertex property
 	std::vector<std::pair<unsigned int, unsigned int>> order(totalNumberOfVertices);
 	int k = 0;
-	for (unsigned int i = 0; i < numberOfNodes; ++i){
+	for (unsigned int i = 0; i < numberOfNodes; ++i) {
 		for(unsigned int j = 0; j < numVertices[i]; ++j) {
 			// Save the vertex id and vertex property in the vector as a pair
 			order[k++] = std::make_pair(vertices[i][j].ID, verticeProperties[i][j].property);

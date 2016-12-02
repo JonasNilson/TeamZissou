@@ -169,8 +169,9 @@ int main(int argc, char *argv[]){
   end_time = std::chrono::system_clock::to_time_t(end);
   std::cout << "finished computation at " << std::ctime(&end_time)
               << "elapsed time: " << elapsed_seconds.count() << "s\n";
-  
-  //printVerticesProperties(totalVertexCount, vertices, vProperty); //Debug prints too see behavior
+
+  // printVerticesProperties(totalVertexCount, vertices, vProperty); //Debug prints too see behavior
+  writeVerticesProperties(totalVertexCount, vertices, vProperty);
   terminateProgram(); // Cleanup for this node when program has finished.
   return 0;
 }

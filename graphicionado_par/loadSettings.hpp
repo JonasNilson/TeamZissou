@@ -10,4 +10,7 @@ extern bool edgeDuplicates;
 extern unsigned int* startingNodes;
 extern unsigned int numberOfStartingNodes;
 
+extern bool singleNodeRunning;
+//THREADS read from setting file. Declaration is located in main.cpp.
+
 #endif
