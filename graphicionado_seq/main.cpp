@@ -158,7 +158,18 @@ int main(int argc, char *argv[]){
     return 1;
   }
   
+  std::chrono::time_point<std::chrono::system_clock> start, end;
+  std::time_t end_time;
+  std::chrono::duration<double> elapsed_seconds;
+  start = std::chrono::system_clock::now();
+
   graphicionado();
+  end = std::chrono::system_clock::now();
+  elapsed_seconds = end-start;
+  end_time = std::chrono::system_clock::to_time_t(end);
+  std::cout << "finished computation at " << std::ctime(&end_time)
+              << "elapsed time: " << elapsed_seconds.count() << "s\n";
+  
   //printVerticesProperties(totalVertexCount, vertices, vProperty); //Debug prints too see behavior
   terminateProgram(); // Cleanup for this node when program has finished.
   return 0;

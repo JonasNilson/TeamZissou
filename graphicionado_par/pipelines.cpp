@@ -3,6 +3,7 @@
 #include "pipelines.hpp"
 #include "test_functions.hpp"
 #include <math.h>
+#include <chrono>
 
 //Global variables
 DataCrossbar** outputQueue;
@@ -12,10 +13,13 @@ argo::globallock::cohort_lock* primelock; // Cohort lock for the Argo nodes
 DataCrossbar** localQueue; // Local queue to store the crossbar data before synchronization/merging the local lists into output queue.
 unsigned int* localCounter; // Counter for localQueue how many element is in it currently.
 
+std::chrono::duration<double> time_lock;
+
 /* 
  * Initialize the data structures required by the pipeline
  */
 void initPipelines(unsigned int numEdges) {
+
 
 	// Init localQueue
 	localQueue = new DataCrossbar*[NODES];
@@ -56,13 +60,11 @@ void cleanupPipelines() {
 
 	// Free local counter
 	delete localCounter;
-
 	//Free output Queue
 	for(unsigned int i = 0; i < NODES; ++i){
 		argo::codelete_array(outputQueue[i]);
 	}
 	argo::codelete_array(outputQueue);
-	
 	// Free output count
 	argo::codelete_array(outputCount);
 	
@@ -95,10 +97,11 @@ void crossbar(unsigned int ID, Edge e, VertexProperty srcProp){
 /*
 * Merge all local queues from crossbar to outputQueue. 
 */
-void mergeQueues(){
-	primelock->lock();
+void mergeQueues(unsigned int id){
+  std::chrono::time_point<std::chrono::system_clock> startm = std::chrono::system_clock::now();
+	primelock->lock();	
 	argo::backend::acquire();
-
+	time_lock += std::chrono::system_clock::now()-startm;
 	for(unsigned int i = 0; i < NODES; ++i) {
 		for(unsigned int j = 0; j < localCounter[i]; ++j){
 			outputQueue[i][outputCount[i]+j] = localQueue[i][j]; //outputCount where to put it in, where j is the fill in from 

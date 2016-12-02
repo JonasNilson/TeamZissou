@@ -30,6 +30,15 @@ unsigned int* totalVertexCount; // Number of nodes in the system.
 unsigned int* activeVertexCount; // Number of active nodes in the system.
 unsigned int* totalEdgeCount;
 
+std::chrono::duration<double> time_graphicionado, time_init, time_cleanup, time_read;
+std::chrono::duration<double> time_src;
+std::chrono::duration<double> time_dst;
+std::chrono::duration<double> time_merge;
+std::chrono::duration<double> time_apply;
+std::chrono::time_point<std::chrono::system_clock> start;
+std::chrono::time_point<std::chrono::system_clock> end;
+std::chrono::time_point<std::chrono::system_clock> startG;
+
 // Make all cleanups needed before closing the program.
 void terminateProgram(){
     std::cout << "Shutting down program! \n";
@@ -76,16 +85,33 @@ bool hasActiveVertices() {
 void graphicionado(unsigned int id){
   while(hasActiveVertices()) {
     //A process edge
+    if(id == 0){
+      start = std::chrono::system_clock::now();
+    }
     processingPhaseSourceOriented(id); //
-
-    mergeQueues(); // Take all local queues and merge them into one output Queue.
+    argo::barrier();
+    if(id == 0){
+      time_src += std::chrono::system_clock::now()-start;
+      start = std::chrono::system_clock::now();
+    }
+    mergeQueues(id); // Take all local queues and merge them into one output Queue.
     argo::barrier(); // Synchronization
+    if(id == 0){
+      time_merge += std::chrono::system_clock::now()-start;
+      start = std::chrono::system_clock::now();
+    }
     processingPhaseDestinationOriented(id); //
-
-	argo::barrier();
+    argo::barrier();
+    if(id == 0){
+      time_dst += std::chrono::system_clock::now()-start;
+      start = std::chrono::system_clock::now();
+    }
     //B Apply Phase
     applyPhase(id);
-	argo::barrier();
+    argo::barrier();
+    if(id == 0){
+      time_apply += std::chrono::system_clock::now()-start;
+    }
 
     //Settings check if we should use max iteration implementation or not
     if(maxIterations != 0){ //If setting is set to 0 it will use infinity iteration possibility
@@ -97,6 +123,14 @@ void graphicionado(unsigned int id){
       }
     }
   }
+}
+
+void printTimeMeasurements(){
+    std::cout << "Finished computation with " << NODES << " nodes." << "\n----------------\n"
+	      << "Graphicionado time: \t\t" << time_graphicionado.count() << "\nArgo initialization time: \t" << time_init.count() << "\nData read time: \t\t" << time_read.count() << "\nCleanup time: \t\t\t" << time_cleanup.count() << "\n-----------\n" << std::endl;
+    std::chrono::duration<double> srctime, dsttime, mergetime, applytime;
+
+    std::cout << "Time in processing src "<< ": \t" << time_src.count() << "\nTime in processing dst " << ": \t" << time_dst.count() << "\nTime spent merging queues " << ": \t" << time_merge.count() << "\t(Lock waiting time: " << time_lock.count() << ")\nTime spent applying " << ": \t\t" << time_apply.count() << std::endl;  
 }
 
 /**
@@ -111,7 +145,10 @@ int main(int argc, char *argv[]){
      Set up the argo environment, caches and global memory. 
      Init the total space that is shared between all nodes. 
   */
+
+  start = std::chrono::system_clock::now();
   argo::init(128 * 1024 * 1024); 
+  time_init = std::chrono::system_clock::now()-start;
 
   // Local variable declaration
   unsigned int id = argo::node_id(); // get this node unique index number starting from 0
@@ -121,7 +158,11 @@ int main(int argc, char *argv[]){
   loadSettings();
   argo::barrier();
   // readData take input and organize the input
+  if(id == 0)
+    start = std::chrono::system_clock::now();
   int code = readData(argc,argv);
+  if(id == 0)
+    time_read = std::chrono::system_clock::now()-start;
   if(code != 0){
       if(code == 2){
 		  // test run
@@ -132,31 +173,25 @@ int main(int argc, char *argv[]){
   }  
   
   argo::barrier(); // Synchronize after node 0 is done with the initialization.
-  std::chrono::time_point<std::chrono::system_clock> start, end;
-  std::time_t end_time;
-  std::chrono::duration<double> elapsed_seconds;
+  
   
   if(id == 0){
-    
-    start = std::chrono::system_clock::now();
+    startG = std::chrono::system_clock::now();
   }
   graphicionado(id);
   argo::barrier(); // Synchronize before cleaning up
-  if(id == 0){
-    end = std::chrono::system_clock::now();
-    elapsed_seconds = end-start;
-    end_time = std::chrono::system_clock::to_time_t(end);
-  }
   //printVerticesProperties(totalVertexCount[id], vertices[id], vProperty[id]); //Debug prints too see behavior
-  if(id == 0) { // Node 0 writes the parallel results to file
-	  writeTwoDimensionalVerticesProperties(NODES, totalVertexCount, vertices, vProperty); 
+  if(id == 0) {
+    time_graphicionado = std::chrono::system_clock::now()-startG;
+    start = std::chrono::system_clock::now();
   }
-
   terminateProgram(); // Cleanup for this node when program has finished.
-
-  if (id == 0){
-        std::cout << "finished computation at " << std::ctime(&end_time)
-              << "elapsed time: " << elapsed_seconds.count() << "s\n";
+  if(id == 0) {
+    time_cleanup = std::chrono::system_clock::now()-start;
+    // Node 0 writes the parallel results to file
+  writeTwoDimensionalVerticesProperties(NODES, totalVertexCount, vertices, vProperty); 
+  printTimeMeasurements();
   }
+   
   return 0;
 }
