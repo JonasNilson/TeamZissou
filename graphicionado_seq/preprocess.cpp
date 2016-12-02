@@ -277,7 +277,8 @@ void readGTgraphFile(const char* filename){
 	}
 
 	//printVertices(numVertices, vertices);
-
+	//	printEdges(numEdges,edges);
+	
 	file.close(); // Closes file
 
 	std::cout << "file closed" << std::endl;
@@ -301,8 +302,10 @@ void setupEIT(unsigned int numVertices, unsigned int numEdges, Vertex* vertices,
       oldIndex = newIndex;
       newIndex = edges[i].srcID;
       if(newIndex != oldIndex)
-	{
-	  edgeIDTable[newIndex] = i+1;
-	}
+		{
+		  edgeIDTable[newIndex] = i+1;
+		}
     }
+
+  edgeIDTable[0] = 1;
 }

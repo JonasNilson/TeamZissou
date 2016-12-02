@@ -30,6 +30,9 @@ unsigned int totalVertexCount; // Number of nodes in the system.
 unsigned int activeVertexCount; // Number of active nodes in the system.
 unsigned int totalEdgeCount;
 
+Vertex localActiveVertex[10000];
+unsigned int localCounter;
+
 // Make all cleanups needed before closing the program.
 void terminateProgram(){
     std::cout << "Shutting down program! \n";
@@ -44,7 +47,7 @@ int readData(int argc, char *argv[]){
   if(argc>1) {
 	const std::string tests = "tests";
     if(argv[1] == tests){
-      runTests();
+	  //  runTests();
       return 2; // Return 2 when running tests
     }
     //Init all data organization 
@@ -60,63 +63,89 @@ int readData(int argc, char *argv[]){
   return 0;
 }
 
-void processEdges(Vertex dst){
+void processEdges(Vertex dst,unsigned int itr){
 for (unsigned int i=0; i<activeVertexCount; i++) {
-      Vertex src = activeVertex[i]; // Sequential Vertex Read
-      unsigned int eID = edgeIDTable[src.ID]; // Edge ID Read
-      if(eID == 0) continue; // If the index for the vertex is 0, it has no outgoing edges.
+    Vertex src = activeVertex[i]; // Sequential Vertex Read
+      unsigned int eID = edgeIDTableArray[itr][src.ID]; // Edge ID Read
+	  //	  std::cout << "vID: " << src.ID << std::endl;
+	  if(eID == 0) continue; // If the index for the vertex is 0, it has no outgoing edges.
       eID--; // Edges index is shifted by 1 because if the index is 0 it indicates that there are no outgoing edges from this vertex.
-      Edge e = edges[eID]; // Edge Read
+      Edge e = edgesArray[itr][eID]; // Edge Read
       while (e.srcID == src.ID) {
         //dst.prop = vProperty[e.dstID]; // [OPT IONAL] Random Vertex Read
         VertexProperty res = processEdge(e.weight, src.prop, dst.prop);
         VertexProperty temp = vTempProperty[e.dstID]; // Random Vertex Read
         temp = reduce(temp, res);
         vTempProperty[e.dstID] = temp; // Random Vertex Write
-        e = edges[++eID]; // Edge Read
+        e = edgesArray[itr][++eID]; // Edge Read
       }
     }
 }
 
-void applyEdges(){
-for (unsigned int i=0; i<totalVertexCount; i++) {
-      VertexProperty vprop = vProperty[i]; // Sequential Vertex Read
-      VertexProperty temp = vTempProperty[i]; // Sequential Vertex Read
-      VertexProperty vconst = vConst[i];
-      temp = apply(vprop, temp, vconst);
-    
-      vProperty[i] = temp; // Sequential Vertex Write
-      if(isAllVerticesActive) { // Setting to check if all vertices should be active.
+void applyEdges(unsigned int slice){
+  for (unsigned int i=0; i<totalVertexCount; i++) {
+	VertexProperty vprop = vProperty[i]; // Sequential Vertex Read
+	VertexProperty temp = vTempProperty[i]; // Sequential Vertex Read
+	VertexProperty vconst = vConst[i];
+	temp = apply(vprop, temp, vconst);
+	
+	vProperty[i] = temp; // Sequential Vertex Write
+	if(isAllVerticesActive) { // Setting to check if all vertices should be active.
         if(temp.property != vprop.property) { // No need to write all if no changed made
           Vertex v;
           v.ID = i;
           v.prop = temp;
-          activeVertex[i] = v; // Sequential Vertex Write
+          localActiveVertex[i] = v; // Sequential Vertex Write
         }
-      }
-      else { // If not all vertices is active.
-        if(temp.property != vprop.property) { 
-          Vertex v;
-          v.ID = i;
-          v.prop = temp;
-          activeVertex[activeVertexCount++] = v; // Sequential Vertex Write
-        }
-      }
-    }
+	} else {
+		if(temp.property != vprop.property) { 
+		  Vertex v;
+		  v.ID = i;
+		  v.prop = temp;
+		  //	  		  if(first == 0){
+		  //	activeVertexCount++;
+		  //	std::cout << "extra ++ aVC: "<< activeVertexCount << std::endl;
+		  //	first++;
+		  //}
+		  localActiveVertex[localCounter++] = v; // Sequential Vertex Write
+		  
+		}
+	  }
+ }
+  if(slice == partitions - 1){
+	for(unsigned int j=0; j<localCounter; j++){
+	  activeVertex[j] = localActiveVertex[j]; 
+	}
+	activeVertexCount = localCounter;
+	localCounter =0;
+  }
+  
+
+  
 }
 
 void graphicionado(){
   Vertex dst; // TODO: Not needed for this algorithm right now? Implement in future if we want to use it
-  
+
   while(activeVertexCount != 0) {
     // Pipeline from graphicionado behavior 
    
-    processEdges(dst); //A Process edge Phase
-    
-    activeVertexCount = 0; // reset activeVertexCount & active vertices.
-    
-    applyEdges(); //B Apply Phase
 
+	for(unsigned int i=0; i< partitions;++i){
+
+	  processEdges(dst,i); //A Process edge Phase
+
+	  //	   if(i == activeVertexCount -1){
+	 
+	  //}
+	  //printVerticesProperties(totalVertexCount, vertices, vProperty); //Debug prints too see behavior
+	  //	  activeVertexCount = 0; // reset activeVertexCount & active vertices.
+	  applyEdges(i); //B Apply Phase	
+	
+	}
+	//std::cout << "done with processEdge and Apply" << std::endl;
+	
+	
     //Settings check. If isAllVerticesActive = true then all vertices should be active over all iterations.
     if(isAllVerticesActive){
       activeVertexCount = totalVertexCount;//Set active Vertex count to be the total number of vertices.
@@ -149,7 +178,6 @@ int main(int argc, char *argv[]){
      Init the total space that is shared between all nodes. 
   */
   argo::init(128 * 1024 * 1024); 
-
   // Load the configuration settings from file (settings.cfg)
   loadSettings();
  
@@ -168,16 +196,23 @@ int main(int argc, char *argv[]){
     return 1;
   }
 
+  printEdgeIDTable(numVertices,edgeIDTable,vertices);
+	
+  
   graphSlicer();
 
-  for(int i=0; i<4;i++){
-		printEdges(10,&edgesArray[i][0]);
+  /*for(unsigned int i=0; i< partitions; i++){
+	printEdges(numEdges,&edgesArray[i][0]);
+	printEdgeIDTable(numVertices,&edgeIDTableArray[i][0],vertices);
   }
+  for(unsigned int i=0; i<partitions;i++){
+	printEdges(10,&edgesArray[i][0]);
+  }
+  */ 
+	  graphicionado();
+	   printVerticesProperties(totalVertexCount, vertices, vProperty); //Debug prints too see behavior
   
-
-
-  graphicionado();
-  //printVerticesProperties(totalVertexCount, vertices, vProperty); //Debug prints too see behavior
+  
   terminateProgram(); // Cleanup for this node when program has finished.
   return 0;
 }
