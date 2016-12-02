@@ -3,6 +3,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include "graphicionado.hpp"
 #include "loadSettings.hpp"
 
 //Settings

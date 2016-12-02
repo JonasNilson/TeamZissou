@@ -159,7 +159,8 @@ int main(int argc, char *argv[]){
   }
   
   graphicionado();
-  //printVerticesProperties(totalVertexCount, vertices, vProperty); //Debug prints too see behavior
+  // printVerticesProperties(totalVertexCount, vertices, vProperty); //Debug prints too see behavior
+  writeVerticesProperties(totalVertexCount, vertices, vProperty);
   terminateProgram(); // Cleanup for this node when program has finished.
   return 0;
 }
