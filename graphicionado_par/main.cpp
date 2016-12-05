@@ -89,15 +89,14 @@ void graphicionado(unsigned int id){
   while(hasActiveVertices()) {
     //A process edge
     processingPhaseSourceOriented(id); //
-
     mergeQueues(); // Take all local queues and merge them into one output Queue.
-    argo::barrier(); // Synchronization
+    argo::barrier(THREADS); // Synchronization
     processingPhaseDestinationOriented(id); //
 
-	argo::barrier();
+	argo::barrier(THREADS);
     //B Apply Phase
     applyPhase(id);
-	argo::barrier();
+	argo::barrier(THREADS);
 
     //Settings check if we should use max iteration implementation or not
     if(maxIterations != 0){ //If setting is set to 0 it will use infinity iteration possibility
@@ -127,7 +126,6 @@ int main(int argc, char *argv[]){
 
   // Local variable declaration
   unsigned int id = argo::node_id(); // get this node unique index number starting from 0
-  // TODO: set the id to a thread id instead of node id
   NODES = argo::number_of_nodes(); // return the total number of nodes in the Argo system.
 
   // Load the configuration settings from file (settings.cfg)
@@ -156,7 +154,7 @@ int main(int argc, char *argv[]){
   
   // Create threads and give them function graphicionado to run
   for(unsigned int i = 0; i < THREADS; ++i) {
-	  unsigned int streamID = id * THREADS + i;
+	  unsigned int streamID = id * THREADS + i; // Give each thread a unique ID based on the Argo node id
 	  thread_vector[i] = std::thread(graphicionado, streamID);
   }
 
