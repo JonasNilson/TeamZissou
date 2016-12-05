@@ -14,10 +14,13 @@
 #include <vector>
 #include <thread>
 
+#include <pthread.h> // For the barrier
+
 // Global variable declaration
 unsigned int THREADS; // Number of threads. Read and set from setting file
 unsigned int NODES;
 unsigned int NUM_STREAMS;
+pthread_barrier_t thread_barrier;
 
 Vertex** vertices; // All vertices in the graph
 Vertex** activeVertex;
@@ -84,24 +87,36 @@ bool hasActiveVertices() {
 	return false;
 }
 
+// Barrier function adjusting to the mode of the running Graphicionado
+void barrier() {
+	if(singleNodeRunning) {
+		// Wait for all threads in the single node
+		pthread_barrier_wait(&thread_barrier);
+	} else {
+		argo::barrier(THREADS);
+	}
+}
+
 // ID is for node/thread
 void graphicionado(unsigned int id){
+  unsigned int iterations = maxIterations; // maxIterations read from settings file
+	
   while(hasActiveVertices()) {
     //A process edge
     processingPhaseSourceOriented(id); //
     mergeQueues(); // Take all local queues and merge them into one output Queue.
-    argo::barrier(THREADS); // Synchronization
+    barrier();
     processingPhaseDestinationOriented(id); //
 
-	argo::barrier(THREADS);
+	barrier();
     //B Apply Phase
     applyPhase(id);
-	argo::barrier(THREADS);
+	barrier();
 
     //Settings check if we should use max iteration implementation or not
-    if(maxIterations != 0){ //If setting is set to 0 it will use infinity iteration possibility
-      maxIterations--;
-      if(maxIterations == 0){
+    if(iterations != 0){ //If setting is set to 0 it will use infinity iteration possibility
+      iterations--;
+      if(iterations == 0){
         std::cout << "All iterations are done!" << std::endl;
         //Only enter this stage if it reached the maximum iteration count
         break; // break the entire loop
@@ -149,22 +164,46 @@ int main(int argc, char *argv[]){
   
   argo::barrier(); // Synchronize after node 0 is done with the initialization.
 
-  // Create a vector of threads
-  std::vector<std::thread> thread_vector(THREADS);
+  if(!singleNodeRunning) {
+	  // Create a vector of threads
+	  std::vector<std::thread> thread_vector(THREADS);
   
-  // Create threads and give them function graphicionado to run
-  for(unsigned int i = 0; i < THREADS; ++i) {
-	  unsigned int streamID = id * THREADS + i; // Give each thread a unique ID based on the Argo node id
-	  thread_vector[i] = std::thread(graphicionado, streamID);
+	  // Create threads and give them function graphicionado to run
+	  for(unsigned int i = 0; i < THREADS; ++i) {
+		  unsigned int streamID = id * THREADS + i; // Give each thread a unique ID based on the Argo node id
+		  thread_vector[i] = std::thread(graphicionado, streamID);
+	  }
+
+	  // Wait for all threads to finish the graphicionado function for this node
+	  for(unsigned int i = 0; i < THREADS; ++i) {
+		  thread_vector[i].join();
+	  }
+  } else {
+	  // Big memory mode. Only one argo node running threads. The rest holds extra memory.
+	  if(id == 0) {
+		  // Setup the local thread barrier
+		  pthread_barrier_init(&thread_barrier, NULL, THREADS);
+
+		  // Create a vector of threads
+		  std::vector<std::thread> thread_vector(THREADS);
+  
+		  // Create threads and give them function graphicionado to run
+		  for(unsigned int i = 0; i < THREADS; ++i) {
+			  unsigned int streamID = id * THREADS + i; // Give each thread a unique ID based on the Argo node id
+			  thread_vector[i] = std::thread(graphicionado, streamID);
+		  }
+
+		  // Wait for all threads to finish the graphicionado function for this node
+		  for(unsigned int i = 0; i < THREADS; ++i) {
+			  thread_vector[i].join();
+		  }
+	  }
   }
 
-  // Wait for all threads to finish the graphicionado function for this node
-  for(unsigned int i = 0; i < THREADS; ++i) {
-	  thread_vector[i].join();
-  }
-
+  std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
   argo::barrier(); // Synchronize before cleaning up
-  
+  std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;  
+
   //printVerticesProperties(totalVertexCount[id], vertices[id], vProperty[id]); //Debug prints too see behavior
   if(id == 0) { // Node 0 writes the parallel results to file
 	  writeTwoDimensionalVerticesProperties(NUM_STREAMS, totalVertexCount, vertices, vProperty); 
