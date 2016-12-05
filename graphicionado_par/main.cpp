@@ -11,13 +11,13 @@
 #include "tests.hpp"
 #include "pipelines.hpp"
 #include <chrono>
+#include <vector>
+#include <thread>
 
 // Global variable declaration
 unsigned int THREADS; // Number of threads. Read and set from setting file
 unsigned int NODES;
 unsigned int NUM_STREAMS;
-
-unsigned int numberOfStreams; // Streams that is how many parts running graphicionado on its own set of vertices.
 
 Vertex** vertices; // All vertices in the graph
 Vertex** activeVertex;
@@ -150,9 +150,23 @@ int main(int argc, char *argv[]){
   }  
   
   argo::barrier(); // Synchronize after node 0 is done with the initialization.
-  graphicionado(id);
-  argo::barrier(); // Synchronize before cleaning up
 
+  // Create a vector of threads
+  std::vector<std::thread> thread_vector(THREADS);
+  
+  // Create threads and give them function graphicionado to run
+  for(unsigned int i = 0; i < THREADS; ++i) {
+	  unsigned int streamID = id * THREADS + i;
+	  thread_vector[i] = std::thread(graphicionado, streamID);
+  }
+
+  // Wait for all threads to finish the graphicionado function for this node
+  for(unsigned int i = 0; i < THREADS; ++i) {
+	  thread_vector[i].join();
+  }
+
+  argo::barrier(); // Synchronize before cleaning up
+  
   //printVerticesProperties(totalVertexCount[id], vertices[id], vProperty[id]); //Debug prints too see behavior
   if(id == 0) { // Node 0 writes the parallel results to file
 	  writeTwoDimensionalVerticesProperties(NUM_STREAMS, totalVertexCount, vertices, vProperty); 

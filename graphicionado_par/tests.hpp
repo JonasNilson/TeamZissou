@@ -5,7 +5,7 @@ void runTests();
 
 int readData(int argc, char *argv[]);
 
-void graphicionado();
+void graphicionado(unsigned int id);
 
 void terminateProgram();
 
