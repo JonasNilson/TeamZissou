@@ -88,7 +88,7 @@ bool hasActiveVertices() {
 }
 
 // Barrier function adjusting to the mode of the running Graphicionado
-void barrier() {
+void barrier(unsigned int id) {
 	if(singleNodeRunning) {
 		// Wait for all threads in the single node
 		pthread_barrier_wait(&thread_barrier);
@@ -100,18 +100,18 @@ void barrier() {
 // ID is for node/thread
 void graphicionado(unsigned int id){
   unsigned int iterations = maxIterations; // maxIterations read from settings file
-	
   while(hasActiveVertices()) {
+	
     //A process edge
     processingPhaseSourceOriented(id); //
-    mergeQueues(); // Take all local queues and merge them into one output Queue.
-    barrier();
+	mergeQueues(id); // Take all local queues and merge them into one output Queue.
+    barrier(id);
     processingPhaseDestinationOriented(id); //
 
-	barrier();
+	barrier(id);
     //B Apply Phase
     applyPhase(id);
-	barrier();
+	barrier(id);
 
     //Settings check if we should use max iteration implementation or not
     if(iterations != 0){ //If setting is set to 0 it will use infinity iteration possibility
@@ -137,7 +137,7 @@ int main(int argc, char *argv[]){
      Set up the argo environment, caches and global memory. 
      Init the total space that is shared between all nodes. 
   */
-  argo::init(128 * 1024 * 1024); 
+  argo::init(256 * 1024 * 1024); 
 
   // Local variable declaration
   unsigned int id = argo::node_id(); // get this node unique index number starting from 0
@@ -200,9 +200,7 @@ int main(int argc, char *argv[]){
 	  }
   }
 
-  std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
-  argo::barrier(); // Synchronize before cleaning up
-  std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;  
+  argo::barrier(); // Synchronize before cleaning up  
 
   //printVerticesProperties(totalVertexCount[id], vertices[id], vProperty[id]); //Debug prints too see behavior
   if(id == 0) { // Node 0 writes the parallel results to file

@@ -9,8 +9,8 @@ DataCrossbar** outputQueue;
 unsigned int* outputCount;
 argo::globallock::cohort_lock* primelock; // Cohort lock for the Argo nodes
 
-DataCrossbar** localQueue; // Local queue to store the crossbar data before synchronization/merging the local lists into output queue.
-unsigned int* localCounter; // Counter for localQueue how many element is in it currently.
+DataCrossbar*** localQueue; // Local queue to store the crossbar data before synchronization/merging the local lists into output queue.
+unsigned int** localCounter; // Counter for localQueue how many element is in it currently.
 
 /* 
  * Initialize the data structures required by the pipeline
@@ -18,15 +18,23 @@ unsigned int* localCounter; // Counter for localQueue how many element is in it 
 void initPipelines(unsigned int numEdges) {
 
 	// Init localQueue
-	localQueue = new DataCrossbar*[NUM_STREAMS];
-	for(unsigned int i = 0; i < NUM_STREAMS; ++i){
-		localQueue[i] = new DataCrossbar[numEdges];
+	localQueue = new DataCrossbar**[NUM_STREAMS];
+	for(unsigned int l = 0; l < NUM_STREAMS; ++l){
+		localQueue[l] = new DataCrossbar*[NUM_STREAMS];
+		for(unsigned int stream = 0; stream < NUM_STREAMS; ++stream){
+			localQueue[l][stream] = new DataCrossbar[numEdges];
+		}
 	}
+	
 
 	// Init Local counter for local queue
-	localCounter = new unsigned int[NUM_STREAMS];
-	for (unsigned int node = 0; node < NUM_STREAMS; ++node){
-	  localCounter[node] = 0;
+	localCounter = new unsigned int*[NUM_STREAMS];
+	for (unsigned int stream = 0; stream < NUM_STREAMS; ++stream){
+		localCounter[stream] = new unsigned int[NUM_STREAMS];
+		
+		for(unsigned int i = 0; i < NUM_STREAMS; ++i) {
+			localCounter[stream][i] = 0; // Init all counters to 0
+		}
 	}
 
 
@@ -49,12 +57,20 @@ void initPipelines(unsigned int numEdges) {
  */
 void cleanupPipelines() {
 	// Free localQueue
+	for(unsigned int i = 0; i < NUM_STREAMS; ++i) {
+		for(unsigned int j = 0; j < NUM_STREAMS; ++j) {
+			delete localQueue[i][j];
+		}
+	}
 	for(unsigned int i = 0; i < NUM_STREAMS; ++i){
 		delete localQueue[i];
 	}
 	delete localQueue;
 
 	// Free local counter
+	for(unsigned int i = 0; i < NUM_STREAMS; ++i){
+		delete localCounter[i];
+	}
 	delete localCounter;
 
 	//Free output Queue
@@ -88,22 +104,22 @@ void crossbar(unsigned int ID, Edge e, VertexProperty srcProp){
 	data.dstID = e.dstID;
 	data.weight = e.weight;
 	data.srcProp = srcProp;
-	localQueue[stream][localCounter[stream]] = data;
-	localCounter[stream]++;
+	localQueue[ID][stream][localCounter[ID][stream]] = data;
+	localCounter[ID][stream]++;
 }
 
 /*
 * Merge all local queues from crossbar to outputQueue. 
 */
-void mergeQueues(){
+void mergeQueues(unsigned int ID){
 	primelock->lock();
 	argo::backend::acquire();
 
 	for(unsigned int i = 0; i < NUM_STREAMS; ++i) {
-		for(unsigned int j = 0; j < localCounter[i]; ++j){
-			outputQueue[i][outputCount[i]+j] = localQueue[i][j]; //outputCount where to put it in, where j is the fill in from 
+		for(unsigned int j = 0; j < localCounter[ID][i]; ++j){
+			outputQueue[i][outputCount[i]+j] = localQueue[ID][i][j]; //outputCount where to put it in, where j is the fill in from 
 		}
-		outputCount[i] = outputCount[i] + localCounter[i];
+		outputCount[i] = outputCount[i] + localCounter[ID][i];
 	}
 
 	argo::backend::release();
@@ -150,6 +166,9 @@ void processingPhaseDestinationOriented(unsigned int ID){
 	// Reset ActiveVertex and ActiveVertexCount
 	activeVertexCount[ID] = 0; // reset activeVertexCount & active vertices.
 	outputCount[ID] = 0; // reset the output queue counter for the next iteration
+	for(unsigned int k = 0; k < NUM_STREAMS; ++k) {
+		localCounter[ID][k] = 0; // reset the local output queue counter
+	}
 }
 
 /*
