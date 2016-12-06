@@ -113,7 +113,6 @@ void crossbar(unsigned int ID, Edge e, VertexProperty srcProp){
 */
 void mergeQueues(unsigned int ID){
 	primelock->lock();
-	argo::backend::acquire();
 
 	for(unsigned int i = 0; i < NUM_STREAMS; ++i) {
 		for(unsigned int j = 0; j < localCounter[ID][i]; ++j){
@@ -122,7 +121,6 @@ void mergeQueues(unsigned int ID){
 		outputCount[i] = outputCount[i] + localCounter[ID][i];
 	}
 
-	argo::backend::release();
 	primelock->unlock();
 }
 
