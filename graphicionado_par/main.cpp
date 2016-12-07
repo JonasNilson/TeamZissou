@@ -86,6 +86,7 @@ int readData(int argc, char *argv[]){
   return 0;
 }
 
+
 /*
  * Use this to check if there are any active vertices left to process
  */
