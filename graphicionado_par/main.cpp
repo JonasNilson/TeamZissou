@@ -114,9 +114,9 @@ void graphicionado(unsigned int id){
   unsigned int iterations = maxIterations; // maxIterations read from settings file
   while(hasActiveVertices()) {
 	
-
     if(id == 0)
       start = std::chrono::system_clock::now();
+
     //A process edge
     processingPhaseSourceOriented(id); //
     barrier(id);
@@ -124,19 +124,21 @@ void graphicionado(unsigned int id){
       time_src = time_src + (std::chrono::system_clock::now()-start);
       start = std::chrono::system_clock::now();
     }
+
     mergeQueues(id); // Take all local queues and merge them into one output Queue.
     barrier(id);
     if(id == 0){
       time_merge = time_merge + (std::chrono::system_clock::now()-start);
       start = std::chrono::system_clock::now();
     }
-    processingPhaseDestinationOriented(id); //
 
+    processingPhaseDestinationOriented(id); //
     barrier(id);
     if(id == 0){
       time_dst = time_dst + (std::chrono::system_clock::now()-start);
       start = std::chrono::system_clock::now();
     }
+
     //B Apply Phase
     applyPhase(id);
     barrier(id);
@@ -152,6 +154,7 @@ void graphicionado(unsigned int id){
         break; // break the entire loop
       }
     }
+    
   }
 }
 
@@ -204,7 +207,6 @@ int main(int argc, char *argv[]){
       if(!singleNodeRunning) {
 	// Create a vector of threads
 	std::vector<std::thread> thread_vector(THREADS);
-  
 	// Create threads and give them function graphicionado to run
 	for(unsigned int i = 0; i < THREADS; ++i) {
 	  unsigned int streamID = id * THREADS + i; // Give each thread a unique ID based on the Argo node id
@@ -241,7 +243,7 @@ int main(int argc, char *argv[]){
       if(id == 0) {
 	time_graphicionado += std::chrono::system_clock::now()-startGraphicionado;
 	start = std::chrono::system_clock::now();
-	writeTwoDimensionalVerticesProperties(NODES, totalVertexCount, vertices, vProperty);
+	writeTwoDimensionalVerticesProperties(NUM_STREAMS, totalVertexCount, vertices, vProperty);
       }
 
       terminateProgram(); // Cleanup for this node when program has finished.

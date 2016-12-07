@@ -7,7 +7,6 @@
 //Global variables
 DataCrossbar*** outputQueue;
 unsigned int** outputCount;
-argo::globallock::cohort_lock* primelock; // Cohort lock for the Argo nodes
 
 DataCrossbar*** localQueue; // Local queue to store the crossbar data before synchronization/merging the local lists into output queue.
 unsigned int** localCounter; // Counter for localQueue how many element is in it currently.
@@ -16,7 +15,7 @@ unsigned int** localCounter; // Counter for localQueue how many element is in it
  * Initialize the data structures required by the pipeline
  */
 void initPipelines(unsigned int numEdges) {
-  std::cout << "Init pipelines..." << std::cout;
+  std::cout << "Init pipelines..." << std::endl;
 	// Init localQueue
 	localQueue = new DataCrossbar**[NUM_STREAMS];
 	for(unsigned int l = 0; l < NUM_STREAMS; ++l){
@@ -52,10 +51,8 @@ void initPipelines(unsigned int numEdges) {
 	for(unsigned int i = 0; i < NUM_STREAMS; ++i){
 	  outputCount[i] = argo::conew_array<unsigned int>(NUM_STREAMS);
 	}
-	
-	//Init lock so no data races
-	primelock = new argo::globallock::cohort_lock;
-	std::cout << "Init pipelines done." << std::cout;
+
+	std::cout << "Init pipelines done." << std::endl;
 }
 
 /*
@@ -93,9 +90,6 @@ void cleanupPipelines() {
 	  argo::codelete_array(outputCount[i]);
 	}
 	argo::codelete_array(outputCount);
-	
-	// Free output count
-	delete primelock;
 }
 
 /*The crossbar switch routes edge data by matching the
