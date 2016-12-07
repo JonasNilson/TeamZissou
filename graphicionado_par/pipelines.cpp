@@ -165,6 +165,8 @@ void processingPhaseDestinationOriented(unsigned int ID){
 	  }
 	}
 
+	//TODO Reset them after they been used so we do not to read them again here. E.g. outputCount can be put inside the first loop above. Just after its done with it.
+	//TODO Optimization maybe? Check with times if it do anything.
 	// Reset ActiveVertex and ActiveVertexCount
 	activeVertexCount[ID] = 0; // reset activeVertexCount & active vertices.
 	for(unsigned int k = 0; k < NUM_STREAMS; ++k) {
