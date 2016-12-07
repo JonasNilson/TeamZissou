@@ -169,13 +169,13 @@ void processingPhaseDestinationOriented(unsigned int ID){
 	    temp = reduce(temp, res);
 	    vTempProperty[ID][position] = temp; // Random Vertex Write 
 	  }
-	  outputCount[ID][source] = 0;
 	}
 
 	// Reset ActiveVertex and ActiveVertexCount
 	activeVertexCount[ID] = 0; // reset activeVertexCount & active vertices.
 	for(unsigned int k = 0; k < NUM_STREAMS; ++k) {
-		localCounter[ID][k] = 0; // reset the local output queue counter
+	  outputCount[ID][k] = 0; // reset output queue count for each of this streams queues
+	  localCounter[ID][k] = 0; // reset the local output queue counter
 	}
 }
 
