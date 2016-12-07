@@ -1,5 +1,5 @@
 /**
- * Parallel implementation of graphicionado
+ * Parallel implementation of graphicionado with both threads/Nodes
  */
 #include <argo.hpp> // Get access to Argo function calls.
 #include <iostream> // Used for output prints.
