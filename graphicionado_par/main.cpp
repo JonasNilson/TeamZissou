@@ -168,7 +168,7 @@ int main(int argc, char *argv[]){
      Init the total space that is shared between all nodes. 
   */
       start = std::chrono::system_clock::now();
-      argo::init(256 * 1024 * 1024); 
+      argo::init(512 * 1024 * 1024); 
   
  
       // Local variable declaration
