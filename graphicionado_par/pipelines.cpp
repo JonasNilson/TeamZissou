@@ -5,8 +5,8 @@
 #include <math.h>
 
 //Global variables
-DataCrossbar** outputQueue;
-unsigned int* outputCount;
+DataCrossbar*** outputQueue;
+unsigned int** outputCount;
 argo::globallock::cohort_lock* primelock; // Cohort lock for the Argo nodes
 
 DataCrossbar*** localQueue; // Local queue to store the crossbar data before synchronization/merging the local lists into output queue.
@@ -16,7 +16,7 @@ unsigned int** localCounter; // Counter for localQueue how many element is in it
  * Initialize the data structures required by the pipeline
  */
 void initPipelines(unsigned int numEdges) {
-
+  std::cout << "Init pipelines..." << std::cout;
 	// Init localQueue
 	localQueue = new DataCrossbar**[NUM_STREAMS];
 	for(unsigned int l = 0; l < NUM_STREAMS; ++l){
@@ -39,17 +39,23 @@ void initPipelines(unsigned int numEdges) {
 
 
 	//Init output queue
-	outputQueue = argo::conew_array<DataCrossbar*>(NUM_STREAMS);
+	outputQueue = argo::conew_array<DataCrossbar**>(NUM_STREAMS);
 	for(unsigned int i = 0; i < NUM_STREAMS; ++i){
-		outputQueue[i] = argo::conew_array<DataCrossbar>(numEdges);
+		outputQueue[i] = argo::conew_array<DataCrossbar*>(NUM_STREAMS);
+		for(unsigned int j = 0; j < NUM_STREAMS; ++j){
+		  outputQueue[i][j] = argo::conew_array<DataCrossbar>(numEdges);
+		}
 	}
 
 	//Init output Count (number of element in outputQueue)
-	outputCount = argo::conew_array<unsigned int>(NUM_STREAMS);
+	outputCount = argo::conew_array<unsigned int*>(NUM_STREAMS);
+	for(unsigned int i = 0; i < NUM_STREAMS; ++i){
+	  outputCount[i] = argo::conew_array<unsigned int>(NUM_STREAMS);
+	}
 	
 	//Init lock so no data races
 	primelock = new argo::globallock::cohort_lock;
-
+	std::cout << "Init pipelines done." << std::cout;
 }
 
 /*
@@ -75,11 +81,17 @@ void cleanupPipelines() {
 
 	//Free output Queue
 	for(unsigned int i = 0; i < NUM_STREAMS; ++i){
-		argo::codelete_array(outputQueue[i]);
+	  for(unsigned int j = 0; j < NUM_STREAMS; ++j){
+		argo::codelete_array(outputQueue[i][j]);
+	  }
+	  argo::codelete_array(outputQueue[i]);
 	}
 	argo::codelete_array(outputQueue);
 	
 	// Free output count
+	for(unsigned int i = 0; i < NUM_STREAMS; ++i){
+	  argo::codelete_array(outputCount[i]);
+	}
 	argo::codelete_array(outputCount);
 	
 	// Free output count
@@ -112,16 +124,12 @@ void crossbar(unsigned int ID, Edge e, VertexProperty srcProp){
 * Merge all local queues from crossbar to outputQueue. 
 */
 void mergeQueues(unsigned int ID){
-	primelock->lock();
-
 	for(unsigned int i = 0; i < NUM_STREAMS; ++i) {
 		for(unsigned int j = 0; j < localCounter[ID][i]; ++j){
-			outputQueue[i][outputCount[i]+j] = localQueue[ID][i][j]; //outputCount where to put it in, where j is the fill in from 
+			outputQueue[i][ID][outputCount[i][ID]+j] = localQueue[ID][i][j]; //outputCount where to put it in, where j is the fill in from 
 		}
-		outputCount[i] = outputCount[i] + localCounter[ID][i];
+		outputCount[i][ID] = outputCount[i][ID] + localCounter[ID][i];
 	}
-
-	primelock->unlock();
 }
 
 
@@ -151,19 +159,21 @@ void processingPhaseSourceOriented(unsigned int ID){
 // edgeID
 void processingPhaseDestinationOriented(unsigned int ID){
 	Vertex dst; // [OPTIONAL]
-	for(unsigned int i = 0; i < outputCount[ID]; ++i){
-		unsigned int position = (outputQueue[ID][i].dstID/NUM_STREAMS); // This get position in the [][] array for dstID
+	for(unsigned int source = 0; source < NUM_STREAMS; ++source){
+	  for(unsigned int i = 0; i < outputCount[ID][source]; ++i){
+	    unsigned int position = (outputQueue[ID][source][i].dstID/NUM_STREAMS); // This get position in the [][] array for dstID
 		
-    	//dst.prop = vProperty[e.dstID]; // [OPT IONAL] Random Vertex Read
-    	VertexProperty res = processEdge(outputQueue[ID][i].weight, outputQueue[ID][i].srcProp, dst.prop);
-    	VertexProperty temp = vTempProperty[ID][position]; // Random Vertex Read     
+	    //dst.prop = vProperty[e.dstID]; // [OPT IONAL] Random Vertex Read
+	    VertexProperty res = processEdge(outputQueue[ID][source][i].weight, outputQueue[ID][source][i].srcProp, dst.prop);
+	    VertexProperty temp = vTempProperty[ID][position]; // Random Vertex Read     
 	    temp = reduce(temp, res);
 	    vTempProperty[ID][position] = temp; // Random Vertex Write 
+	  }
+	  outputCount[ID][source] = 0;
 	}
 
 	// Reset ActiveVertex and ActiveVertexCount
 	activeVertexCount[ID] = 0; // reset activeVertexCount & active vertices.
-	outputCount[ID] = 0; // reset the output queue counter for the next iteration
 	for(unsigned int k = 0; k < NUM_STREAMS; ++k) {
 		localCounter[ID][k] = 0; // reset the local output queue counter
 	}
