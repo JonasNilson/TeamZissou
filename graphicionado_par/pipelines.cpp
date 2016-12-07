@@ -126,7 +126,12 @@ void mergeQueues(unsigned int ID){
 	}
 }
 
-
+/*
+* Do source oriented phase from graphicionado parallel.
+* Read active vertices for each stream and send the data
+* to the crossbar.
+* argument: ID - is the number of the current stream.
+*/
 void processingPhaseSourceOriented(unsigned int ID){
 	//Vertex dst; // TODO: Not needed for this algorithm right now? Implement in future if we want to use it
 
@@ -148,9 +153,12 @@ void processingPhaseSourceOriented(unsigned int ID){
     }
 }
 
-//outputQueue with current ID's of edges thats gonna be used. //Double array
-//outputQueue [][] put in IDs on edges thats gonna be used.
-// edgeID
+/*
+* Read data from destination oriented phase taken from outputQueue.
+* OutputQueue[this stream][from which source stream][element to process] 
+* Then do processEdge and reduce to update the vTempProperty.
+* argument: ID - is the number of the current stream.
+*/
 void processingPhaseDestinationOriented(unsigned int ID){
 	Vertex dst; // [OPTIONAL]
 	for(unsigned int source = 0; source < NUM_STREAMS; ++source){
