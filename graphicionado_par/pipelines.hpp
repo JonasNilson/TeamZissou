@@ -7,8 +7,8 @@
 struct DataCrossbar;
 
 // Global visible variables
-extern DataCrossbar*** outputQueue; // outputQueue[][]: Crossbar output to the destination oriented part
-extern unsigned int** outputCount; // outputCount[]: Counter for the number of elements in the outputQueue
+extern DataCrossbar*** outputQueue; // outputQueue[][][]: Crossbar output to the destination oriented part
+extern unsigned int** outputCount; // outputCount[][]: Counter for the number of elements in the outputQueue
 
 
 // Methods
