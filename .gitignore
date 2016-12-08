@@ -12,3 +12,6 @@
 # Ignore temporary files
 *~
 *#
+
+# Ignore core dumps
+core.*
