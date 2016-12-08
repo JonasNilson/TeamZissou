@@ -5,7 +5,7 @@
 #include <math.h>
 
 //Global variables
-DataCrossbar*** outputQueue;
+DataCrossbar*** outputQueue; // outputQueue [Stream to be updated.][threads' vertices that match this stream][element for this stream.]
 unsigned int** outputCount;
 
 DataCrossbar*** localQueue; // Local queue to store the crossbar data before synchronization/merging the local lists into output queue.
