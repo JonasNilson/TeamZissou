@@ -15,4 +15,9 @@ void setupEIT(unsigned int numVertices, unsigned int numEdges, unsigned int* edg
 
 void cleanupPreprocess();
 
+
+// Global declaration.
+extern edgeStreamCounterDst; // Will hold worst case amount of edges for Dst each stream.
+extern edgeStreamCounterSrc; // Will hold worst case amount of edges for Src each stream.
+
 #endif

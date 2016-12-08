@@ -13,6 +13,11 @@
 #include <limits>
 #include "pipelines.hpp"
 
+
+unsigned int* edgeStreamCounterDst; // Will hold worst case amount of edges for Dst each stream.
+unsigned int* edgeStreamCounterSrc; // Will hold worst case amount of edges for Src each stream.
+
+
 //Init value on starting nodes for different algorithms used.
 void initAlgorithmProperty(unsigned int numVertices, unsigned int numEdges) {
 	if(graphAlgorithm == "BFS"){ //Check if BFS is used
@@ -114,7 +119,7 @@ void setupDSM(unsigned int numVertices, unsigned int numEdges){
 
 	edges = argo::conew_array<Edge*>(NUM_STREAMS);
 	for(unsigned int i = 0; i < NUM_STREAMS; ++i){
-		edges[i] = argo::conew_array<Edge>(numEdges); // TODO: NEED to be optimized, should not be needed to keep entire space for number of edges times NUM_STREAMS.
+		edges[i] = argo::conew_array<Edge>(edgeStreamCounterSrc[i]); 
 	} 
 	
     edgeIDTable = argo::conew_array<unsigned int>(numVertices); // might need to change the structure of this one.
@@ -199,6 +204,10 @@ void cleanupPreprocess(){
 
 	//Free everything allocated for pipelines
 	cleanupPipelines(); // Cleanup the allocations from pipelines
+
+	//Free edgeStreamCountersDst(-Src)
+	delete[] edgeStreamCounterDst; 
+	delete[] edgeStreamCounterSrc; 
 }
 
 /*
@@ -516,4 +525,81 @@ void setupEIT(unsigned int numVertices, unsigned int numEdges, unsigned int* edg
 	    }
 	}
     }
+}
+
+
+/* 
+* Calculate the number of edges for each stream. 
+*/
+void readNumEdgesFromFile(const char* filename) {
+	// Init the edgeStreamCounter.
+	edgeStreamCounterDst = new unsigned int [NUM_STREAMS];
+	edgeStreamCounterSrc = new unsigned int [NUM_STREAMS];
+
+	for(unsigned int = 0; i < NUM_STREAMS; ++i){
+		edgeStreamCounterDst[i] = 0;
+		edgeStreamCounterSrc[i] = 0;
+	}
+
+	//Read file
+	std::ifstream file;
+	std::string line;
+	std::string item;
+	unsigned int numVertices = 0;
+	unsigned int numEdges = 0;
+	char delimiter = ' ';
+	char comp = 'c';
+
+	file.open(filename);
+
+	// Skip all the lines starting with the character 'c'
+	while(comp == 'c'){
+		getline(file,line);
+		std::stringstream ss; // Create a new string stream
+		ss.str(line);
+		std::getline(ss, item, delimiter);
+
+		comp = item.c_str()[0];
+	}
+
+	// Read the line starting with the character 'p' containing info. about number of vert/edges
+	std::cout << "comp borde vara p: " << comp << std::endl;
+	if(comp == 'p'){
+		std::stringstream ss; // Create a new string stream
+		ss.str(line);
+		std::getline(ss, item, delimiter);
+		std::getline(ss, item, delimiter);
+		std::getline(ss, item, delimiter);
+		numVertices = std::stoll(item); // get number of vertices
+		std::cout << "numVertices: " << numVertices << std::endl;
+		std::getline(ss, item, delimiter);
+		numEdges = std::stoll(item);   // get number of edges
+		std::cout << "numEdges: " << numEdges << std::endl;
+	}
+
+	// Read all the coming lines, which contains edge data (srcID, dstID, weight)
+	for(unsigned int i=0; i < numEdges; ++i) {
+		getline(file,line);
+		std::stringstream ss; // Create a new string stream
+		ss.str(line);
+		std::getline(ss, item, delimiter);
+		comp = item.c_str()[0];
+		if('a' == comp){ 
+			unsigned int stream;
+			
+			std::getline(ss, item, delimiter);  // To read src.
+			
+			stream = (std::stoll(item) - 1) % NUM_STREAMS; // Read stream for src.
+			edgeStreamCounterSrc[stream]++;
+
+			std::getline(ss, item, delimiter); // To read dst.
+
+			// Get the stream for destination. To see how many edges each thread can get as worst case to process.
+			stream = (std::stoll(item) - 1) % NUM_STREAMS; // Read stream for dst.
+			edgeStreamCounterDst[stream]++; 
+			
+			std::getline(ss, item, delimiter); // To jump in line
+		}
+	}
+	file.close(); // Close the file
 }
