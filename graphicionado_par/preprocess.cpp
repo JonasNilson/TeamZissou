@@ -16,7 +16,7 @@
 
 unsigned int* edgeStreamCounterDst; // Will hold worst case amount of edges for Dst each stream.
 unsigned int* edgeStreamCounterSrc; // Will hold worst case amount of edges for Src each stream.
-
+unsigned int** queueSizes;
 
 //Init value on starting nodes for different algorithms used.
 void initAlgorithmProperty(unsigned int numVertices, unsigned int numEdges) {
@@ -208,6 +208,13 @@ void cleanupPreprocess(){
 	//Free edgeStreamCountersDst(-Src)
 	argo::codelete_array(edgeStreamCounterDst);
 	argo::codelete_array(edgeStreamCounterSrc);
+
+	//Free queueSizes.
+	for(unsigned int i = 0; i < NUM_STREAMS; ++i){
+		argo::codelete_array(queueSizes[i]);
+	}
+	argo::codelete_array(queueSizes);
+
 }
 
 /*
@@ -474,6 +481,12 @@ void countAllocationSpace(const char* filename) {
 	edgeStreamCounterDst = argo::conew_array<unsigned int>(NUM_STREAMS);
 	edgeStreamCounterSrc = argo::conew_array<unsigned int>(NUM_STREAMS);
 
+	//Make allocation that used for counting queue size.
+	queueSizes = argo::conew_array<unsigned int**>(NUM_STREAMS); //For each stream
+	for(unsigned int i = 0; i < NUM_STREAMS; ++i){
+		queueSizes[i] = argo::conew_array<unsigned int*>(NUM_STREAMS); // To each stream amount
+	}
+
 	argo::barrier();
 
 	if(argo::node_id() == 0) {
@@ -546,7 +559,6 @@ void setupEIT(unsigned int numVertices, unsigned int numEdges, unsigned int* edg
     }
 }
 
-
 /* 
 * Calculate the number of edges for each stream. 
 */
@@ -595,20 +607,26 @@ void readNumEdgesFromFile(const char* filename) {
 		std::getline(ss, item, delimiter);
 		comp = item.c_str()[0];
 		if('a' == comp){ 
-			unsigned int stream;
+			unsigned int streamSrc;
+			unsigned int streamDst;
 			
 			std::getline(ss, item, delimiter);  // To read src.
 			
-			stream = (std::stoll(item) - 1) % NUM_STREAMS; // Read stream for src.
-			edgeStreamCounterSrc[stream]++;
+			streamSrc = (std::stoll(item) - 1) % NUM_STREAMS; // Read stream for src.
+			edgeStreamCounterSrc[streamSrc]++;
 
 			std::getline(ss, item, delimiter); // To read dst.
 
 			// Get the stream for destination. To see how many edges each thread can get as worst case to process.
-			stream = (std::stoll(item) - 1) % NUM_STREAMS; // Read stream for dst.
-			edgeStreamCounterDst[stream]++; 
+			streamDst = (std::stoll(item) - 1) % NUM_STREAMS; // Read stream for dst.
+			edgeStreamCounterDst[streamDst]++; 
 			
 			std::getline(ss, item, delimiter); // To jump in line
+
+			queueSizes[streamSrc][streamDst]++; // Count the worst case length of the different queues.
+
+
+
 		}
 	}
 

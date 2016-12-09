@@ -22,7 +22,7 @@ void initPipelines(unsigned int numEdges) {
 	for(unsigned int l = 0; l < NUM_STREAMS; ++l){
 		localQueue[l] = new DataCrossbar*[NUM_STREAMS];
 		for(unsigned int stream = 0; stream < NUM_STREAMS; ++stream){
-			localQueue[l][stream] = new DataCrossbar[edgeStreamCounterDst[stream]];
+			localQueue[l][stream] = new DataCrossbar[queueSizes[l][stream]];
 		}
 	}
 	
@@ -38,14 +38,17 @@ void initPipelines(unsigned int numEdges) {
 	}
 
 
+
 	//Init output queue
 	outputQueue = argo::conew_array<DataCrossbar**>(NUM_STREAMS);
 	for(unsigned int i = 0; i < NUM_STREAMS; ++i){
 		outputQueue[i] = argo::conew_array<DataCrossbar*>(NUM_STREAMS);
 		for(unsigned int j = 0; j < NUM_STREAMS; ++j){
-		  outputQueue[i][j] = argo::conew_array<DataCrossbar>(edgeStreamCounterDst[j]);
+		  outputQueue[i][j] = argo::conew_array<DataCrossbar>(queueSizes[i][j]);
 		}
 	}
+
+
 
 	//Init output Count (number of element in outputQueue)
 	outputCount = argo::conew_array<unsigned int*>(NUM_STREAMS);

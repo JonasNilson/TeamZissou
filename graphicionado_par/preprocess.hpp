@@ -21,5 +21,6 @@ void cleanupPreprocess();
 // Global declaration.
 extern unsigned int* edgeStreamCounterDst; // Will hold worst case amount of edges for Dst each stream.
 extern unsigned int* edgeStreamCounterSrc; // Will hold worst case amount of edges for Src each stream.
+extern unsigned int** queueSizes; // Will hold worst case amount of elements for local/output queues.
 
 #endif
