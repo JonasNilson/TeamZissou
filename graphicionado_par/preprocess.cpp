@@ -482,9 +482,9 @@ void countAllocationSpace(const char* filename) {
 	edgeStreamCounterSrc = argo::conew_array<unsigned int>(NUM_STREAMS);
 
 	//Make allocation that used for counting queue size.
-	queueSizes = argo::conew_array<unsigned int**>(NUM_STREAMS); //For each stream
+	queueSizes = argo::conew_array<unsigned int*>(NUM_STREAMS); //For each stream
 	for(unsigned int i = 0; i < NUM_STREAMS; ++i){
-		queueSizes[i] = argo::conew_array<unsigned int*>(NUM_STREAMS); // To each stream amount
+		queueSizes[i] = argo::conew_array<unsigned int>(NUM_STREAMS); // To each stream amount
 	}
 
 	argo::barrier();

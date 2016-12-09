@@ -68,6 +68,12 @@ void setNumberOfStreams() {
     }
 }
 
+std::chrono::duration<double> incTime(std::chrono::duration<double> time){
+		  time += std::chrono::system_clock::now()-start;
+		  start = std::chrono::system_clock::now();
+		  return time;
+		}
+
 void printTimeMeasurements(){
     std::cout << "Finished computation with " << NODES << " nodes each running " << THREADS << " threads."  << "\n----------------\n"
     << "Graphicionado time: \t\t" << time_graphicionado.count() << "\nArgo initialization time: \t" << time_init.count() << "\nData read time: \t\t" << time_read.count() << "\nCleanup time: \t\t\t" << time_cleanup.count() << "\n-----------\n" << std::endl;
@@ -138,31 +144,20 @@ void graphicionado(unsigned int id){
         //A process edge
         processingPhaseSourceOriented(id); // Source oriented
         barrier(id);
-        if(id == 0){
-            time_src = time_src + (std::chrono::system_clock::now()-start);
-            start = std::chrono::system_clock::now();
-        }
+        if(id == 0) time_src = incTime(time_src);
 
         mergeQueues(id); // Crossbar that setup merge local queues to output Queue.
         barrier(id);
-        if(id == 0){
-            time_merge = time_merge + (std::chrono::system_clock::now()-start);
-            start = std::chrono::system_clock::now();
-        }
+        if(id == 0) time_merge = incTime(time_merge);
 
         processingPhaseDestinationOriented(id); // Destination oriented.
         barrier(id);
-        if(id == 0){
-            time_dst = time_dst + (std::chrono::system_clock::now()-start);
-            start = std::chrono::system_clock::now();
-        }
+        if(id == 0) time_dst = incTime(time_dst);
 
         //B Apply Phase
         applyPhase(id);
         barrier(id);
-        if(id == 0) {
-            time_apply = time_apply + (std::chrono::system_clock::now()-start);
-        }
+        if(id == 0) time_apply = incTime(time_apply);
             
 
         //Settings check if we should use max iteration implementation or not
@@ -192,25 +187,22 @@ int main(int argc, char *argv[]){
 
     memory = DEFAULT_MEMSIZE;
 	if(argc>2){
-		memory = atoi(argv[2])*1024*1024;
+	  memory = atoi(argv[2])*1024*1024;
 	}
 
     start = std::chrono::system_clock::now();
     argo::init(memory);
-    std::cout << "Argo init done" << std::endl;
-  
+    std::cout << "Argo init done" << std::endl;  
 
-    // Local variable declaration
-    unsigned int id = argo::node_id(); // get this node unique index number starting from 0
-    if(id==0) time_init += std::chrono::system_clock::now()-start;
+    // Local variable declaration  
+	unsigned int id = argo::node_id(); // get this node unique index number starting from 0
     NODES = argo::number_of_nodes(); // return the total number of nodes in the Argo system.
 
-    
     loadSettings(); // Load the configuration settings from file (settings.cfg)
     setNumberOfStreams(); // Set NUM_STREAMS calculated across all nodes.
 
     argo::barrier();
-    if(id==0) start = std::chrono::system_clock::now();
+    if(id == 0) time_init = incTime(time_init);
     // readData take input and organize the input
     int code = readData(argc,argv);
     if(code != 0){
