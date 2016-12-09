@@ -39,7 +39,7 @@ unsigned int* totalVertexCount; // Number of nodes in the system.
 unsigned int* activeVertexCount; // Number of active nodes in the system.
 unsigned int* totalEdgeCount;
 
-int memory; // Memory for argo init
+unsigned long memory; // Memory for argo init
 
 std::chrono::duration<double> time_graphicionado, time_init, time_cleanup, time_read, time_src, time_dst, time_merge, time_apply;
 std::chrono::time_point<std::chrono::system_clock> start, startGraphicionado;
@@ -187,8 +187,10 @@ int main(int argc, char *argv[]){
 
     memory = DEFAULT_MEMSIZE;
 	if(argc>2){
-	  memory = atoi(argv[2])*1024*1024;
+	  char* charlong;
+	  memory = strtoul(argv[2], &charlong, 10)*1024*1024;
 	}
+	std::cout << memory << std::endl;
 
     start = std::chrono::system_clock::now();
     argo::init(memory);
