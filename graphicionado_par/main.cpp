@@ -17,6 +17,8 @@
 
 #include <pthread.h> // For the barrier
 
+#define DEFAULT_MEMSIZE 256*1024*1024 // Amount of memory argo inits with if no argument #2 given
+
 // Global variable declaration
 unsigned int THREADS; // Number of threads. Read and set from setting file
 unsigned int NODES;
@@ -36,6 +38,8 @@ VertexProperty** vConst;
 unsigned int* totalVertexCount; // Number of nodes in the system.
 unsigned int* activeVertexCount; // Number of active nodes in the system.
 unsigned int* totalEdgeCount;
+
+int memory; // Memory for argo init
 
 std::chrono::duration<double> time_graphicionado, time_init, time_cleanup, time_read, time_src, time_dst, time_merge, time_apply;
 std::chrono::time_point<std::chrono::system_clock> start, startGraphicionado;
@@ -185,8 +189,14 @@ int main(int argc, char *argv[]){
     Set up the argo environment, caches and global memory. 
     Init the total space that is shared between all nodes. 
     */
+
+    memory = DEFAULT_MEMSIZE;
+	if(argc>2){
+		memory = atoi(argv[2])*1024*1024;
+	}
+
     start = std::chrono::system_clock::now();
-    argo::init(256 * 1024 * 1024);
+    argo::init(memory);
     std::cout << "Argo init done" << std::endl;
   
 
