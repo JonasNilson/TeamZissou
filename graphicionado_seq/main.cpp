@@ -10,6 +10,7 @@
 #include "test_functions.hpp"
 #include "tests.hpp"
 
+#define DEFAULT_MEMSIZE 256*1024*1024
 // Global variable declaration
 //int THREADS = 4; // Set number of threads
 
@@ -26,6 +27,8 @@ VertexProperty* vConst;
 unsigned int totalVertexCount; // Number of nodes in the system.
 unsigned int activeVertexCount; // Number of active nodes in the system.
 unsigned int totalEdgeCount;
+
+int memory;
 
 // Make all cleanups needed before closing the program.
 void terminateProgram(){
@@ -145,7 +148,11 @@ int main(int argc, char *argv[]){
      Set up the argo environment, caches and global memory. 
      Init the total space that is shared between all nodes. 
   */
-  argo::init(128 * 1024 * 1024); 
+  memory = DEFAULT_MEMSIZE;
+  if(argc>2){
+	memory = atoi(argv[2])*1024*1024;
+  }
+  argo::init(memory); 
 
   // Load the configuration settings from file (settings.cfg)
   loadSettings();
