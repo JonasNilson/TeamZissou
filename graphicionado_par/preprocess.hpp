@@ -5,6 +5,8 @@ void readTextFile(const char* filename);
 
 void readTextFileWithLineParsing(const char* filename);
 
+void readNumEdgesFromFile(const char* filename);
+
 void readGTgraphFile(const char* filename);
 
 void setupDSM(unsigned int numVerticies, unsigned int numEdges);
@@ -17,7 +19,7 @@ void cleanupPreprocess();
 
 
 // Global declaration.
-extern edgeStreamCounterDst; // Will hold worst case amount of edges for Dst each stream.
-extern edgeStreamCounterSrc; // Will hold worst case amount of edges for Src each stream.
+extern unsigned int* edgeStreamCounterDst; // Will hold worst case amount of edges for Dst each stream.
+extern unsigned int* edgeStreamCounterSrc; // Will hold worst case amount of edges for Src each stream.
 
 #endif

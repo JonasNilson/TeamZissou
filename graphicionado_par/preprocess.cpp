@@ -206,8 +206,8 @@ void cleanupPreprocess(){
 	cleanupPipelines(); // Cleanup the allocations from pipelines
 
 	//Free edgeStreamCountersDst(-Src)
-	delete[] edgeStreamCounterDst; 
-	delete[] edgeStreamCounterSrc; 
+	argo::codelete_array(edgeStreamCounterDst);
+	argo::codelete_array(edgeStreamCounterSrc);
 }
 
 /*
@@ -466,10 +466,29 @@ void readData(const char* filename) {
 	initializeDSM(numVertices, numEdges); // Initialize the data in the allocated ArgoDSM memory
 }
 
+/* 
+ * Allocate arrays containing the number of edges per stream and initialize the edge counters
+ */
+void countAllocationSpace(const char* filename) {
+	// Each node needs to allocate the arrays
+	edgeStreamCounterDst = argo::conew_array<unsigned int>(NUM_STREAMS);
+	edgeStreamCounterSrc = argo::conew_array<unsigned int>(NUM_STREAMS);
+
+	argo::barrier();
+
+	if(argo::node_id() == 0) {
+		readNumEdgesFromFile(filename); // Reads the graph file and counts the edges per stream
+	}
+
+	argo::barrier();
+}
+
 /*
  * Read graph data from a text file and initialize the arrays
  */
 void readGTgraphFile(const char* filename){
+	countAllocationSpace(filename); // Allocate and initialize edge counters
+
 	// All nodes needs to run the collective allocations
 	readHeader(filename); // Read header info. and set up ArgoDSM with collective allocations
 	
@@ -532,15 +551,6 @@ void setupEIT(unsigned int numVertices, unsigned int numEdges, unsigned int* edg
 * Calculate the number of edges for each stream. 
 */
 void readNumEdgesFromFile(const char* filename) {
-	// Init the edgeStreamCounter.
-	edgeStreamCounterDst = new unsigned int [NUM_STREAMS];
-	edgeStreamCounterSrc = new unsigned int [NUM_STREAMS];
-
-	for(unsigned int = 0; i < NUM_STREAMS; ++i){
-		edgeStreamCounterDst[i] = 0;
-		edgeStreamCounterSrc[i] = 0;
-	}
-
 	//Read file
 	std::ifstream file;
 	std::string line;
@@ -601,5 +611,6 @@ void readNumEdgesFromFile(const char* filename) {
 			std::getline(ss, item, delimiter); // To jump in line
 		}
 	}
+
 	file.close(); // Close the file
 }

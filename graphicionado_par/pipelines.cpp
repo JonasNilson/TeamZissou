@@ -1,4 +1,5 @@
 #include "graphicionado.hpp" // Data structures for graph problems
+#include "preprocess.hpp"
 #include "loadSettings.hpp"
 #include "pipelines.hpp"
 #include "test_functions.hpp"
