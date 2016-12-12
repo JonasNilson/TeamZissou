@@ -11,6 +11,7 @@ unsigned int maxIterations;
 bool edgeDuplicates;
 unsigned int* startingNodes;
 unsigned int numberOfStartingNodes;
+unsigned int partitions;
 
 void parseStartingNodes(std::string s) {
 	std::vector<unsigned int> intVector; // Vector (can dynamically change size at runtime)
@@ -60,15 +61,17 @@ void setGlobalVariables(char * buffer, int index){
 
 	//Set global setting variables
 	if(vName == "isAllVerticesActive")
-		isAllVerticesActive = (value == "y" ? true : false);
+	  isAllVerticesActive = (value == "y" ? true : false);
 	else if(vName == "maxIterations")
-		maxIterations = (unsigned int) std::stoll(value);
+	  maxIterations = (unsigned int) std::stoll(value);
 	else if(vName == "edgeDuplicates")
-		edgeDuplicates = (value == "y" ? true : false);
+	  edgeDuplicates = (value == "y" ? true : false);
 	else if(vName == "startingNodes")
-		parseStartingNodes(value);
-	else 
-		std::cout << "Something went wrong with the reading of " << vName << "\n";
+	  parseStartingNodes(value);
+	else if(vName == "partitions")
+	  partitions = (unsigned int) std::stoll(value);
+	else
+	  std::cout << "Something went wrong with the reading of " << vName << "\n";
 
 	std::cout << "Setting of " << vName << " has read the option [" << value <<  "] successfully.\n";
 }

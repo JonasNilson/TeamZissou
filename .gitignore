@@ -1,0 +1,14 @@
+# Ignore all
+*
+
+# Unignore all with extensions
+!*.*
+
+# Unignore all dirs
+!*/
+
+### The above combinations will ignore files without extensions
+
+# Ignore temporary files
+*~
+*#
