@@ -12,6 +12,10 @@
 #include <math.h>
 #include <limits>
 
+unsigned int numVertices;
+unsigned int numEdges;
+  
+
 void setAllProperties(double value){
   for(unsigned int i=0; i < totalVertexCount; ++i){
     vertices[i].prop.property = value;
@@ -77,6 +81,17 @@ void setupDSM(unsigned int numVertices, unsigned int numEdges){
 	vertices = argo::conew_array<Vertex>(numVertices); 
 	activeVertex = argo::conew_array<Vertex>(numVertices);
 	
+	edgesArray = argo::conew_array<Edge*>(partitions);
+	for(unsigned int i = 0; i < partitions; ++i){
+		edgesArray[i] = argo::conew_array<Edge>(numEdges); // TODO: NEED to be optimized, should not be needed to keep entire space for number of edges times NODES.
+	} 
+
+	edgeIDTableArray = argo::conew_array<unsigned int*>(partitions);
+	for(unsigned int i = 0; i < partitions; ++i){
+		edgeIDTableArray[i] = argo::conew_array<unsigned int>(numEdges); // TODO: NEED to be optimized, should not be needed to keep entire space for number of edges times NODES.
+	} 
+
+
 	edges = argo::conew_array<Edge>(numEdges); 
 	edgeIDTable = argo::conew_array<unsigned int>(numVertices); // make it of size number of vertices
 
@@ -198,8 +213,6 @@ void readGTgraphFile(const char* filename){
   std::ifstream file;
   std::string line;
   std::string item;
-  unsigned int numVertices = 0;
-  unsigned int numEdges = 0;
   char delimiter = ' ';
   char comp = 'c';
 
@@ -263,8 +276,9 @@ void readGTgraphFile(const char* filename){
 		startingNodes[i] = startingNodes[i] - 1;
 	}
 
-	printVertices(numVertices, vertices);
-
+	//printVertices(numVertices, vertices);
+	//	printEdges(numEdges,edges);
+	
 	file.close(); // Closes file
 
 	std::cout << "file closed" << std::endl;
@@ -288,8 +302,10 @@ void setupEIT(unsigned int numVertices, unsigned int numEdges, Vertex* vertices,
       oldIndex = newIndex;
       newIndex = edges[i].srcID;
       if(newIndex != oldIndex)
-	{
-	  edgeIDTable[newIndex] = i+1;
-	}
+		{
+		  edgeIDTable[newIndex] = i+1;
+		}
     }
+
+  edgeIDTable[0] = 1;
 }

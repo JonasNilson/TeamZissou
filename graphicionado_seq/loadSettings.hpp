@@ -9,5 +9,6 @@ extern unsigned int maxIterations;
 extern bool edgeDuplicates;
 extern unsigned int* startingNodes;
 extern unsigned int numberOfStartingNodes;
+extern unsigned int partitions;
 
 #endif

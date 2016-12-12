@@ -17,7 +17,9 @@ extern Vertex* vertices; // All vertices in the graph
 extern Vertex* activeVertex; 
 
 extern Edge* edges; // All edges in the graph
+extern Edge** edgesArray;
 extern unsigned int* edgeIDTable;
+extern unsigned int** edgeIDTableArray;
 
 extern VertexProperty* vProperty;
 extern VertexProperty* vTempProperty;
@@ -25,6 +27,8 @@ extern VertexProperty* vConst; // TODO: Implement this at a later time if its ev
 extern unsigned int totalVertexCount; 
 extern unsigned int activeVertexCount;
 extern unsigned int totalEdgeCount; 
+extern unsigned int numEdges;
+extern unsigned int numVertices;
 
 extern std::string graphAlgorithm; // Algorithm used e.g. BFS. This is set by e.g. bfs.cpp file or the algorithm file used during compilation.
 
