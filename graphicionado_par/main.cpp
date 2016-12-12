@@ -267,7 +267,7 @@ int main(int argc, char *argv[]){
     terminateProgram(); // Cleanup for this node when program has finished.
       
 
-    //printVerticesProperties(totalVertexCount[id], vertices[id], vProperty[id]); //Debug prints too see behavior
+	//    printVerticesProperties(totalVertexCount[id], vertices[id], vProperty[id]); //Debug prints too see behavior
     if(id == 0) {
         time_cleanup += std::chrono::system_clock::now()-start;
         // Node 0 writes the parallel results to file

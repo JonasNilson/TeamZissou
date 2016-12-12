@@ -21,7 +21,10 @@ extern Vertex** activeVertex;
 
 
 extern Edge** edges; // All edges in the graph
+extern Edge*** edgesArray;
 extern unsigned int* edgeIDTable;
+extern unsigned int** edgeIDTableArray;
+
 
 extern VertexProperty** vProperty;
 extern VertexProperty** vTempProperty;

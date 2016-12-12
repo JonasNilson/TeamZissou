@@ -73,7 +73,9 @@ void setGlobalVariables(char * buffer, int index){
 		singleNodeRunning = (value == "y" ? true : false);
 	else if(vName == "THREADS")
 		THREADS = (unsigned int) std::stoll(value);
-	else 
+	else if(vName == "partitions")
+	  partitions = (unsigned int) std::stoll(value);
+	else
 		std::cout << "Something went wrong with the reading of " << vName << "\n";
 
 	std::cout << "Setting of " << vName << " has read the option [" << value <<  "] successfully.\n";
