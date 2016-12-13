@@ -16,7 +16,6 @@ unsigned int** localCounter; // Counter for localQueue how many element is in it
  * Initialize the data structures required by the pipeline
  */
 void initPipelines(unsigned int numEdges) {
-  std::cout << "Init pipelines..." << std::endl;
 	// Init localQueue
 	localQueue = new DataCrossbar**[NUM_STREAMS];
 	for(unsigned int l = 0; l < NUM_STREAMS; ++l){
@@ -44,7 +43,7 @@ void initPipelines(unsigned int numEdges) {
 	for(unsigned int i = 0; i < NUM_STREAMS; ++i){
 		outputQueue[i] = argo::conew_array<DataCrossbar*>(NUM_STREAMS);
 		for(unsigned int j = 0; j < NUM_STREAMS; ++j){
-		  outputQueue[i][j] = argo::conew_array<DataCrossbar>(queueSizes[i][j]);
+		  outputQueue[i][j] = argo::conew_array<DataCrossbar>(queueSizes[j][i]);
 		}
 	}
 
@@ -124,9 +123,10 @@ void crossbar(unsigned int ID, Edge e, VertexProperty srcProp){
 void mergeQueues(unsigned int ID){
 	for(unsigned int i = 0; i < NUM_STREAMS; ++i) {
 		for(unsigned int j = 0; j < localCounter[ID][i]; ++j){
-			outputQueue[i][ID][outputCount[i][ID]+j] = localQueue[ID][i][j]; //outputCount where to put it in, where j is the fill in from 
+			unsigned int posCount = outputCount[i][ID] + j;
+			outputQueue[i][ID][posCount] = localQueue[ID][i][j]; //outputCount where to put it in, where j is the fill in from 
 		}
-		outputCount[i][ID] = outputCount[i][ID] + localCounter[ID][i];
+		outputCount[i][ID] += localCounter[ID][i];
 	}
 }
 

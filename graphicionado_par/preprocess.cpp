@@ -563,6 +563,8 @@ void setupEIT(unsigned int numVertices, unsigned int numEdges, unsigned int* edg
 * Calculate the number of edges for each stream. 
 */
 void readNumEdgesFromFile(const char* filename) {
+	std::cout << "@ readNumEdgesFromFile: node id: " << argo::node_id() << std::endl; 
+
 	//Read file
 	std::ifstream file;
 	std::string line;
@@ -585,7 +587,6 @@ void readNumEdgesFromFile(const char* filename) {
 	}
 
 	// Read the line starting with the character 'p' containing info. about number of vert/edges
-	std::cout << "comp borde vara p: " << comp << std::endl;
 	if(comp == 'p'){
 		std::stringstream ss; // Create a new string stream
 		ss.str(line);
@@ -622,11 +623,8 @@ void readNumEdgesFromFile(const char* filename) {
 			edgeStreamCounterDst[streamDst]++; 
 			
 			std::getline(ss, item, delimiter); // To jump in line
-
+			
 			queueSizes[streamSrc][streamDst]++; // Count the worst case length of the different queues.
-
-
-
 		}
 	}
 
