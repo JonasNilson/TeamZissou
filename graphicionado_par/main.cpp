@@ -178,7 +178,7 @@ int main(int argc, char *argv[]){
 	std::cout << memory << std::endl;
 
 	start = std::chrono::system_clock::now();
-	argo::init(256 * 1024 * 1024); 
+	argo::init(memory); 
  
 	// Local variable declaration
 	unsigned int id = argo::node_id(); // get this node unique index number starting from 0
