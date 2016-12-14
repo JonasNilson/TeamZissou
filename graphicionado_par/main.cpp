@@ -149,7 +149,7 @@ void graphicionado(unsigned int id){
         mergeQueues(id); // Crossbar that setup merge local queues to output Queue.
         barrier(id);
         if(id == 0) time_merge = incTime(time_merge);
-
+;
         processingPhaseDestinationOriented(id); // Destination oriented.
         barrier(id);
         if(id == 0) time_dst = incTime(time_dst);
