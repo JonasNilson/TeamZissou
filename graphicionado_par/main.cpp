@@ -134,11 +134,11 @@ void graphicionado(unsigned int id){
 		
 		mergeQueues(id); // Take all local queues and merge them into one output Queue.
 		barrier(id);
-	    if(id == 0) time_src = incTime(time_src);
+	    if(id == 0) time_merge = incTime(time_merge);
 
 		processingPhaseDestinationOriented(id); // Destination oriented
 		barrier(id);
-	    if(id == 0) time_src = incTime(time_src);
+	    if(id == 0) time_dst = incTime(time_dst);
 
 		//B Apply Phase
 		applyPhase(id);
@@ -178,7 +178,7 @@ int main(int argc, char *argv[]){
 	std::cout << memory << std::endl;
 
 	start = std::chrono::system_clock::now();
-	argo::init(memory); 
+	argo::init(memory);
  
 	// Local variable declaration
 	unsigned int id = argo::node_id(); // get this node unique index number starting from 0
