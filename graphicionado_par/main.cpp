@@ -190,6 +190,11 @@ int main(int argc, char *argv[]){
 	  char* charlong;
 	  memory = strtoul(argv[2], &charlong, 10)*1024*1024;
 	}
+	if(argc>3){
+	  THREADS = strtoul(argv[3], NULL, 10);
+      std::cout << "Using THREADS parameter: " << THREADS << std::endl;  
+	}
+    
 	std::cout << memory << std::endl;
 
     start = std::chrono::system_clock::now();
