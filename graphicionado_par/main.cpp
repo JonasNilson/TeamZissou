@@ -190,10 +190,7 @@ int main(int argc, char *argv[]){
 	  char* charlong;
 	  memory = strtoul(argv[2], &charlong, 10)*1024*1024;
 	}
-	if(argc>3){
-	  THREADS = strtoul(argv[3], NULL, 10);
-      std::cout << "Using THREADS parameter: " << THREADS << std::endl;  
-	}
+
     
 	std::cout << memory << std::endl;
 
@@ -206,6 +203,12 @@ int main(int argc, char *argv[]){
     NODES = argo::number_of_nodes(); // return the total number of nodes in the Argo system.
 
     loadSettings(); // Load the configuration settings from file (settings.cfg)
+
+	if(argc>3){
+	  THREADS = strtoul(argv[3], NULL, 10);
+      std::cout << "Using THREADS parameter: " << THREADS << std::endl;  
+	}
+    
     setNumberOfStreams(); // Set NUM_STREAMS calculated across all nodes.
 
     argo::barrier();
