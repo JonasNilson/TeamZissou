@@ -12,41 +12,36 @@
 #include <math.h>
 #include <limits>
 
+unsigned int numVertices;
+unsigned int numEdges;
+  
+
+void setAllProperties(double value){
+  for(unsigned int i=0; i < totalVertexCount; ++i){
+    vertices[i].prop.property = value;
+  }
+}
+
+void setActiveProperties(double value){
+  for(unsigned int i = 0; i < activeVertexCount; ++i){
+    for(unsigned int j = 0; j < totalVertexCount; ++j) {
+      if(startingNodes[i] == vertices[j].ID) { // startingNodes are ID's of active nodes
+	vertices[j].prop.property = value;
+      }
+    }
+  }
+}
+
 //Init value on starting nodes for different algorithms used.
 void initAlgorithmProperty() {
 	if(graphAlgorithm == "BFS"){ //Check if BFS is used
-		// Init all vertex properties for BFS
-		for(unsigned int i=0; i < totalVertexCount; ++i){
-			// Property can't be larger than totalVertexCount
-			vertices[i].prop.property = totalVertexCount;
-		}
-
-		//Set their property to 0.
-		for(unsigned int i = 0; i < activeVertexCount; ++i){
-			for(unsigned int j = 0; j < totalVertexCount; ++j) {
-				if(startingNodes[i] == vertices[j].ID) { // startingNodes are ID's of active nodes
-					vertices[j].prop.property = 0;
-				}
-			}
-		}
+	  setAllProperties(totalVertexCount); // Init all vertex properties for BFS
+	  setActiveProperties(0); //Set active vertices' property to 0.
 	}
 
 	if(graphAlgorithm == "SSSP"){ //Check if SSSP is used
-		// Init all vertex properties for SSSP
-		for(unsigned int i=0; i < totalVertexCount; ++i){
-			// Each vertex property is set to the maximum allowed double value
-			vertices[i].prop.property = std::numeric_limits<double>::max();
-		}
-
-		//Set their property to 0.
-	    for(unsigned int i = 0; i < activeVertexCount; ++i){
-		    for(unsigned int j = 0; j < totalVertexCount; ++j) {
-				if(startingNodes[i] == vertices[j].ID) { // startingNodes are ID's of active nodes
-					// std::cout << "PREPROCESS: initAlgorithmProperty: vertex index: " << j << std::endl;
-					vertices[j].prop.property = 0;
-				}
-			}
-		}
+	  setAllProperties(std::numeric_limits<double>::max()); // Init all vertex properties for SSSP
+	  setActiveProperties(0); //Set active vertices' property to 0.
 	}
 
 	if(graphAlgorithm == "PR"){ //Check if Page rank is used
@@ -55,8 +50,7 @@ void initAlgorithmProperty() {
 			vertices[i].prop.property = 0.3; // From GraphMat
 			
 			if(edgeIDTable[i] == 0){
-				//Does not have edges
-				vConst[i].property = 0;
+				vConst[i].property = 0; //Does not have edges
 				continue;
 			}
 			unsigned int counter = 0; // Counter to keep track of how many edges
@@ -87,8 +81,19 @@ void setupDSM(unsigned int numVertices, unsigned int numEdges){
 	vertices = argo::conew_array<Vertex>(numVertices); 
 	activeVertex = argo::conew_array<Vertex>(numVertices);
 	
+	edgesArray = argo::conew_array<Edge*>(partitions);
+	for(unsigned int i = 0; i < partitions; ++i){
+		edgesArray[i] = argo::conew_array<Edge>(numEdges); // TODO: NEED to be optimized, should not be needed to keep entire space for number of edges times NODES.
+	} 
+
+	edgeIDTableArray = argo::conew_array<unsigned int*>(partitions);
+	for(unsigned int i = 0; i < partitions; ++i){
+		edgeIDTableArray[i] = argo::conew_array<unsigned int>(numEdges); // TODO: NEED to be optimized, should not be needed to keep entire space for number of edges times NODES.
+	} 
+
+
 	edges = argo::conew_array<Edge>(numEdges); 
-    edgeIDTable = argo::conew_array<unsigned int>(numVertices); // make it of size number of vertices
+	edgeIDTable = argo::conew_array<unsigned int>(numVertices); // make it of size number of vertices
 
 	vProperty = argo::conew_array<VertexProperty>(numVertices);
 	vTempProperty = argo::conew_array<VertexProperty>(numVertices);
@@ -208,8 +213,6 @@ void readGTgraphFile(const char* filename){
   std::ifstream file;
   std::string line;
   std::string item;
-  unsigned int numVertices = 0;
-  unsigned int numEdges = 0;
   char delimiter = ' ';
   char comp = 'c';
 
@@ -273,8 +276,9 @@ void readGTgraphFile(const char* filename){
 		startingNodes[i] = startingNodes[i] - 1;
 	}
 
-	printVertices(numVertices, vertices);
-
+	//printVertices(numVertices, vertices);
+	//	printEdges(numEdges,edges);
+	
 	file.close(); // Closes file
 
 	std::cout << "file closed" << std::endl;
@@ -298,8 +302,10 @@ void setupEIT(unsigned int numVertices, unsigned int numEdges, Vertex* vertices,
       oldIndex = newIndex;
       newIndex = edges[i].srcID;
       if(newIndex != oldIndex)
-	{
-	  edgeIDTable[newIndex] = i+1;
-	}
+		{
+		  edgeIDTable[newIndex] = i+1;
+		}
     }
+
+  edgeIDTable[0] = 1;
 }
