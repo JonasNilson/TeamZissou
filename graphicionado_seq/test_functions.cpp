@@ -1,5 +1,6 @@
 #include "test_functions.hpp"
 #include <iostream>
+#include <fstream>
 
 void printEdges(unsigned int numEdges, Edge* edges){
   std::cout << "##########EDGES###########" << std::endl;
@@ -31,3 +32,22 @@ void printVerticesProperties(unsigned int numVertices, Vertex* vertices, VertexP
   }
 }
 
+/*
+ * Write the one dimensional arrays containing vertex id's and 
+ * their corresponding properties to a file.
+ */
+void writeVerticesProperties(unsigned int numVertices, Vertex* vertices, VertexProperty* verticesProperties) {	
+	std::cout << "######## Writing the vProperty array to file ###########" << std::endl;
+	
+	// Create a file stream
+	std::ofstream filestream;
+	filestream.open("result_serial.txt");
+	
+	// Write the vector pair to file
+	for(unsigned int i = 0; i < numVertices; ++i) {
+		filestream << vertices[i].ID << ":" << verticesProperties[i].property << std::endl;
+	}
+
+	// Close the file
+	filestream.close();
+}

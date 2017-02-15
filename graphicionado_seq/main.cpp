@@ -210,8 +210,7 @@ int main(int argc, char *argv[]){
     return 1;
   }
 
-  printEdgeIDTable(numVertices,edgeIDTable,vertices);
-	
+  // printEdgeIDTable(numVertices,edgeIDTable,vertices);
   
   graphSlicer();
 
@@ -223,10 +222,11 @@ int main(int argc, char *argv[]){
 	printEdges(10,&edgesArray[i][0]);
   }
   */ 
-	  graphicionado();
-	   printVerticesProperties(totalVertexCount, vertices, vProperty); //Debug prints too see behavior
-  
-  
+
+  graphicionado();
+  // printVerticesProperties(totalVertexCount, vertices, vProperty); //Debug prints too see behavior
+  writeVerticesProperties(totalVertexCount, vertices, vProperty);
+
   terminateProgram(); // Cleanup for this node when program has finished.
   return 0;
 }
